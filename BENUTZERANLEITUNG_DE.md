@@ -22,12 +22,13 @@ Das Spielfeld besteht aus vielen kleinen Feldern. Einige Felder können Wände o
 ## Bedienung
 
 1. Wähle links ein Werkzeug aus.
-2. Zeichne Wände, Wasser oder Schlamm ins Grid.
-3. Setze bei Bedarf Start und Ziel neu.
-4. Wähle einen Algorithmus aus.
-5. Klicke auf **Visualisierung starten**.
-6. Beobachte, wie sich die Suche ausbreitet.
-7. Am Ende zeigt der gelbe Pfad den gefundenen Weg.
+2. Halte die Maustaste gedrückt und ziehe über das Grid, um mehrere Felder wie mit einem Pinsel zu bearbeiten.
+3. Zeichne Wände, Wasser oder Schlamm ins Grid.
+4. Setze bei Bedarf Start und Ziel neu.
+5. Wähle einen Algorithmus aus.
+6. Klicke auf **Visualisierung starten**.
+7. Beobachte, wie sich die Suche ausbreitet.
+8. Am Ende zeigt der gelbe Pfad den gefundenen Weg.
 
 ## Werkzeuge
 
@@ -38,6 +39,38 @@ Das Spielfeld besteht aus vielen kleinen Feldern. Einige Felder können Wände o
 - **Start setzen:** verschiebt den Startpunkt
 - **Ziel setzen:** verschiebt den Zielpunkt
 
+Start und Ziel werden bewusst nur per Klick gesetzt. Für Wand, Wasser, Schlamm und Löschen funktioniert das Zeichnen per Drag-Bewegung.
+
+## Beispiele laden
+
+Über **Beispiel laden** kannst du vorbereitete Szenarien auswählen, zum Beispiel:
+
+- Einfacher Weg
+- Wasser-Barriere
+- Schlamm-Falle
+- Kein möglicher Weg
+- A* vs Dijkstra Demo
+
+Damit kann man sofort testen, ohne zuerst selbst ein gutes Grid bauen zu müssen.
+
+## Undo und Redo
+
+Mit **Undo** kannst du die letzte Änderung rückgängig machen. Mit **Redo** kannst du sie wiederherstellen.
+
+Das ist besonders nützlich, wenn man mit dem Pinsel versehentlich zu viele Felder verändert.
+
+## Feld-Info
+
+Wenn du mit der Maus über ein Feld fährst, zeigt PathLab den Typ, die Kosten und die Position des Feldes an.
+
+Beispiel:
+
+```text
+Typ: Wasser
+Kosten: 5
+Position: 8, 14
+```
+
 ## Algorithmus-Vergleich
 
 Mit **Alle vergleichen** werden BFS, DFS, Dijkstra und A* auf demselben Grid berechnet. Die Tabelle zeigt dann:
@@ -47,8 +80,20 @@ Mit **Alle vergleichen** werden BFS, DFS, Dijkstra und A* auf demselben Grid ber
 - wie lang der Pfad ist
 - wie teuer der Pfad ist
 - wie lange die Berechnung gedauert hat
+- welcher Algorithmus in einer Kategorie am besten war
 
-Das hilft, die Algorithmen direkt miteinander zu vergleichen.
+## Pfadkosten-Aufschlüsselung
+
+PathLab zeigt, wie sich die Kosten eines Pfades zusammensetzen:
+
+```text
+Normal: 12 × 1 = 12
+Wasser: 3 × 5 = 15
+Schlamm: 1 × 10 = 10
+Gesamtkosten: 37
+```
+
+Dadurch versteht man besser, warum ein längerer Weg manchmal günstiger ist.
 
 ## Was misst die Zeit in ms?
 

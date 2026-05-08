@@ -22,12 +22,13 @@ The board is made of small cells. Some cells can be walls or weighted terrain. T
 ## Basic use
 
 1. Choose a tool on the left.
-2. Draw walls, water, or mud on the grid.
-3. Move the start or target if needed.
-4. Choose an algorithm.
-5. Click **Run visualization**.
-6. Watch how the search spreads.
-7. At the end, the yellow cells show the found path.
+2. Hold the mouse button and drag across the grid to edit multiple cells like a brush.
+3. Draw walls, water, or mud on the grid.
+4. Move the start or target if needed.
+5. Choose an algorithm.
+6. Click **Run visualization**.
+7. Watch how the search spreads.
+8. At the end, the yellow cells show the found path.
 
 ## Tools
 
@@ -38,6 +39,38 @@ The board is made of small cells. Some cells can be walls or weighted terrain. T
 - **Set start:** moves the start point
 - **Set target:** moves the target point
 
+Start and target are intentionally placed with a single click. Wall, water, mud, and erase support drag drawing.
+
+## Presets
+
+With **Load example**, you can open prepared scenarios such as:
+
+- Simple route
+- Water barrier
+- Mud trap
+- No possible path
+- A* vs Dijkstra demo
+
+This lets users test the project immediately without creating a useful grid first.
+
+## Undo and Redo
+
+Use **Undo** to revert the last change. Use **Redo** to restore it.
+
+This is especially helpful when brush drawing changes too many cells by accident.
+
+## Cell Info
+
+When you hover over a cell, PathLab shows the cell type, cost, and position.
+
+Example:
+
+```text
+Type: Water
+Cost: 5
+Position: 8, 14
+```
+
 ## Algorithm Comparison
 
 With **Compare all**, PathLab calculates BFS, DFS, Dijkstra and A* on the same grid. The table shows:
@@ -47,8 +80,20 @@ With **Compare all**, PathLab calculates BFS, DFS, Dijkstra and A* on the same g
 - how long the path is
 - how expensive the path is
 - how long the calculation took
+- which algorithm performed best in a category
 
-This helps compare algorithms directly.
+## Path Cost Breakdown
+
+PathLab shows how the path cost is built:
+
+```text
+Normal: 12 × 1 = 12
+Water: 3 × 5 = 15
+Mud: 1 × 10 = 10
+Total cost: 37
+```
+
+This makes it easier to understand why a longer route can still be cheaper.
 
 ## What does the ms value measure?
 

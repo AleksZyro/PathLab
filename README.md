@@ -2,7 +2,7 @@
 
 PathLab is an interactive pathfinding visualizer for learning and comparing search algorithms on a grid.
 
-The project is designed as a portfolio project for application development. It focuses on algorithm visualization, clean UI, state management, bilingual content, weighted pathfinding, and beginner-friendly explanations.
+The project is designed as a portfolio project for application development. It focuses on algorithm visualization, clean UI, state management, bilingual content, weighted pathfinding, beginner-friendly explanations, and practical usability features.
 
 ## What the App Does
 
@@ -31,20 +31,28 @@ A* combines the cost already travelled with an estimate of the remaining distanc
 ## Current Features
 
 - Interactive grid
+- Brush drawing with pointer events
+- Mouse, trackpad, touchscreen, and stylus-friendly input
 - Movable start and target nodes
 - Draw and erase walls
 - Draw weighted terrain: water and mud
+- Preset example scenarios
 - Select BFS, DFS, Dijkstra or A*
 - Animated visualization
+- Live explanation panel during algorithm runs
+- Hover cell information with type, cost, and position
 - Speed control
 - Algorithm comparison table
+- Result badges for best cost, shortest path, fewest visited cells, and fastest calculation
+- Path cost breakdown
+- Undo and redo
 - Clear path, clear obstacles, and reset grid actions
 - Statistics panel with visited cells, path cells, path cost, calculation time, animation time, and wall count
 - German default language
 - DE/EN language switch
 - Light and dark mode
 - Beginner guides in German and English
-- Unit tests for pathfinding algorithms
+- Unit tests for pathfinding algorithms and grid state restoration
 
 ## Important Note About Timing
 
@@ -116,6 +124,8 @@ src/
     en.json
   utils/
     grid.js
+    grid.test.js
+    presets.js
   App.jsx
   main.jsx
   styles.css
@@ -123,11 +133,10 @@ src/
 
 ## Next Useful Improvements
 
-- Add a maze generator
-- Add step-by-step mode
-- Add drag interaction for drawing many cells quickly
 - Add a case study for portfolio presentation
+- Add keyboard shortcuts for tools
+- Add optional step-by-step playback
 
 ## Status
 
-Current status: **functional MVP in development**
+Current status: **advanced functional MVP in development**
