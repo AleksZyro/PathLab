@@ -54,7 +54,8 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
 .hero-panel,
 .workspace,
 .panel,
-.board-card {
+.board-card,
+.onboarding-card {
   width: min(1420px, 100%);
   margin-inline: auto;
 }
@@ -70,6 +71,52 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
   border-radius: 28px;
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.language-switch {
+  display: inline-flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-strong);
+}
+
+.language-switch button {
+  min-width: 44px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: transparent;
+}
+
+.onboarding-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 22px;
+  padding: 22px 24px;
+  border: 1px solid rgba(103, 232, 249, 0.34);
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(124, 156, 255, 0.22), rgba(103, 232, 249, 0.12)), var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.onboarding-card h2 { margin-bottom: 8px; }
+.onboarding-card p { color: var(--muted); line-height: 1.6; }
+.onboarding-card ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--text);
+  line-height: 1.7;
 }
 
 .eyebrow {
@@ -199,13 +246,14 @@ button.primary {
 
 @media (max-width: 1080px) {
   .workspace { grid-template-columns: 1fr; }
-  .hero-panel { align-items: stretch; flex-direction: column; }
+  .hero-panel, .onboarding-card { align-items: stretch; flex-direction: column; }
+  .top-actions { justify-content: flex-start; }
   .theme-toggle { justify-self: start; }
 }
 
 @media (max-width: 640px) {
   .app { padding: 12px; }
-  .hero-panel, .panel, .board-card { border-radius: 18px; padding: 14px; }
+  .hero-panel, .panel, .board-card, .onboarding-card { border-radius: 18px; padding: 14px; }
   .grid { gap: 2px; }
   .cell { border-radius: 4px; }
 }
