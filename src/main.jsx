@@ -242,12 +242,12 @@ function App() {
   const [tool, setTool] = useState('wall');
   const [algorithm, setAlgorithm] = useState('bfs');
   const [theme, setTheme] = useState('dark');
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState('de');
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [speed, setSpeed] = useState(45);
   const [isRunning, setIsRunning] = useState(false);
   const dictionary = dictionaries[language];
-  const [statusMessage, setStatusMessage] = useState(dictionary.status.initial);
+  const [statusMessage, setStatusMessage] = useState(dictionaries.de.status.initial);
   const [stats, setStats] = useState({ visited: 0, pathLength: 0, runtime: 0 });
 
   const activeAlgorithm = useMemo(
@@ -314,7 +314,6 @@ function App() {
     setIsRunning(true);
     setShowOnboarding(false);
     setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
-    const startedAt = performance.now();
 
     let preparedGrid = null;
     setGrid((currentGrid) => {
@@ -323,7 +322,9 @@ function App() {
     });
 
     await wait(20);
+    const algorithmStartedAt = performance.now();
     const result = getSearchResult(algorithm, preparedGrid);
+    const algorithmRuntime = Math.max(1, Math.round(performance.now() - algorithmStartedAt));
     const delay = Math.max(5, BASE_DELAY - speed);
 
     for (const node of result.visitedOrder) {
@@ -336,8 +337,7 @@ function App() {
       await wait(Math.max(8, delay * 1.6));
     }
 
-    const runtime = Math.round(performance.now() - startedAt);
-    setStats({ visited: result.visitedOrder.length, pathLength: result.path.length, runtime });
+    setStats({ visited: result.visitedOrder.length, pathLength: result.path.length, runtime: algorithmRuntime });
     setStatusMessage(
       result.found
         ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.path.length })
