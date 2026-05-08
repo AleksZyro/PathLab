@@ -2,32 +2,41 @@
   "app": {
     "eyebrow": "Interactive pathfinding visualizer",
     "title": "PathLab",
-    "heroText": "Build walls, compare algorithms, and watch how a search moves from start to target.",
+    "heroText": "Draw walls and weighted terrain, move start and target, and compare how different algorithms search.",
     "lightMode": "Light mode",
     "darkMode": "Dark mode"
   },
   "onboarding": {
     "title": "Ready to explore?",
-    "text": "Draw walls on the board first, then start a pathfinding algorithm whenever you are ready.",
-    "steps": ["Click empty cells to draw walls", "Choose BFS, DFS, Dijkstra or A*", "Press Run visualization and watch the search"],
+    "text": "Draw walls or weighted terrain first. Then move start and target if needed and run an algorithm.",
+    "steps": ["Draw walls, water or mud", "Move start and target if needed", "Run one algorithm or compare all algorithms"],
     "dismiss": "Got it"
   },
   "controls": {
     "title": "Controls",
     "algorithm": "Algorithm",
-    "drawWalls": "Draw walls",
-    "erase": "Erase",
     "animationSpeed": "Animation speed",
     "run": "Run visualization",
     "running": "Running...",
+    "compare": "Compare all",
     "clearPath": "Clear path",
-    "clearWalls": "Clear walls",
+    "clearWalls": "Clear obstacles",
     "resetGrid": "Reset grid"
+  },
+  "tools": {
+    "wall": "Wall",
+    "water": "Water",
+    "mud": "Mud",
+    "erase": "Erase",
+    "start": "Set start",
+    "target": "Set target"
   },
   "legend": {
     "start": "Start",
     "target": "Target",
     "wall": "Wall",
+    "water": "Water (cost 5)",
+    "mud": "Mud (cost 10)",
     "visited": "Visited",
     "path": "Path",
     "empty": "Empty"
@@ -35,38 +44,53 @@
   "stats": {
     "visitedCells": "Visited cells",
     "pathCells": "Path cells",
-    "runtime": "Calculation",
+    "pathCost": "Path cost",
+    "calculation": "Calculation",
+    "animation": "Animation",
     "walls": "Walls"
+  },
+  "compare": {
+    "kicker": "Analysis",
+    "title": "Algorithm Comparison",
+    "algorithm": "Algorithm",
+    "found": "Found",
+    "visited": "Visited",
+    "length": "Length",
+    "cost": "Cost",
+    "ms": "ms",
+    "yes": "Yes",
+    "no": "No"
   },
   "status": {
     "initial": "Draw walls, choose an algorithm, then run the visualization.",
     "reset": "Grid reset. Ready for a new visualization.",
-    "wallsCleared": "Walls cleared.",
+    "wallsCleared": "Obstacles cleared.",
     "pathCleared": "Search result cleared.",
+    "compared": "All algorithms were compared on the same grid.",
     "searching": "{{algorithm}} is searching...",
-    "found": "{{algorithm}} found a path with {{count}} cells.",
+    "found": "{{algorithm}} found a path with {{count}} steps.",
     "notFound": "{{algorithm}} could not reach the target."
   },
   "tip": {
     "title": "Beginner tip",
-    "text": "Start with BFS. BFS spreads from the start like a water wave, which makes it easy to observe."
+    "text": "Place water or mud in the direct path. Then it becomes easier to see why Dijkstra and A* care about costs."
   },
   "algorithms": {
     "bfs": {
       "name": "BFS",
-      "description": "BFS searches in rings or layers around the start. It checks all nearby cells first, then cells that are farther away. On this grid, BFS reliably finds the shortest path."
+      "description": "BFS searches layer by layer and finds the shortest path by number of steps on a normal grid. It ignores weighted terrain, so it can miss the cheapest path."
     },
     "dfs": {
       "name": "DFS",
-      "description": "DFS goes as far as possible in one direction before backtracking. It can look less organized and does not always find the shortest path, but it clearly shows how depth-first search behaves."
+      "description": "DFS goes as far as possible in one direction first. It clearly shows depth-first behavior, but it does not guarantee the shortest or cheapest path."
     },
     "dijkstra": {
       "name": "Dijkstra",
-      "description": "Dijkstra always expands the cheapest known cell next. On this grid all moves cost the same, so it looks similar to BFS. It becomes especially important when paths have different costs."
+      "description": "Dijkstra always expands the cheapest known cell next. That lets it avoid water and mud when a longer route is cheaper overall."
     },
     "astar": {
       "name": "A*",
-      "description": "A* combines the path cost so far with an estimate toward the target. This usually makes A* search more directly than Dijkstra and visit fewer cells."
+      "description": "A* uses real costs like Dijkstra, but also estimates the direction to the target. This often makes it more focused and visit fewer cells."
     }
   }
 }

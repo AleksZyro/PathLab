@@ -2,32 +2,41 @@
   "app": {
     "eyebrow": "Interaktiver Wegfindungs-Visualizer",
     "title": "PathLab",
-    "heroText": "Zeichne Wände, vergleiche Algorithmen und beobachte, wie die Suche vom Start zum Ziel läuft.",
+    "heroText": "Zeichne Wände und schwierige Felder, verschiebe Start und Ziel und vergleiche, wie verschiedene Algorithmen suchen.",
     "lightMode": "Heller Modus",
     "darkMode": "Dunkler Modus"
   },
   "onboarding": {
     "title": "Bereit zum Testen?",
-    "text": "Zeichne zuerst Wände ins Feld und starte danach einen Wegfindungsalgorithmus, sobald du bereit bist.",
-    "steps": ["Klicke freie Felder an, um Wände zu zeichnen", "Wähle BFS, DFS, Dijkstra oder A* aus", "Drücke Visualisierung starten und beobachte die Suche"],
+    "text": "Zeichne zuerst Wände oder gewichtete Felder ins Grid. Danach kannst du Start und Ziel verschieben und einen Algorithmus starten.",
+    "steps": ["Wände, Wasser oder Schlamm einzeichnen", "Start und Ziel bei Bedarf neu setzen", "Algorithmus starten oder alle Algorithmen vergleichen"],
     "dismiss": "Verstanden"
   },
   "controls": {
     "title": "Steuerung",
     "algorithm": "Algorithmus",
-    "drawWalls": "Wände zeichnen",
-    "erase": "Löschen",
     "animationSpeed": "Animationsgeschwindigkeit",
     "run": "Visualisierung starten",
     "running": "Läuft...",
+    "compare": "Alle vergleichen",
     "clearPath": "Pfad löschen",
-    "clearWalls": "Wände löschen",
+    "clearWalls": "Hindernisse löschen",
     "resetGrid": "Grid zurücksetzen"
+  },
+  "tools": {
+    "wall": "Wand",
+    "water": "Wasser",
+    "mud": "Schlamm",
+    "erase": "Löschen",
+    "start": "Start setzen",
+    "target": "Ziel setzen"
   },
   "legend": {
     "start": "Start",
     "target": "Ziel",
     "wall": "Wand",
+    "water": "Wasser (Kosten 5)",
+    "mud": "Schlamm (Kosten 10)",
     "visited": "Besucht",
     "path": "Pfad",
     "empty": "Leer"
@@ -35,38 +44,53 @@
   "stats": {
     "visitedCells": "Besuchte Felder",
     "pathCells": "Pfadfelder",
-    "runtime": "Berechnung",
+    "pathCost": "Pfadkosten",
+    "calculation": "Berechnung",
+    "animation": "Animation",
     "walls": "Wände"
+  },
+  "compare": {
+    "kicker": "Analyse",
+    "title": "Algorithmus-Vergleich",
+    "algorithm": "Algorithmus",
+    "found": "Gefunden",
+    "visited": "Besucht",
+    "length": "Länge",
+    "cost": "Kosten",
+    "ms": "ms",
+    "yes": "Ja",
+    "no": "Nein"
   },
   "status": {
     "initial": "Zeichne Wände, wähle einen Algorithmus und starte die Visualisierung.",
     "reset": "Grid zurückgesetzt. Bereit für eine neue Visualisierung.",
-    "wallsCleared": "Wände gelöscht.",
+    "wallsCleared": "Hindernisse gelöscht.",
     "pathCleared": "Suchergebnis gelöscht.",
+    "compared": "Alle Algorithmen wurden auf demselben Grid verglichen.",
     "searching": "{{algorithm}} sucht...",
-    "found": "{{algorithm}} hat einen Pfad mit {{count}} Feldern gefunden.",
+    "found": "{{algorithm}} hat einen Pfad mit {{count}} Schritten gefunden.",
     "notFound": "{{algorithm}} konnte das Ziel nicht erreichen."
   },
   "tip": {
     "title": "Tipp für Anfänger",
-    "text": "Starte mit BFS. BFS breitet sich wie eine Wasserwelle vom Start aus und ist deshalb sehr leicht zu beobachten."
+    "text": "Setze Wasser oder Schlamm in den direkten Weg. Dann sieht man besser, warum Dijkstra und A* Kosten beachten."
   },
   "algorithms": {
     "bfs": {
       "name": "BFS",
-      "description": "BFS sucht in Kreisen bzw. Schichten vom Start aus. Zuerst werden alle Felder in der Nähe geprüft, danach die weiter entfernten. Dadurch findet BFS auf diesem Grid zuverlässig den kürzesten Weg."
+      "description": "BFS sucht Schicht für Schicht und findet auf einem normalen Grid den kürzesten Weg nach Anzahl Schritten. Gewichtete Felder ignoriert BFS aber, deshalb kann der billigste Weg verpasst werden."
     },
     "dfs": {
       "name": "DFS",
-      "description": "DFS läuft zuerst so weit wie möglich in eine Richtung und geht erst zurück, wenn es nicht mehr weiterkommt. Das wirkt manchmal chaotischer und findet nicht immer den kürzesten Weg, zeigt aber gut, wie Tiefensuche funktioniert."
+      "description": "DFS geht zuerst so weit wie möglich in eine Richtung. Das zeigt Tiefensuche gut, ist aber weder für den kürzesten noch für den günstigsten Weg garantiert."
     },
     "dijkstra": {
       "name": "Dijkstra",
-      "description": "Dijkstra sucht immer vom aktuell günstigsten bekannten Feld weiter. Auf diesem Grid sind alle Schritte gleich teuer, deshalb sieht Dijkstra ähnlich wie BFS aus. Der Algorithmus ist besonders wichtig, wenn Wege verschiedene Kosten haben."
+      "description": "Dijkstra sucht immer vom bisher günstigsten bekannten Feld weiter. Dadurch kann er Wasser und Schlamm vermeiden, wenn ein längerer Weg insgesamt günstiger ist."
     },
     "astar": {
       "name": "A*",
-      "description": "A* kombiniert bisherige Wegkosten mit einer Schätzung in Richtung Ziel. Dadurch sucht A* meistens zielgerichteter als Dijkstra und besucht oft weniger Felder."
+      "description": "A* nutzt wie Dijkstra echte Kosten, aber zusätzlich eine Schätzung Richtung Ziel. Dadurch ist A* oft zielgerichteter und besucht weniger Felder."
     }
   }
 }
