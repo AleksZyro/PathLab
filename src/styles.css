@@ -7,6 +7,7 @@
 body { margin: 0; }
 button, select, input { font: inherit; }
 button { cursor: pointer; }
+button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity: 0.58; }
 
 .app {
   min-height: 100vh;
@@ -25,6 +26,8 @@ button { cursor: pointer; }
   --accent-2: #67e8f9;
   --wall: #334155;
   --empty: rgba(148, 163, 184, 0.14);
+  --visited: #38bdf8;
+  --path: #facc15;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
   background: radial-gradient(circle at top left, rgba(124, 156, 255, 0.24), transparent 36%), linear-gradient(135deg, #080b17, #11182f 55%, #0e1528);
   color: var(--text);
@@ -41,6 +44,8 @@ button { cursor: pointer; }
   --accent-2: #0891b2;
   --wall: #334155;
   --empty: rgba(37, 99, 235, 0.08);
+  --visited: #0ea5e9;
+  --path: #eab308;
   --shadow: 0 24px 70px rgba(37, 99, 235, 0.13);
   background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 36%), linear-gradient(135deg, #f8fbff, #edf4ff 55%, #f7f9fd);
   color: var(--text);
@@ -124,6 +129,15 @@ button.primary {
   color: white;
   border-color: transparent;
 }
+.status-message {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-strong);
+  color: var(--muted);
+  padding: 12px;
+  line-height: 1.5;
+}
 
 .legend {
   display: flex;
@@ -138,6 +152,8 @@ button.primary {
 .legend-dot.start { background: #22c55e; }
 .legend-dot.target { background: #ef4444; }
 .legend-dot.wall { background: var(--wall); }
+.legend-dot.visited { background: var(--visited); }
+.legend-dot.path { background: var(--path); }
 .legend-dot.empty { background: var(--empty); }
 
 .grid {
@@ -153,12 +169,14 @@ button.primary {
   border-radius: 6px;
   background: var(--empty);
   padding: 0;
-  transition: transform 0.1s ease, background 0.1s ease;
+  transition: transform 0.1s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
-.cell:hover { transform: scale(1.08); }
+.cell:hover:not(:disabled) { transform: scale(1.08); }
 .cell.start { background: #22c55e; box-shadow: 0 0 14px rgba(34, 197, 94, 0.5); }
 .cell.target { background: #ef4444; box-shadow: 0 0 14px rgba(239, 68, 68, 0.5); }
 .cell.wall { background: var(--wall); }
+.cell.visited { background: var(--visited); box-shadow: 0 0 12px rgba(56, 189, 248, 0.35); }
+.cell.path { background: var(--path); box-shadow: 0 0 12px rgba(250, 204, 21, 0.45); }
 
 .info-panel p { color: var(--muted); line-height: 1.65; }
 .stats-grid {
