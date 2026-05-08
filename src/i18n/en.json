@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "Interactive pathfinding visualizer",
+    "title": "PathLab",
+    "heroText": "Build walls, compare algorithms, and watch how a search moves from start to target.",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "onboarding": {
+    "title": "Ready to explore?",
+    "text": "Draw the walls and start the path algorithm as soon as you want.",
+    "steps": ["Draw walls on the grid", "Choose BFS, DFS, Dijkstra or A*", "Press Run visualization"],
+    "dismiss": "Got it"
+  },
+  "controls": {
+    "title": "Controls",
+    "algorithm": "Algorithm",
+    "drawWalls": "Draw walls",
+    "erase": "Erase",
+    "animationSpeed": "Animation speed",
+    "run": "Run visualization",
+    "running": "Running...",
+    "clearPath": "Clear path",
+    "clearWalls": "Clear walls",
+    "resetGrid": "Reset grid"
+  },
+  "legend": {
+    "start": "Start",
+    "target": "Target",
+    "wall": "Wall",
+    "visited": "Visited",
+    "path": "Path",
+    "empty": "Empty"
+  },
+  "stats": {
+    "visitedCells": "Visited cells",
+    "pathCells": "Path cells",
+    "runtime": "Runtime",
+    "walls": "Walls"
+  },
+  "status": {
+    "initial": "Draw walls, choose an algorithm, then run the visualization.",
+    "reset": "Grid reset. Ready for a new visualization.",
+    "wallsCleared": "Walls cleared.",
+    "pathCleared": "Search result cleared.",
+    "searching": "{{algorithm}} is searching...",
+    "found": "{{algorithm}} found a path with {{count}} cells.",
+    "notFound": "{{algorithm}} could not reach the target."
+  },
+  "tip": {
+    "title": "Beginner tip",
+    "text": "Start with BFS, draw a few walls, then compare the behavior with DFS."
+  },
+  "algorithms": {
+    "bfs": {
+      "name": "BFS",
+      "description": "Explores layer by layer and guarantees the shortest path on an unweighted grid."
+    },
+    "dfs": {
+      "name": "DFS",
+      "description": "Goes deep into one direction first. It is useful to understand search behavior, but not always shortest."
+    },
+    "dijkstra": {
+      "name": "Dijkstra",
+      "description": "Finds the shortest path by expanding the cheapest known cells first."
+    },
+    "astar": {
+      "name": "A*",
+      "description": "Uses a heuristic to search toward the target more directly."
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "Interaktiver Wegfindungs-Visualizer",
+    "title": "PathLab",
+    "heroText": "Zeichne Wände, vergleiche Algorithmen und beobachte, wie die Suche vom Start zum Ziel läuft.",
+    "lightMode": "Heller Modus",
+    "darkMode": "Dunkler Modus"
+  },
+  "onboarding": {
+    "title": "Bereit zum Testen?",
+    "text": "Zeichne die Wände und starte den Wegfindungsalgorithmus, sobald du möchtest.",
+    "steps": ["Wände im Grid zeichnen", "BFS, DFS, Dijkstra oder A* auswählen", "Run visualization drücken"],
+    "dismiss": "Verstanden"
+  },
+  "controls": {
+    "title": "Steuerung",
+    "algorithm": "Algorithmus",
+    "drawWalls": "Wände zeichnen",
+    "erase": "Löschen",
+    "animationSpeed": "Animationsgeschwindigkeit",
+    "run": "Visualisierung starten",
+    "running": "Läuft...",
+    "clearPath": "Pfad löschen",
+    "clearWalls": "Wände löschen",
+    "resetGrid": "Grid zurücksetzen"
+  },
+  "legend": {
+    "start": "Start",
+    "target": "Ziel",
+    "wall": "Wand",
+    "visited": "Besucht",
+    "path": "Pfad",
+    "empty": "Leer"
+  },
+  "stats": {
+    "visitedCells": "Besuchte Felder",
+    "pathCells": "Pfadfelder",
+    "runtime": "Laufzeit",
+    "walls": "Wände"
+  },
+  "status": {
+    "initial": "Zeichne Wände, wähle einen Algorithmus und starte die Visualisierung.",
+    "reset": "Grid zurückgesetzt. Bereit für eine neue Visualisierung.",
+    "wallsCleared": "Wände gelöscht.",
+    "pathCleared": "Suchergebnis gelöscht.",
+    "searching": "{{algorithm}} sucht...",
+    "found": "{{algorithm}} hat einen Pfad mit {{count}} Feldern gefunden.",
+    "notFound": "{{algorithm}} konnte das Ziel nicht erreichen."
+  },
+  "tip": {
+    "title": "Tipp für Anfänger",
+    "text": "Starte mit BFS, zeichne ein paar Wände und vergleiche danach das Verhalten mit DFS."
+  },
+  "algorithms": {
+    "bfs": {
+      "name": "BFS",
+      "description": "Sucht Schicht für Schicht und findet auf einem ungewichteten Grid garantiert den kürzesten Weg."
+    },
+    "dfs": {
+      "name": "DFS",
+      "description": "Geht zuerst tief in eine Richtung. Das ist gut zum Verstehen des Suchverhaltens, aber nicht immer der kürzeste Weg."
+    },
+    "dijkstra": {
+      "name": "Dijkstra",
+      "description": "Findet den kürzesten Weg, indem zuerst die günstigsten bekannten Felder erweitert werden."
+    },
+    "astar": {
+      "name": "A*",
+      "description": "Nutzt eine Schätzung in Richtung Ziel und sucht dadurch oft direkter."
+    }
+  }
+}
