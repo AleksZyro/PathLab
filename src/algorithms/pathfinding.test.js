@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { runAStar, runBfs, runDijkstra, runDfs } from './pathfinding.js';
-import { createGrid, setCellType } from '../utils/grid.js';
+import { ROWS, createGrid, setCellType } from '../utils/grid.js';
 
 const start = { row: 0, col: 0 };
 const target = { row: 0, col: 4 };
@@ -54,18 +54,10 @@ describe('pathfinding algorithms', () => {
     expect(astar.pathCost).toBe(dijkstra.pathCost);
   });
 
-  it('returns no path when the target is blocked', () => {
+  it('returns no path when a full wall separates start and target', () => {
     let grid = gridWithStartAndTarget();
-    grid = setCells(
-      grid,
-      [
-        { row: 0, col: 3 },
-        { row: 1, col: 4 },
-        { row: 1, col: 3 },
-        { row: 1, col: 5 }
-      ],
-      'wall'
-    );
+    const wallColumn = Array.from({ length: ROWS }, (_, row) => ({ row, col: 2 }));
+    grid = setCells(grid, wallColumn, 'wall');
 
     const result = runBfs(grid, start, target);
 
