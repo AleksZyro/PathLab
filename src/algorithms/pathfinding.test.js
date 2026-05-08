@@ -56,7 +56,16 @@ describe('pathfinding algorithms', () => {
 
   it('returns no path when the target is blocked', () => {
     let grid = gridWithStartAndTarget();
-    grid = setCells(grid, [{ row: 0, col: 3 }, { row: 1, col: 4 }], 'wall');
+    grid = setCells(
+      grid,
+      [
+        { row: 0, col: 3 },
+        { row: 1, col: 4 },
+        { row: 1, col: 3 },
+        { row: 1, col: 5 }
+      ],
+      'wall'
+    );
 
     const result = runBfs(grid, start, target);
 
