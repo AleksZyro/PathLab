@@ -9,25 +9,38 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, onCellAct
   const [lastPaintedCell, setLastPaintedCell] = useState(null);
   const isBrushTool = brushTools.includes(tool);
 
-  const paintCell = (cell, options) => {
-    const key = `${cell.row}-${cell.col}`;
+  const paintCell = (row, col, options) => {
+    const key = `${row}-${col}`;
     if (lastPaintedCell === key && !options.commitHistory) return;
     setLastPaintedCell(key);
-    onCellAction(cell.row, cell.col, options);
+    onCellAction(row, col, options);
+  };
+
+  const getCellFromPointer = (event) => {
+    const element = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-grid-cell="true"]');
+    if (!element) return null;
+    return {
+      row: Number(element.dataset.row),
+      col: Number(element.dataset.col)
+    };
   };
 
   const handlePointerDown = (event, cell) => {
     if (isRunning) return;
     event.preventDefault();
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-    setIsPainting(isBrushTool);
-    paintCell(cell, { commitHistory: true });
+
+    const shouldBrush = isBrushTool && event.ctrlKey && event.button === 0;
+    setIsPainting(shouldBrush);
+    paintCell(cell.row, cell.col, { commitHistory: true });
   };
 
-  const handlePointerOver = (event, cell) => {
+  const handlePointerMove = (event, cell) => {
     onHoverCell(cell);
-    if (!isBrushTool || !isPainting || event.buttons !== 1 || isRunning) return;
-    paintCell(cell, { commitHistory: false });
+    if (!isPainting || !isBrushTool || event.buttons !== 1 || !event.ctrlKey || isRunning) return;
+
+    const pointedCell = getCellFromPointer(event);
+    if (!pointedCell) return;
+    paintCell(pointedCell.row, pointedCell.col, { commitHistory: false });
   };
 
   const stopPainting = () => {
@@ -47,12 +60,14 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, onCellAct
         {grid.flat().map((cell) => (
           <button
             key={`${cell.row}-${cell.col}`}
+            data-grid-cell="true"
+            data-row={cell.row}
+            data-col={cell.col}
             className={`cell ${cell.type}`}
             aria-label={`${cell.type} cell at row ${cell.row + 1}, column ${cell.col + 1}`}
             disabled={isRunning}
             onPointerDown={(event) => handlePointerDown(event, cell)}
-            onPointerOver={(event) => handlePointerOver(event, cell)}
-            onPointerMove={() => onHoverCell(cell)}
+            onPointerMove={(event) => handlePointerMove(event, cell)}
           />
         ))}
       </div>
