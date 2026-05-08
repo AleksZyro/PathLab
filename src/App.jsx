@@ -8,6 +8,7 @@ import Onboarding from './components/Onboarding.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
+import { createPreset } from './utils/presets.js';
 import {
   DEFAULT_START,
   DEFAULT_TARGET,
@@ -22,7 +23,12 @@ import {
 
 const dictionaries = { de, en };
 const BASE_DELAY = 120;
-const emptyStats = { visited: 0, pathLength: 0, pathCost: 0, calculationMs: 0, animationMs: 0 };
+const emptyBreakdown = {
+  normal: { count: 0, cost: 0 },
+  water: { count: 0, cost: 0 },
+  mud: { count: 0, cost: 0 }
+};
+const emptyStats = { visited: 0, pathLength: 0, pathCost: 0, calculationMs: 0, animationMs: 0, costBreakdown: emptyBreakdown };
 
 function translate(template, values = {}) {
   return Object.entries(values).reduce(
@@ -35,6 +41,10 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function createSnapshot(grid, startNode, targetNode) {
+  return { grid, startNode, targetNode };
+}
+
 export default function App() {
   const [language, setLanguage] = useState('de');
   const dictionary = dictionaries[language];
@@ -44,12 +54,17 @@ export default function App() {
   const [grid, setGrid] = useState(() => createGrid(DEFAULT_START, DEFAULT_TARGET));
   const [tool, setTool] = useState('wall');
   const [algorithm, setAlgorithm] = useState('bfs');
+  const [preset, setPreset] = useState('custom');
   const [speed, setSpeed] = useState(45);
   const [isRunning, setIsRunning] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [statusMessage, setStatusMessage] = useState(dictionaries.de.status.initial);
   const [stats, setStats] = useState(emptyStats);
   const [comparisonRows, setComparisonRows] = useState([]);
+  const [hoveredCell, setHoveredCell] = useState(null);
+  const [liveExplanation, setLiveExplanation] = useState(dictionaries.de.live.ready);
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
 
   const activeAlgorithm = useMemo(
     () => ({ id: algorithm, ...dictionary.algorithms[algorithm] }),
@@ -58,50 +73,107 @@ export default function App() {
 
   const wallCount = useMemo(() => countCells(grid, 'wall'), [grid]);
 
+  const pushHistory = (snapshot) => {
+    setUndoStack((current) => [...current.slice(-24), snapshot]);
+    setRedoStack([]);
+  };
+
+  const restoreSnapshot = (snapshot) => {
+    setGrid(snapshot.grid);
+    setStartNode(snapshot.startNode);
+    setTargetNode(snapshot.targetNode);
+    setStats(emptyStats);
+    setComparisonRows([]);
+  };
+
   const switchLanguage = (nextLanguage) => {
     setLanguage(nextLanguage);
     setStatusMessage(dictionaries[nextLanguage].status.initial);
+    setLiveExplanation(dictionaries[nextLanguage].live.ready);
   };
 
-  const updateCell = (row, col) => {
-    if (isRunning) return;
+  const applyCellEdit = (currentGrid, row, col) => {
     const selectedNode = { row, col };
+    const clearedGrid = cloneGridWithClearedSearch(currentGrid);
+    const selectedCell = clearedGrid[row][col];
 
-    setGrid((currentGrid) => {
-      const clearedGrid = cloneGridWithClearedSearch(currentGrid);
-      const selectedCell = clearedGrid[row][col];
+    if (tool === 'start') {
+      if (sameNode(selectedNode, targetNode) || selectedCell.type === 'wall') return { nextGrid: clearedGrid };
+      setStartNode(selectedNode);
+      return { nextGrid: moveSpecialNode(clearedGrid, startNode, selectedNode, 'start') };
+    }
 
-      if (tool === 'start') {
-        if (sameNode(selectedNode, targetNode) || selectedCell.type === 'wall') return clearedGrid;
-        setStartNode(selectedNode);
-        return moveSpecialNode(clearedGrid, startNode, selectedNode, 'start');
-      }
+    if (tool === 'target') {
+      if (sameNode(selectedNode, startNode) || selectedCell.type === 'wall') return { nextGrid: clearedGrid };
+      setTargetNode(selectedNode);
+      return { nextGrid: moveSpecialNode(clearedGrid, targetNode, selectedNode, 'target') };
+    }
 
-      if (tool === 'target') {
-        if (sameNode(selectedNode, startNode) || selectedCell.type === 'wall') return clearedGrid;
-        setTargetNode(selectedNode);
-        return moveSpecialNode(clearedGrid, targetNode, selectedNode, 'target');
-      }
+    if (isBlockedForSpecialTool(selectedCell)) return { nextGrid: clearedGrid };
 
-      if (isBlockedForSpecialTool(selectedCell)) return clearedGrid;
-
-      return clearedGrid.map((gridRow) =>
+    return {
+      nextGrid: clearedGrid.map((gridRow) =>
         gridRow.map((cell) => {
           if (cell.row !== row || cell.col !== col) return cell;
           if (tool === 'erase') return { ...cell, type: 'empty' };
           return { ...cell, type: tool };
         })
-      );
-    });
+      )
+    };
+  };
 
+  const updateCell = (row, col, options = { commitHistory: true }) => {
+    if (isRunning) return;
+    if (options.commitHistory) pushHistory(createSnapshot(grid, startNode, targetNode));
+
+    setGrid((currentGrid) => applyCellEdit(currentGrid, row, col).nextGrid);
+    setPreset('custom');
     setComparisonRows([]);
+    setStats(emptyStats);
+  };
+
+  const undo = () => {
+    if (!undoStack.length || isRunning) return;
+    const previous = undoStack.at(-1);
+    setUndoStack((current) => current.slice(0, -1));
+    setRedoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
+    restoreSnapshot(previous);
+    setStatusMessage(dictionary.status.undo);
+  };
+
+  const redo = () => {
+    if (!redoStack.length || isRunning) return;
+    const next = redoStack.at(-1);
+    setRedoStack((current) => current.slice(0, -1));
+    setUndoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
+    restoreSnapshot(next);
+    setStatusMessage(dictionary.status.redo);
+  };
+
+  const loadPreset = (presetId) => {
+    if (isRunning) return;
+    if (presetId === 'custom') {
+      setPreset('custom');
+      return;
+    }
+    pushHistory(createSnapshot(grid, startNode, targetNode));
+    const nextPreset = createPreset(presetId);
+    setGrid(nextPreset.grid);
+    setStartNode(nextPreset.start);
+    setTargetNode(nextPreset.target);
+    setPreset(presetId);
+    setStats(emptyStats);
+    setComparisonRows([]);
+    setStatusMessage(translate(dictionary.status.presetLoaded, { preset: dictionary.presets[presetId] }));
   };
 
   const resetGrid = () => {
     if (isRunning) return;
+    pushHistory(createSnapshot(grid, startNode, targetNode));
     setStartNode(DEFAULT_START);
     setTargetNode(DEFAULT_TARGET);
     setGrid(createGrid(DEFAULT_START, DEFAULT_TARGET));
+    setPreset('custom');
     setStats(emptyStats);
     setComparisonRows([]);
     setStatusMessage(dictionary.status.reset);
@@ -109,11 +181,13 @@ export default function App() {
 
   const clearWalls = () => {
     if (isRunning) return;
+    pushHistory(createSnapshot(grid, startNode, targetNode));
     setGrid((currentGrid) =>
       cloneGridWithClearedSearch(currentGrid).map((gridRow) =>
         gridRow.map((cell) => (['wall', 'water', 'mud'].includes(cell.type) ? { ...cell, type: 'empty' } : cell))
       )
     );
+    setPreset('custom');
     setComparisonRows([]);
     setStatusMessage(dictionary.status.wallsCleared);
   };
@@ -131,6 +205,7 @@ export default function App() {
     setIsRunning(true);
     setShowOnboarding(false);
     setComparisonRows([]);
+    setLiveExplanation(dictionary.live[algorithm]);
     setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
 
     let preparedGrid = null;
@@ -160,13 +235,15 @@ export default function App() {
       pathLength: result.pathLength,
       pathCost: result.pathCost,
       calculationMs: result.calculationMs,
-      animationMs
+      animationMs,
+      costBreakdown: result.costBreakdown
     });
     setStatusMessage(
       result.found
         ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.pathLength })
         : translate(dictionary.status.notFound, { algorithm: activeAlgorithm.name })
     );
+    setLiveExplanation(result.found ? dictionary.live.done : dictionary.live.noPath);
     setIsRunning(false);
   };
 
@@ -213,19 +290,40 @@ export default function App() {
           algorithm={algorithm}
           tool={tool}
           speed={speed}
+          preset={preset}
           isRunning={isRunning}
+          canUndo={undoStack.length > 0}
+          canRedo={redoStack.length > 0}
           statusMessage={statusMessage}
           onAlgorithmChange={setAlgorithm}
           onToolChange={setTool}
           onSpeedChange={setSpeed}
+          onPresetChange={loadPreset}
           onRun={visualize}
           onCompare={compareAlgorithms}
+          onUndo={undo}
+          onRedo={redo}
           onClearPath={clearPath}
           onClearWalls={clearWalls}
           onReset={resetGrid}
         />
-        <GridBoard dictionary={dictionary} grid={grid} isRunning={isRunning} onCellClick={updateCell} />
-        <StatsPanel dictionary={dictionary} activeAlgorithm={activeAlgorithm} stats={stats} wallCount={wallCount} />
+        <GridBoard
+          dictionary={dictionary}
+          grid={grid}
+          tool={tool}
+          isRunning={isRunning}
+          onCellAction={updateCell}
+          onHoverCell={setHoveredCell}
+          onLeaveGrid={() => setHoveredCell(null)}
+        />
+        <StatsPanel
+          dictionary={dictionary}
+          activeAlgorithm={activeAlgorithm}
+          stats={stats}
+          wallCount={wallCount}
+          hoveredCell={hoveredCell}
+          liveExplanation={liveExplanation}
+        />
       </section>
 
       <ComparePanel dictionary={dictionary} rows={comparisonRows} />

@@ -8,20 +8,31 @@
   },
   "onboarding": {
     "title": "Ready to explore?",
-    "text": "Draw walls or weighted terrain first. Then move start and target if needed and run an algorithm.",
-    "steps": ["Draw walls, water or mud", "Move start and target if needed", "Run one algorithm or compare all algorithms"],
+    "text": "Hold the mouse button and drag across the grid to paint walls, water, or mud like a brush.",
+    "steps": ["Paint walls, water, or mud with drag drawing", "Move start and target if needed", "Run one algorithm or compare all algorithms"],
     "dismiss": "Got it"
   },
   "controls": {
     "title": "Controls",
     "algorithm": "Algorithm",
+    "preset": "Load example",
     "animationSpeed": "Animation speed",
     "run": "Run visualization",
     "running": "Running...",
     "compare": "Compare all",
+    "undo": "Undo",
+    "redo": "Redo",
     "clearPath": "Clear path",
     "clearWalls": "Clear obstacles",
     "resetGrid": "Reset grid"
+  },
+  "presets": {
+    "custom": "Custom grid",
+    "simple": "Simple route",
+    "waterBarrier": "Water barrier",
+    "mudTrap": "Mud trap",
+    "noPath": "No possible path",
+    "astarDemo": "A* vs Dijkstra demo"
   },
   "tools": {
     "wall": "Wall",
@@ -49,6 +60,29 @@
     "animation": "Animation",
     "walls": "Walls"
   },
+  "live": {
+    "title": "What is happening?",
+    "ready": "Draw obstacles or load an example. Then start the search.",
+    "bfs": "BFS spreads in layers from the start and searches for the smallest number of steps.",
+    "dfs": "DFS follows one route as deeply as possible before backtracking.",
+    "dijkstra": "Dijkstra always chooses the cheapest known cell and considers water and mud costs.",
+    "astar": "A* uses real costs and an estimate toward the target to search more directly.",
+    "done": "The search is complete. Yellow shows the final path.",
+    "noPath": "The search is complete, but no reachable path exists."
+  },
+  "hover": {
+    "title": "Cell info",
+    "type": "Type",
+    "cost": "Cost",
+    "position": "Position",
+    "empty": "Move the mouse over a cell."
+  },
+  "cost": {
+    "title": "Path cost breakdown",
+    "normal": "Normal",
+    "water": "Water",
+    "mud": "Mud"
+  },
   "compare": {
     "kicker": "Analysis",
     "title": "Algorithm Comparison",
@@ -58,6 +92,11 @@
     "length": "Length",
     "cost": "Cost",
     "ms": "ms",
+    "highlights": "Highlights",
+    "bestCost": "Best cost",
+    "shortestPath": "Shortest path",
+    "fewestVisited": "Fewest visited",
+    "fastest": "Fastest calculation",
     "yes": "Yes",
     "no": "No"
   },
@@ -67,6 +106,9 @@
     "wallsCleared": "Obstacles cleared.",
     "pathCleared": "Search result cleared.",
     "compared": "All algorithms were compared on the same grid.",
+    "undo": "Last change undone.",
+    "redo": "Change restored.",
+    "presetLoaded": "Example loaded: {{preset}}.",
     "searching": "{{algorithm}} is searching...",
     "found": "{{algorithm}} found a path with {{count}} steps.",
     "notFound": "{{algorithm}} could not reach the target."
@@ -76,21 +118,9 @@
     "text": "Place water or mud in the direct path. Then it becomes easier to see why Dijkstra and A* care about costs."
   },
   "algorithms": {
-    "bfs": {
-      "name": "BFS",
-      "description": "BFS searches layer by layer and finds the shortest path by number of steps on a normal grid. It ignores weighted terrain, so it can miss the cheapest path."
-    },
-    "dfs": {
-      "name": "DFS",
-      "description": "DFS goes as far as possible in one direction first. It clearly shows depth-first behavior, but it does not guarantee the shortest or cheapest path."
-    },
-    "dijkstra": {
-      "name": "Dijkstra",
-      "description": "Dijkstra always expands the cheapest known cell next. That lets it avoid water and mud when a longer route is cheaper overall."
-    },
-    "astar": {
-      "name": "A*",
-      "description": "A* uses real costs like Dijkstra, but also estimates the direction to the target. This often makes it more focused and visit fewer cells."
-    }
+    "bfs": { "name": "BFS", "description": "BFS searches layer by layer and finds the shortest path by number of steps on a normal grid. It ignores weighted terrain, so it can miss the cheapest path." },
+    "dfs": { "name": "DFS", "description": "DFS goes as far as possible in one direction first. It clearly shows depth-first behavior, but it does not guarantee the shortest or cheapest path." },
+    "dijkstra": { "name": "Dijkstra", "description": "Dijkstra always expands the cheapest known cell next. That lets it avoid water and mud when a longer route is cheaper overall." },
+    "astar": { "name": "A*", "description": "A* uses real costs like Dijkstra, but also estimates the direction to the target. This often makes it more focused and visit fewer cells." }
   }
 }
