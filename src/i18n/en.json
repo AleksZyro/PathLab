@@ -26,6 +26,14 @@
     "clearWalls": "Clear obstacles",
     "resetGrid": "Reset grid"
   },
+  "actions": {
+    "kicker": "Actions",
+    "title": "Run and reset"
+  },
+  "brush": {
+    "title": "Brush mode",
+    "text": "Hold the mouse button and drag across the grid. Start and target are still placed with single clicks."
+  },
   "presets": {
     "custom": "Custom grid",
     "simple": "Simple route",

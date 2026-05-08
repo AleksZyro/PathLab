@@ -47,11 +47,6 @@ export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCou
           <CostLine label={dictionary.cost.mud} entry={stats.costBreakdown.mud} multiplier={10} />
         </ul>
       </div>
-
-      <div className="tip-box">
-        <strong>{dictionary.tip.title}</strong>
-        <p>{dictionary.tip.text}</p>
-      </div>
     </aside>
   );
 }

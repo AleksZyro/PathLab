@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { algorithmIds, measureAlgorithm } from './algorithms/pathfinding.js';
+import ActionPanel from './components/ActionPanel.jsx';
 import Controls from './components/Controls.jsx';
 import ComparePanel from './components/ComparePanel.jsx';
 import GridBoard from './components/GridBoard.jsx';
@@ -292,30 +293,36 @@ export default function App() {
           speed={speed}
           preset={preset}
           isRunning={isRunning}
-          canUndo={undoStack.length > 0}
-          canRedo={redoStack.length > 0}
-          statusMessage={statusMessage}
           onAlgorithmChange={setAlgorithm}
           onToolChange={setTool}
           onSpeedChange={setSpeed}
           onPresetChange={loadPreset}
-          onRun={visualize}
-          onCompare={compareAlgorithms}
-          onUndo={undo}
-          onRedo={redo}
-          onClearPath={clearPath}
-          onClearWalls={clearWalls}
-          onReset={resetGrid}
         />
-        <GridBoard
-          dictionary={dictionary}
-          grid={grid}
-          tool={tool}
-          isRunning={isRunning}
-          onCellAction={updateCell}
-          onHoverCell={setHoveredCell}
-          onLeaveGrid={() => setHoveredCell(null)}
-        />
+        <div className="board-column">
+          <GridBoard
+            dictionary={dictionary}
+            grid={grid}
+            tool={tool}
+            isRunning={isRunning}
+            onCellAction={updateCell}
+            onHoverCell={setHoveredCell}
+            onLeaveGrid={() => setHoveredCell(null)}
+          />
+          <ActionPanel
+            dictionary={dictionary}
+            isRunning={isRunning}
+            canUndo={undoStack.length > 0}
+            canRedo={redoStack.length > 0}
+            statusMessage={statusMessage}
+            onRun={visualize}
+            onCompare={compareAlgorithms}
+            onUndo={undo}
+            onRedo={redo}
+            onClearPath={clearPath}
+            onClearWalls={clearWalls}
+            onReset={resetGrid}
+          />
+        </div>
         <StatsPanel
           dictionary={dictionary}
           activeAlgorithm={activeAlgorithm}

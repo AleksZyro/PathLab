@@ -1,7 +1,7 @@
 import { algorithmIds } from '../algorithms/pathfinding.js';
 import { presetIds } from '../utils/presets.js';
 
-export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, canUndo, canRedo, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange, onRun, onCompare, onUndo, onRedo, onClearPath, onClearWalls, onReset, statusMessage }) {
+export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {
   return (
     <aside className="panel controls-panel">
       <h2>{dictionary.controls.title}</h2>
@@ -33,22 +33,20 @@ export default function Controls({ dictionary, algorithm, tool, speed, preset, i
         ))}
       </div>
 
+      <div className="helper-card brush-card">
+        <strong>{dictionary.brush.title}</strong>
+        <p>{dictionary.brush.text}</p>
+      </div>
+
+      <div className="helper-card tip-card compact-tip">
+        <strong>{dictionary.tip.title}</strong>
+        <p>{dictionary.tip.text}</p>
+      </div>
+
       <label>
         {dictionary.controls.animationSpeed}
         <input disabled={isRunning} type="range" min="1" max="100" value={speed} onChange={(event) => onSpeedChange(Number(event.target.value))} />
       </label>
-
-      <div className="action-grid">
-        <button className="primary" disabled={isRunning} onClick={onRun}>{isRunning ? dictionary.controls.running : dictionary.controls.run}</button>
-        <button disabled={isRunning} onClick={onCompare}>{dictionary.controls.compare}</button>
-        <button disabled={isRunning || !canUndo} onClick={onUndo}>{dictionary.controls.undo}</button>
-        <button disabled={isRunning || !canRedo} onClick={onRedo}>{dictionary.controls.redo}</button>
-        <button disabled={isRunning} onClick={onClearPath}>{dictionary.controls.clearPath}</button>
-        <button disabled={isRunning} onClick={onClearWalls}>{dictionary.controls.clearWalls}</button>
-        <button disabled={isRunning} onClick={onReset}>{dictionary.controls.resetGrid}</button>
-      </div>
-
-      <p className="status-message">{statusMessage}</p>
     </aside>
   );
 }

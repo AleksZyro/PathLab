@@ -26,6 +26,14 @@
     "clearWalls": "Hindernisse löschen",
     "resetGrid": "Grid zurücksetzen"
   },
+  "actions": {
+    "kicker": "Aktionen",
+    "title": "Ausführen und zurücksetzen"
+  },
+  "brush": {
+    "title": "Pinselmodus",
+    "text": "Halte die Maustaste gedrückt und ziehe über das Grid. Start und Ziel setzt du weiterhin per Einzelklick."
+  },
   "presets": {
     "custom": "Eigenes Grid",
     "simple": "Einfacher Weg",
