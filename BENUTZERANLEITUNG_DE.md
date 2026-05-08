@@ -8,24 +8,31 @@ PathLab ist eine interaktive Website, die zeigt, wie ein Computer einen Weg von 
 
 Das Spielfeld besteht aus vielen kleinen Feldern. Einige Felder können Wände sein. Durch Wände darf der Algorithmus nicht laufen.
 
-## Was kann man damit lernen?
+## Was bedeuten die Farben?
 
-Mit PathLab kann man verstehen:
-
-- wie Wegfindung grundsätzlich funktioniert
-- wie verschiedene Algorithmen suchen
-- warum manche Algorithmen kürzere Wege finden
-- warum manche Algorithmen mehr Felder durchsuchen
-- wie Hindernisse die Suche verändern
+- Grün: Start
+- Rot: Ziel
+- Dunkelgrau: Wand
+- Blau: besuchtes Feld
+- Gelb: gefundener Pfad
+- Leeres Feld: frei begehbar
 
 ## Bedienung
 
-1. Algorithmus auswählen.
-2. Wände auf dem Grid zeichnen.
-3. Mit dem Geschwindigkeitsregler einstellen, wie schnell die Animation laufen soll.
-4. Auf **Run visualization** klicken.
-5. Beobachten, welche Felder besucht werden und welcher Pfad gefunden wird.
-6. Mit **Clear path**, **Clear walls** oder **Reset grid** wieder aufräumen.
+1. Zeichne zuerst Wände in das Grid.
+2. Wähle einen Algorithmus aus.
+3. Stelle die Geschwindigkeit ein.
+4. Klicke auf **Visualisierung starten**.
+5. Beobachte, wie sich die Suche ausbreitet.
+6. Am Ende zeigt der gelbe Pfad den gefundenen Weg.
+
+## Was misst die Zeit in ms?
+
+Die Zeit in Millisekunden misst nur die eigentliche Berechnung des Algorithmus.
+
+Die Animation wird absichtlich langsamer abgespielt, damit man die Suche sehen kann. Diese Wartezeit zählt nicht zur Berechnungszeit.
+
+Wenn dort also zum Beispiel `2 ms` steht, bedeutet das: Der Algorithmus hat den Weg in etwa 2 Millisekunden berechnet. Die Anzeige auf dem Bildschirm kann trotzdem mehrere Sekunden dauern, weil die Animation künstlich verlangsamt wird.
 
 ## Wichtige Begriffe
 
@@ -53,42 +60,39 @@ Ein besuchtes Feld wurde vom Algorithmus bereits überprüft.
 
 Der Pfad ist die fertige Route vom Start zum Ziel.
 
-## Algorithmen
+## Algorithmen einfach erklärt
 
 ### BFS
 
-BFS sucht Schicht für Schicht. Wenn alle Schritte gleich teuer sind, findet BFS den kürzesten Weg.
+BFS steht für Breadth-First Search. Man kann es sich wie eine Wasserwelle vorstellen: Die Suche breitet sich vom Startpunkt gleichmäßig in alle Richtungen aus.
+
+BFS prüft zuerst alle Felder, die sehr nahe am Start sind. Danach prüft es die Felder, die etwas weiter weg sind. Deshalb findet BFS auf diesem Grid den kürzesten Weg.
 
 ### DFS
 
-DFS geht zuerst tief in eine Richtung, bevor andere Möglichkeiten getestet werden. DFS findet nicht immer den kürzesten Weg.
+DFS steht für Depth-First Search. DFS geht zuerst so weit wie möglich in eine Richtung. Wenn es nicht mehr weiterkommt, geht es zurück und versucht eine andere Richtung.
+
+DFS kann schnell irgendwo tief hineinlaufen. Deshalb wirkt es manchmal chaotischer und findet nicht immer den kürzesten Weg.
 
 ### Dijkstra
 
-Dijkstra findet den kürzesten Weg, indem immer zuerst das aktuell günstigste bekannte Feld erweitert wird.
+Dijkstra sucht immer dort weiter, wo der bisher bekannte Weg am günstigsten ist.
+
+In PathLab sind aktuell alle Felder gleich teuer. Deshalb sieht Dijkstra ähnlich aus wie BFS. Später wird Dijkstra besonders interessant, wenn es Felder mit unterschiedlichen Kosten gibt, zum Beispiel Schlamm oder Wasser.
 
 ### A*
 
-A* nutzt eine Schätzung in Richtung Ziel. Dadurch besucht A* auf einem einfachen Grid oft weniger Felder als Dijkstra.
+A* ist ähnlich wie Dijkstra, aber etwas zielgerichteter.
 
-## Statistiken
-
-PathLab zeigt:
-
-- besuchte Felder
-- Pfadfelder
-- Laufzeit
-- Anzahl Wände
-
-Diese Werte helfen beim Vergleichen der Algorithmen.
+A* schaut nicht nur auf den bisherigen Weg, sondern schätzt zusätzlich, wie weit es noch bis zum Ziel ist. Dadurch läuft A* meistens direkter in Richtung Ziel und besucht oft weniger Felder.
 
 ## Empfohlene Reihenfolge zum Lernen
 
 1. Starte mit BFS.
 2. Zeichne ein paar Wände.
 3. Vergleiche BFS mit DFS.
-4. Teste danach Dijkstra und A*.
-5. Beobachte die Statistiken.
+4. Teste danach Dijkstra.
+5. Teste am Schluss A* und achte darauf, ob weniger blaue Felder entstehen.
 
 ## Ziel
 

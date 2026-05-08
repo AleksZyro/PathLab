@@ -4,28 +4,35 @@ This guide is for people who do not yet know pathfinding algorithms.
 
 ## What is PathLab?
 
-PathLab is an interactive website that shows how a computer can search for a path from a start point to a target point.
+PathLab is an interactive website that shows how a computer searches for a path from a start point to a target point.
 
-The grid is made of cells. Some cells can be walls, which means the algorithm is not allowed to move through them.
+The board is made of small cells. Some cells can be walls. The algorithm is not allowed to move through walls.
 
-## What can you learn?
+## What do the colors mean?
 
-With PathLab you can learn:
-
-- how pathfinding works
-- how different algorithms search
-- why some algorithms find shorter paths
-- why some algorithms visit more cells than others
-- how walls and obstacles change the search
+- Green: start
+- Red: target
+- Dark gray: wall
+- Blue: visited cell
+- Yellow: final path
+- Empty cell: open cell
 
 ## Basic use
 
-1. Choose an algorithm.
-2. Draw walls on the grid.
-3. Use the speed slider to choose how fast the animation should run.
+1. Draw walls on the grid.
+2. Choose an algorithm.
+3. Set the animation speed.
 4. Click **Run visualization**.
-5. Watch the visited cells and the final path.
-6. Use **Clear path**, **Clear walls**, or **Reset grid** when needed.
+5. Watch how the search spreads.
+6. At the end, the yellow cells show the found path.
+
+## What does the ms value measure?
+
+The time in milliseconds measures only the actual algorithm calculation.
+
+The animation is intentionally slowed down so users can see the search. This waiting time is not part of the calculation time.
+
+For example, if PathLab shows `2 ms`, it means the algorithm calculated the result in about 2 milliseconds. The on-screen animation can still take several seconds because it is slowed down on purpose.
 
 ## Important terms
 
@@ -53,42 +60,39 @@ A visited cell is a cell that the algorithm has already checked.
 
 The path is the final route from the start to the target.
 
-## Algorithms
+## Algorithms explained simply
 
 ### BFS
 
-BFS checks the grid layer by layer. It is good for finding the shortest path when all moves have the same cost.
+BFS means Breadth-First Search. You can imagine it like a water wave. The search spreads evenly from the start point in all directions.
+
+BFS checks nearby cells first. Then it checks cells that are farther away. On this grid, BFS finds the shortest path.
 
 ### DFS
 
-DFS goes deep into one direction before trying another direction. It does not always find the shortest path.
+DFS means Depth-First Search. DFS goes as far as possible in one direction first. If it gets stuck, it goes back and tries another direction.
+
+DFS can quickly move deep into one part of the grid. That is why it can look less organized and does not always find the shortest path.
 
 ### Dijkstra
 
-Dijkstra finds the shortest path by always expanding the currently cheapest known cell.
+Dijkstra always continues from the cheapest known path so far.
+
+In PathLab, all cells currently have the same cost. That is why Dijkstra looks similar to BFS. Later, Dijkstra becomes more interesting when weighted cells are added, such as mud or water.
 
 ### A*
 
-A* uses a heuristic to move more directly toward the target. It often visits fewer cells than Dijkstra on a simple grid.
+A* is similar to Dijkstra, but more goal-oriented.
 
-## Statistics
-
-PathLab shows:
-
-- visited cells
-- path cells
-- runtime
-- wall count
-
-These values help you compare algorithms.
+A* looks at the path cost so far and also estimates how far it still is from the target. This usually makes A* search more directly toward the target and visit fewer cells.
 
 ## Recommended learning order
 
 1. Start with BFS.
-2. Add a few walls.
+2. Draw a few walls.
 3. Compare BFS with DFS.
-4. Then try Dijkstra and A*.
-5. Watch the statistics panel.
+4. Then try Dijkstra.
+5. Finally try A* and check whether it creates fewer blue visited cells.
 
 ## Goal
 
