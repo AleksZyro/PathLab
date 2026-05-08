@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { algorithmIds, measureAlgorithm } from './algorithms/pathfinding.js';
 import ActionPanel from './components/ActionPanel.jsx';
 import Controls from './components/Controls.jsx';
@@ -150,6 +150,28 @@ export default function App() {
     restoreSnapshot(next);
     setStatusMessage(dictionary.status.redo);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const target = event.target;
+      const isTyping = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.tagName) || target?.isContentEditable;
+      if (isTyping || isRunning) return;
+
+      const key = event.key.toLowerCase();
+      if ((event.ctrlKey || event.metaKey) && key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        undo();
+      }
+
+      if ((event.ctrlKey || event.metaKey) && (key === 'y' || (key === 'z' && event.shiftKey))) {
+        event.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary]);
 
   const loadPreset = (presetId) => {
     if (isRunning) return;
