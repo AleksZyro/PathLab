@@ -2,9 +2,23 @@ import { COLS } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 
-export default function GridBoard({ dictionary, grid, isRunning, onCellClick }) {
+export default function GridBoard({ dictionary, grid, isRunning, tool, onCellAction, onHoverCell, onLeaveGrid }) {
+  const isBrushTool = ['wall', 'water', 'mud', 'erase'].includes(tool);
+
+  const handlePointerDown = (event, cell) => {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    onCellAction(cell.row, cell.col, { commitHistory: true });
+  };
+
+  const handlePointerEnter = (event, cell) => {
+    onHoverCell(cell);
+    if (!isBrushTool || event.buttons !== 1 || isRunning) return;
+    onCellAction(cell.row, cell.col, { commitHistory: false });
+  };
+
   return (
-    <section className="board-card">
+    <section className="board-card" onPointerLeave={onLeaveGrid}>
       <div className="legend">
         {legendKeys.map((key) => (
           <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
@@ -18,7 +32,9 @@ export default function GridBoard({ dictionary, grid, isRunning, onCellClick }) 
             className={`cell ${cell.type}`}
             aria-label={`${cell.type} cell at row ${cell.row + 1}, column ${cell.col + 1}`}
             disabled={isRunning}
-            onClick={() => onCellClick(cell.row, cell.col)}
+            onPointerDown={(event) => handlePointerDown(event, cell)}
+            onPointerEnter={(event) => handlePointerEnter(event, cell)}
+            onPointerMove={() => onHoverCell(cell)}
           />
         ))}
       </div>

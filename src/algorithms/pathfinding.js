@@ -33,19 +33,45 @@ function reconstructPath(parentMap, endNode, start, target) {
   return path.filter((node) => !isSpecialNode(node, start, target));
 }
 
-function calculatePathCost(path, target, grid, found) {
-  if (!found) return 0;
-  const pathCost = path.reduce((sum, node) => sum + getCellCost(grid[node.row][node.col]), 0);
-  return pathCost + getCellCost(grid[target.row][target.col]);
+function getTerrainName(cell) {
+  if (cell?.type === 'water') return 'water';
+  if (cell?.type === 'mud') return 'mud';
+  return 'normal';
+}
+
+function calculateCostBreakdown(path, target, grid, found) {
+  const breakdown = {
+    normal: { count: 0, cost: 0 },
+    water: { count: 0, cost: 0 },
+    mud: { count: 0, cost: 0 }
+  };
+
+  if (!found) return breakdown;
+
+  [...path, target].forEach((node) => {
+    const cell = grid[node.row][node.col];
+    const terrain = getTerrainName(cell);
+    const cost = getCellCost(cell);
+    breakdown[terrain].count += 1;
+    breakdown[terrain].cost += cost;
+  });
+
+  return breakdown;
+}
+
+function calculatePathCost(costBreakdown) {
+  return Object.values(costBreakdown).reduce((sum, entry) => sum + entry.cost, 0);
 }
 
 function createResult(visitedOrder, path, target, grid, found) {
+  const costBreakdown = calculateCostBreakdown(path, target, grid, found);
   return {
     visitedOrder,
     path,
     found,
     pathLength: found ? path.length + 1 : 0,
-    pathCost: calculatePathCost(path, target, grid, found)
+    pathCost: found ? calculatePathCost(costBreakdown) : 0,
+    costBreakdown
   };
 }
 
