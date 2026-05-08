@@ -37,7 +37,10 @@ export function createGrid(start = DEFAULT_START, target = DEFAULT_TARGET) {
 export function cloneGridWithClearedSearch(grid) {
   return grid.map((gridRow) =>
     gridRow.map((cell) => {
-      if (cell.type === 'visited' || cell.type === 'path') return { ...cell, type: 'empty' };
+      if (cell.type === 'visited' || cell.type === 'path') {
+        const { previousType, ...restoredCell } = cell;
+        return { ...restoredCell, type: previousType ?? 'empty' };
+      }
       return cell;
     })
   );
@@ -47,7 +50,8 @@ export function setCellType(grid, node, type) {
   return grid.map((gridRow) =>
     gridRow.map((cell) => {
       if (cell.row !== node.row || cell.col !== node.col) return cell;
-      return { ...cell, type };
+      const { previousType, ...cleanCell } = cell;
+      return { ...cleanCell, type };
     })
   );
 }
@@ -55,9 +59,10 @@ export function setCellType(grid, node, type) {
 export function moveSpecialNode(grid, previousNode, nextNode, type) {
   return cloneGridWithClearedSearch(grid).map((gridRow) =>
     gridRow.map((cell) => {
-      if (sameNode(cell, previousNode)) return { ...cell, type: 'empty' };
-      if (sameNode(cell, nextNode)) return { ...cell, type };
-      return cell;
+      const { previousType, ...cleanCell } = cell;
+      if (sameNode(cell, previousNode)) return { ...cleanCell, type: 'empty' };
+      if (sameNode(cell, nextNode)) return { ...cleanCell, type };
+      return cleanCell;
     })
   );
 }
@@ -67,14 +72,14 @@ export function applySearchType(grid, node, type) {
     gridRow.map((cell) => {
       if (cell.row !== node.row || cell.col !== node.col) return cell;
       if (cell.type === 'start' || cell.type === 'target' || cell.type === 'wall') return cell;
-      return { ...cell, type };
+      return { ...cell, previousType: cell.previousType ?? cell.type, type };
     })
   );
 }
 
 export function getCellCost(cell) {
   if (!cell || cell.type === 'wall') return Infinity;
-  return terrainCosts[cell.type] ?? 1;
+  return terrainCosts[cell.type] ?? terrainCosts[cell.previousType] ?? 1;
 }
 
 export function countCells(grid, type) {
