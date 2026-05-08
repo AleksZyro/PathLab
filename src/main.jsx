@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import en from './i18n/en.json';
+import de from './i18n/de.json';
 import './styles.css';
 
 const ROWS = 18;
@@ -7,18 +9,20 @@ const COLS = 32;
 const START_NODE = { row: 8, col: 7 };
 const TARGET_NODE = { row: 8, col: 24 };
 const BASE_DELAY = 120;
-
-const algorithms = [
-  { id: 'bfs', name: 'BFS', description: 'Explores layer by layer and guarantees the shortest path on an unweighted grid.' },
-  { id: 'dfs', name: 'DFS', description: 'Goes deep into one direction first. It is useful to understand search behavior, but not always shortest.' },
-  { id: 'dijkstra', name: 'Dijkstra', description: 'Finds the shortest path by expanding the cheapest known cells first.' },
-  { id: 'astar', name: 'A*', description: 'Uses a heuristic to search toward the target more directly.' }
-];
+const dictionaries = { en, de };
+const algorithmIds = ['bfs', 'dfs', 'dijkstra', 'astar'];
 
 const makeKey = (row, col) => `${row}-${col}`;
 const isTargetNode = (node) => node.row === TARGET_NODE.row && node.col === TARGET_NODE.col;
 const isSpecialNode = (node) =>
   (node.row === START_NODE.row && node.col === START_NODE.col) || isTargetNode(node);
+
+function translate(template, values = {}) {
+  return Object.entries(values).reduce(
+    (text, [key, value]) => text.replaceAll(`{{${key}}}`, String(value)),
+    template
+  );
+}
 
 function createInitialGrid() {
   return Array.from({ length: ROWS }, (_, row) =>
@@ -238,14 +242,17 @@ function App() {
   const [tool, setTool] = useState('wall');
   const [algorithm, setAlgorithm] = useState('bfs');
   const [theme, setTheme] = useState('dark');
+  const [language, setLanguage] = useState('en');
+  const [showOnboarding, setShowOnboarding] = useState(true);
   const [speed, setSpeed] = useState(45);
   const [isRunning, setIsRunning] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('Draw walls, choose an algorithm, then run the visualization.');
+  const dictionary = dictionaries[language];
+  const [statusMessage, setStatusMessage] = useState(dictionary.status.initial);
   const [stats, setStats] = useState({ visited: 0, pathLength: 0, runtime: 0 });
 
   const activeAlgorithm = useMemo(
-    () => algorithms.find((item) => item.id === algorithm) ?? algorithms[0],
-    [algorithm]
+    () => ({ id: algorithm, ...dictionary.algorithms[algorithm] }),
+    [algorithm, dictionary]
   );
 
   const counts = useMemo(() => {
@@ -255,6 +262,11 @@ function App() {
       empty: flat.filter((cell) => cell.type === 'empty').length
     };
   }, [grid]);
+
+  const switchLanguage = (nextLanguage) => {
+    setLanguage(nextLanguage);
+    setStatusMessage(dictionaries[nextLanguage].status.initial);
+  };
 
   const updateCell = (row, col) => {
     if (isRunning) return;
@@ -276,7 +288,7 @@ function App() {
   const resetGrid = () => {
     if (isRunning) return;
     setGrid(createInitialGrid());
-    setStatusMessage('Grid reset. Ready for a new visualization.');
+    setStatusMessage(dictionary.status.reset);
     setStats({ visited: 0, pathLength: 0, runtime: 0 });
   };
 
@@ -287,20 +299,21 @@ function App() {
         gridRow.map((cell) => (cell.type === 'wall' ? { ...cell, type: 'empty' } : cell))
       )
     );
-    setStatusMessage('Walls cleared.');
+    setStatusMessage(dictionary.status.wallsCleared);
   };
 
   const clearPath = () => {
     if (isRunning) return;
     setGrid((currentGrid) => cloneGridWithClearedSearch(currentGrid));
     setStats({ visited: 0, pathLength: 0, runtime: 0 });
-    setStatusMessage('Search result cleared.');
+    setStatusMessage(dictionary.status.pathCleared);
   };
 
   const visualize = async () => {
     if (isRunning) return;
     setIsRunning(true);
-    setStatusMessage(`${activeAlgorithm.name} is searching...`);
+    setShowOnboarding(false);
+    setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
     const startedAt = performance.now();
 
     let preparedGrid = null;
@@ -327,8 +340,8 @@ function App() {
     setStats({ visited: result.visitedOrder.length, pathLength: result.path.length, runtime });
     setStatusMessage(
       result.found
-        ? `${activeAlgorithm.name} found a path with ${result.path.length} cells.`
-        : `${activeAlgorithm.name} could not reach the target.`
+        ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.path.length })
+        : translate(dictionary.status.notFound, { algorithm: activeAlgorithm.name })
     );
     setIsRunning(false);
   };
@@ -337,45 +350,63 @@ function App() {
     <main className={`app ${theme}`}>
       <section className="hero-panel">
         <div>
-          <p className="eyebrow">Interactive pathfinding visualizer</p>
-          <h1>PathLab</h1>
-          <p className="hero-text">
-            Build walls, compare algorithms, and watch how a search moves from start to target.
-          </p>
+          <p className="eyebrow">{dictionary.app.eyebrow}</p>
+          <h1>{dictionary.app.title}</h1>
+          <p className="hero-text">{dictionary.app.heroText}</p>
         </div>
-        <button className="theme-toggle" disabled={isRunning} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-        </button>
+        <div className="top-actions">
+          <div className="language-switch" aria-label="Language switch">
+            <button className={language === 'de' ? 'active' : ''} disabled={isRunning} onClick={() => switchLanguage('de')}>DE</button>
+            <button className={language === 'en' ? 'active' : ''} disabled={isRunning} onClick={() => switchLanguage('en')}>EN</button>
+          </div>
+          <button className="theme-toggle" disabled={isRunning} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
+          </button>
+        </div>
       </section>
+
+      {showOnboarding && (
+        <section className="onboarding-card">
+          <div>
+            <p className="eyebrow">Tutorial</p>
+            <h2>{dictionary.onboarding.title}</h2>
+            <p>{dictionary.onboarding.text}</p>
+            <ul>
+              {dictionary.onboarding.steps.map((step) => <li key={step}>{step}</li>)}
+            </ul>
+          </div>
+          <button className="primary" onClick={() => setShowOnboarding(false)}>{dictionary.onboarding.dismiss}</button>
+        </section>
+      )}
 
       <section className="workspace">
         <aside className="panel controls-panel">
-          <h2>Controls</h2>
+          <h2>{dictionary.controls.title}</h2>
 
           <label>
-            Algorithm
+            {dictionary.controls.algorithm}
             <select disabled={isRunning} value={algorithm} onChange={(event) => setAlgorithm(event.target.value)}>
-              {algorithms.map((item) => (
-                <option key={item.id} value={item.id}>{item.name}</option>
+              {algorithmIds.map((id) => (
+                <option key={id} value={id}>{dictionary.algorithms[id].name}</option>
               ))}
             </select>
           </label>
 
           <div className="tool-row">
-            <button disabled={isRunning} className={tool === 'wall' ? 'active' : ''} onClick={() => setTool('wall')}>Draw walls</button>
-            <button disabled={isRunning} className={tool === 'erase' ? 'active' : ''} onClick={() => setTool('erase')}>Erase</button>
+            <button disabled={isRunning} className={tool === 'wall' ? 'active' : ''} onClick={() => setTool('wall')}>{dictionary.controls.drawWalls}</button>
+            <button disabled={isRunning} className={tool === 'erase' ? 'active' : ''} onClick={() => setTool('erase')}>{dictionary.controls.erase}</button>
           </div>
 
           <label>
-            Animation speed
+            {dictionary.controls.animationSpeed}
             <input disabled={isRunning} type="range" min="1" max="100" value={speed} onChange={(event) => setSpeed(Number(event.target.value))} />
           </label>
 
           <div className="action-grid">
-            <button className="primary" disabled={isRunning} onClick={visualize}>{isRunning ? 'Running...' : 'Run visualization'}</button>
-            <button disabled={isRunning} onClick={clearPath}>Clear path</button>
-            <button disabled={isRunning} onClick={clearWalls}>Clear walls</button>
-            <button disabled={isRunning} onClick={resetGrid}>Reset grid</button>
+            <button className="primary" disabled={isRunning} onClick={visualize}>{isRunning ? dictionary.controls.running : dictionary.controls.run}</button>
+            <button disabled={isRunning} onClick={clearPath}>{dictionary.controls.clearPath}</button>
+            <button disabled={isRunning} onClick={clearWalls}>{dictionary.controls.clearWalls}</button>
+            <button disabled={isRunning} onClick={resetGrid}>{dictionary.controls.resetGrid}</button>
           </div>
 
           <p className="status-message">{statusMessage}</p>
@@ -383,12 +414,12 @@ function App() {
 
         <section className="board-card">
           <div className="legend">
-            <span><i className="legend-dot start" /> Start</span>
-            <span><i className="legend-dot target" /> Target</span>
-            <span><i className="legend-dot wall" /> Wall</span>
-            <span><i className="legend-dot visited" /> Visited</span>
-            <span><i className="legend-dot path" /> Path</span>
-            <span><i className="legend-dot empty" /> Empty</span>
+            <span><i className="legend-dot start" /> {dictionary.legend.start}</span>
+            <span><i className="legend-dot target" /> {dictionary.legend.target}</span>
+            <span><i className="legend-dot wall" /> {dictionary.legend.wall}</span>
+            <span><i className="legend-dot visited" /> {dictionary.legend.visited}</span>
+            <span><i className="legend-dot path" /> {dictionary.legend.path}</span>
+            <span><i className="legend-dot empty" /> {dictionary.legend.empty}</span>
           </div>
 
           <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>
@@ -409,15 +440,15 @@ function App() {
           <p>{activeAlgorithm.description}</p>
 
           <div className="stats-grid">
-            <article><strong>{stats.visited}</strong><span>Visited cells</span></article>
-            <article><strong>{stats.pathLength}</strong><span>Path cells</span></article>
-            <article><strong>{stats.runtime} ms</strong><span>Runtime</span></article>
-            <article><strong>{counts.walls}</strong><span>Walls</span></article>
+            <article><strong>{stats.visited}</strong><span>{dictionary.stats.visitedCells}</span></article>
+            <article><strong>{stats.pathLength}</strong><span>{dictionary.stats.pathCells}</span></article>
+            <article><strong>{stats.runtime} ms</strong><span>{dictionary.stats.runtime}</span></article>
+            <article><strong>{counts.walls}</strong><span>{dictionary.stats.walls}</span></article>
           </div>
 
           <div className="tip-box">
-            <strong>Beginner tip</strong>
-            <p>Start with BFS, draw a few walls, then compare the behavior with DFS.</p>
+            <strong>{dictionary.tip.title}</strong>
+            <p>{dictionary.tip.text}</p>
           </div>
         </aside>
       </section>
