@@ -18,14 +18,14 @@ With PathLab you can learn:
 - why some algorithms visit more cells than others
 - how walls and obstacles change the search
 
-## Basic idea
+## Basic use
 
-1. Choose a start cell.
-2. Choose a target cell.
-3. Draw walls.
-4. Select an algorithm.
-5. Start the visualization.
-6. Watch how the algorithm searches.
+1. Choose an algorithm.
+2. Draw walls on the grid.
+3. Use the speed slider to choose how fast the animation should run.
+4. Click **Run visualization**.
+5. Watch the visited cells and the final path.
+6. Use **Clear path**, **Clear walls**, or **Reset grid** when needed.
 
 ## Important terms
 
@@ -65,11 +65,22 @@ DFS goes deep into one direction before trying another direction. It does not al
 
 ### Dijkstra
 
-Dijkstra finds the shortest path when cells can have different costs.
+Dijkstra finds the shortest path by always expanding the currently cheapest known cell.
 
 ### A*
 
-A* uses a heuristic to move more directly toward the target. It is often faster than Dijkstra.
+A* uses a heuristic to move more directly toward the target. It often visits fewer cells than Dijkstra on a simple grid.
+
+## Statistics
+
+PathLab shows:
+
+- visited cells
+- path cells
+- runtime
+- wall count
+
+These values help you compare algorithms.
 
 ## Recommended learning order
 

@@ -12,22 +12,23 @@ The project is designed as a portfolio project for application development. It f
 - Provide a modern light and dark interface
 - Build a clean React/Vite codebase suitable for portfolio presentation
 
-## Planned Algorithms
+## Implemented Algorithms
 
 - Breadth-First Search (BFS)
 - Depth-First Search (DFS)
 - Dijkstra's Algorithm
 - A* Search
 
-## Planned MVP Features
+## Current Features
 
 - Interactive grid
-- Start and target nodes
+- Fixed start and target nodes
 - Draw and erase walls
 - Select algorithm
 - Animated visualization
 - Speed control
-- Statistics panel
+- Clear path, clear walls, and reset grid actions
+- Statistics panel with visited cells, path cells, runtime, and wall count
 - Algorithm explanations
 - Light and dark mode
 - Beginner guides in German and English
@@ -67,6 +68,14 @@ Open that URL in your browser.
 - [English beginner guide](USER_GUIDE_EN.md)
 - [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
 
+## Next Useful Improvements
+
+- Move start and target nodes by clicking or dragging
+- Add weighted cells for Dijkstra and A*
+- Add a maze generator
+- Add step-by-step mode
+- Add algorithm comparison mode
+
 ## Status
 
-Current status: **in development**
+Current status: **functional MVP in development**

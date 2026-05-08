@@ -18,14 +18,14 @@ Mit PathLab kann man verstehen:
 - warum manche Algorithmen mehr Felder durchsuchen
 - wie Hindernisse die Suche verändern
 
-## Grundidee
+## Bedienung
 
-1. Startfeld auswählen.
-2. Zielfeld auswählen.
-3. Wände zeichnen.
-4. Algorithmus auswählen.
-5. Visualisierung starten.
-6. Beobachten, wie der Algorithmus sucht.
+1. Algorithmus auswählen.
+2. Wände auf dem Grid zeichnen.
+3. Mit dem Geschwindigkeitsregler einstellen, wie schnell die Animation laufen soll.
+4. Auf **Run visualization** klicken.
+5. Beobachten, welche Felder besucht werden und welcher Pfad gefunden wird.
+6. Mit **Clear path**, **Clear walls** oder **Reset grid** wieder aufräumen.
 
 ## Wichtige Begriffe
 
@@ -65,11 +65,22 @@ DFS geht zuerst tief in eine Richtung, bevor andere Möglichkeiten getestet werd
 
 ### Dijkstra
 
-Dijkstra findet den kürzesten Weg, auch wenn Felder unterschiedliche Kosten haben können.
+Dijkstra findet den kürzesten Weg, indem immer zuerst das aktuell günstigste bekannte Feld erweitert wird.
 
 ### A*
 
-A* nutzt eine Schätzung in Richtung Ziel. Dadurch ist A* oft schneller als Dijkstra.
+A* nutzt eine Schätzung in Richtung Ziel. Dadurch besucht A* auf einem einfachen Grid oft weniger Felder als Dijkstra.
+
+## Statistiken
+
+PathLab zeigt:
+
+- besuchte Felder
+- Pfadfelder
+- Laufzeit
+- Anzahl Wände
+
+Diese Werte helfen beim Vergleichen der Algorithmen.
 
 ## Empfohlene Reihenfolge zum Lernen
 
