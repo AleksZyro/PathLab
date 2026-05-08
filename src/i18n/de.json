@@ -8,8 +8,8 @@
   },
   "onboarding": {
     "title": "Bereit zum Testen?",
-    "text": "Zeichne die Wände und starte den Wegfindungsalgorithmus, sobald du möchtest.",
-    "steps": ["Wände im Grid zeichnen", "BFS, DFS, Dijkstra oder A* auswählen", "Run visualization drücken"],
+    "text": "Zeichne zuerst Wände ins Feld und starte danach einen Wegfindungsalgorithmus, sobald du bereit bist.",
+    "steps": ["Klicke freie Felder an, um Wände zu zeichnen", "Wähle BFS, DFS, Dijkstra oder A* aus", "Drücke Visualisierung starten und beobachte die Suche"],
     "dismiss": "Verstanden"
   },
   "controls": {
@@ -35,7 +35,7 @@
   "stats": {
     "visitedCells": "Besuchte Felder",
     "pathCells": "Pfadfelder",
-    "runtime": "Laufzeit",
+    "runtime": "Berechnung",
     "walls": "Wände"
   },
   "status": {
@@ -49,24 +49,24 @@
   },
   "tip": {
     "title": "Tipp für Anfänger",
-    "text": "Starte mit BFS, zeichne ein paar Wände und vergleiche danach das Verhalten mit DFS."
+    "text": "Starte mit BFS. BFS breitet sich wie eine Wasserwelle vom Start aus und ist deshalb sehr leicht zu beobachten."
   },
   "algorithms": {
     "bfs": {
       "name": "BFS",
-      "description": "Sucht Schicht für Schicht und findet auf einem ungewichteten Grid garantiert den kürzesten Weg."
+      "description": "BFS sucht in Kreisen bzw. Schichten vom Start aus. Zuerst werden alle Felder in der Nähe geprüft, danach die weiter entfernten. Dadurch findet BFS auf diesem Grid zuverlässig den kürzesten Weg."
     },
     "dfs": {
       "name": "DFS",
-      "description": "Geht zuerst tief in eine Richtung. Das ist gut zum Verstehen des Suchverhaltens, aber nicht immer der kürzeste Weg."
+      "description": "DFS läuft zuerst so weit wie möglich in eine Richtung und geht erst zurück, wenn es nicht mehr weiterkommt. Das wirkt manchmal chaotischer und findet nicht immer den kürzesten Weg, zeigt aber gut, wie Tiefensuche funktioniert."
     },
     "dijkstra": {
       "name": "Dijkstra",
-      "description": "Findet den kürzesten Weg, indem zuerst die günstigsten bekannten Felder erweitert werden."
+      "description": "Dijkstra sucht immer vom aktuell günstigsten bekannten Feld weiter. Auf diesem Grid sind alle Schritte gleich teuer, deshalb sieht Dijkstra ähnlich wie BFS aus. Der Algorithmus ist besonders wichtig, wenn Wege verschiedene Kosten haben."
     },
     "astar": {
       "name": "A*",
-      "description": "Nutzt eine Schätzung in Richtung Ziel und sucht dadurch oft direkter."
+      "description": "A* kombiniert bisherige Wegkosten mit einer Schätzung in Richtung Ziel. Dadurch sucht A* meistens zielgerichteter als Dijkstra und besucht oft weniger Felder."
     }
   }
 }
