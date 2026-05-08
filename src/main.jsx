@@ -16,6 +16,9 @@ const algorithms = [
 ];
 
 const makeKey = (row, col) => `${row}-${col}`;
+const isTargetNode = (node) => node.row === TARGET_NODE.row && node.col === TARGET_NODE.col;
+const isSpecialNode = (node) =>
+  (node.row === START_NODE.row && node.col === START_NODE.col) || isTargetNode(node);
 
 function createInitialGrid() {
   return Array.from({ length: ROWS }, (_, row) =>
@@ -65,11 +68,7 @@ function reconstructPath(parentMap, endNode) {
     currentKey = parentMap.get(currentKey);
   }
 
-  return path.filter((node) => {
-    const isStart = node.row === START_NODE.row && node.col === START_NODE.col;
-    const isTarget = node.row === TARGET_NODE.row && node.col === TARGET_NODE.col;
-    return !isStart && !isTarget;
-  });
+  return path.filter((node) => !isSpecialNode(node));
 }
 
 function runBfs(grid) {
@@ -80,7 +79,7 @@ function runBfs(grid) {
 
   while (queue.length > 0) {
     const current = queue.shift();
-    if (current.row === TARGET_NODE.row && current.col === TARGET_NODE.col) {
+    if (isTargetNode(current)) {
       return { visitedOrder, path: reconstructPath(parentMap, current), found: true };
     }
 
@@ -89,9 +88,7 @@ function runBfs(grid) {
       if (visitedSet.has(key)) continue;
       visitedSet.add(key);
       parentMap.set(key, makeKey(current.row, current.col));
-      if (!(neighbor.row === TARGET_NODE.row && neighbor.col === TARGET_NODE.col)) {
-        visitedOrder.push(neighbor);
-      }
+      if (!isTargetNode(neighbor)) visitedOrder.push(neighbor);
       queue.push(neighbor);
     }
   }
@@ -107,7 +104,7 @@ function runDfs(grid) {
 
   while (stack.length > 0) {
     const current = stack.pop();
-    if (current.row === TARGET_NODE.row && current.col === TARGET_NODE.col) {
+    if (isTargetNode(current)) {
       return { visitedOrder, path: reconstructPath(parentMap, current), found: true };
     }
 
@@ -117,10 +114,98 @@ function runDfs(grid) {
       if (visitedSet.has(key)) continue;
       visitedSet.add(key);
       parentMap.set(key, makeKey(current.row, current.col));
-      if (!(neighbor.row === TARGET_NODE.row && neighbor.col === TARGET_NODE.col)) {
-        visitedOrder.push(neighbor);
-      }
+      if (!isTargetNode(neighbor)) visitedOrder.push(neighbor);
       stack.push(neighbor);
+    }
+  }
+
+  return { visitedOrder, path: [], found: false };
+}
+
+function getAllOpenNodes(grid) {
+  return grid.flat().filter((cell) => cell.type !== 'wall');
+}
+
+function manhattanDistance(a, b) {
+  return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+}
+
+function runDijkstra(grid) {
+  const distances = new Map();
+  const parentMap = new Map();
+  const visitedSet = new Set();
+  const visitedOrder = [];
+  const openNodes = getAllOpenNodes(grid).map((cell) => ({ row: cell.row, col: cell.col }));
+
+  for (const node of openNodes) distances.set(makeKey(node.row, node.col), Infinity);
+  distances.set(makeKey(START_NODE.row, START_NODE.col), 0);
+
+  while (openNodes.length > 0) {
+    openNodes.sort((a, b) => distances.get(makeKey(a.row, a.col)) - distances.get(makeKey(b.row, b.col)));
+    const current = openNodes.shift();
+    const currentKey = makeKey(current.row, current.col);
+    const currentDistance = distances.get(currentKey);
+
+    if (currentDistance === Infinity) break;
+    if (visitedSet.has(currentKey)) continue;
+    visitedSet.add(currentKey);
+
+    if (!isSpecialNode(current)) visitedOrder.push(current);
+    if (isTargetNode(current)) {
+      return { visitedOrder, path: reconstructPath(parentMap, current), found: true };
+    }
+
+    for (const neighbor of getNeighbors(current, grid)) {
+      const neighborKey = makeKey(neighbor.row, neighbor.col);
+      const nextDistance = currentDistance + 1;
+      if (nextDistance < distances.get(neighborKey)) {
+        distances.set(neighborKey, nextDistance);
+        parentMap.set(neighborKey, currentKey);
+      }
+    }
+  }
+
+  return { visitedOrder, path: [], found: false };
+}
+
+function runAStar(grid) {
+  const openNodes = [START_NODE];
+  const openSet = new Set([makeKey(START_NODE.row, START_NODE.col)]);
+  const closedSet = new Set();
+  const parentMap = new Map();
+  const gScore = new Map([[makeKey(START_NODE.row, START_NODE.col), 0]]);
+  const fScore = new Map([[makeKey(START_NODE.row, START_NODE.col), manhattanDistance(START_NODE, TARGET_NODE)]]);
+  const visitedOrder = [];
+
+  while (openNodes.length > 0) {
+    openNodes.sort((a, b) => (fScore.get(makeKey(a.row, a.col)) ?? Infinity) - (fScore.get(makeKey(b.row, b.col)) ?? Infinity));
+    const current = openNodes.shift();
+    const currentKey = makeKey(current.row, current.col);
+    openSet.delete(currentKey);
+
+    if (closedSet.has(currentKey)) continue;
+    closedSet.add(currentKey);
+
+    if (!isSpecialNode(current)) visitedOrder.push(current);
+    if (isTargetNode(current)) {
+      return { visitedOrder, path: reconstructPath(parentMap, current), found: true };
+    }
+
+    for (const neighbor of getNeighbors(current, grid)) {
+      const neighborKey = makeKey(neighbor.row, neighbor.col);
+      if (closedSet.has(neighborKey)) continue;
+
+      const tentativeG = (gScore.get(currentKey) ?? Infinity) + 1;
+      if (tentativeG < (gScore.get(neighborKey) ?? Infinity)) {
+        parentMap.set(neighborKey, currentKey);
+        gScore.set(neighborKey, tentativeG);
+        fScore.set(neighborKey, tentativeG + manhattanDistance(neighbor, TARGET_NODE));
+
+        if (!openSet.has(neighborKey)) {
+          openSet.add(neighborKey);
+          openNodes.push(neighbor);
+        }
+      }
     }
   }
 
@@ -129,6 +214,8 @@ function runDfs(grid) {
 
 function getSearchResult(algorithm, grid) {
   if (algorithm === 'dfs') return runDfs(grid);
+  if (algorithm === 'dijkstra') return runDijkstra(grid);
+  if (algorithm === 'astar') return runAStar(grid);
   return runBfs(grid);
 }
 
