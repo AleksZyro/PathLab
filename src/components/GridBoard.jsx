@@ -1,23 +1,14 @@
-import { useMemo, useState } from 'react';
-import { COLS } from '../utils/grid.js';
+import { useState } from 'react';
+import { COLS, getTerrainCostTotal } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
-
-function getTerrainCost(grid) {
-  return grid.flat().reduce((sum, cell) => {
-    const type = cell.previousType ?? cell.type;
-    if (type === 'water') return sum + 5;
-    if (type === 'mud') return sum + 10;
-    return sum;
-  }, 0);
-}
 
 export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost, onCellAction, onHoverCell, onLeaveGrid }) {
   const [isPainting, setIsPainting] = useState(false);
   const [lastPaintedCell, setLastPaintedCell] = useState(null);
   const isBrushTool = brushTools.includes(tool);
-  const displayCost = useMemo(() => pathCost || getTerrainCost(grid), [grid, pathCost]);
+  const displayCost = pathCost ?? getTerrainCostTotal(grid);
 
   const paintCell = (row, col, options) => {
     const key = `${row}-${col}`;

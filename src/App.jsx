@@ -19,6 +19,7 @@ import {
   cloneGridWithClearedSearch,
   countCells,
   createGrid,
+  getTerrainCostTotal,
   isBlockedForSpecialTool,
   moveSpecialNode,
   sameNode
@@ -48,15 +49,6 @@ function createSnapshot(grid, startNode, targetNode) {
   return { grid, startNode, targetNode };
 }
 
-function getLiveTerrainCost(grid) {
-  return grid.flat().reduce((sum, cell) => {
-    const type = cell.previousType ?? cell.type;
-    if (type === 'water') return sum + 5;
-    if (type === 'mud') return sum + 10;
-    return sum;
-  }, 0);
-}
-
 export default function App() {
   const [language, setLanguage] = useState('de');
   const dictionary = dictionaries[language];
@@ -84,7 +76,7 @@ export default function App() {
   );
 
   const wallCount = useMemo(() => countCells(grid, 'wall'), [grid]);
-  const boardCost = useMemo(() => getLiveTerrainCost(grid), [grid]);
+  const boardCost = useMemo(() => getTerrainCostTotal(grid), [grid]);
 
   const pushHistory = (snapshot) => {
     setUndoStack((current) => [...current.slice(-24), snapshot]);

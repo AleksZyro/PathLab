@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applySearchType, cloneGridWithClearedSearch, createGrid, setCellType } from './grid.js';
+import { applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, setCellType } from './grid.js';
 
 describe('grid search state restoration', () => {
   it('restores water after clearing a visited/path overlay', () => {
@@ -23,5 +23,17 @@ describe('grid search state restoration', () => {
 
     expect(clearedGrid[2][2].type).toBe('mud');
     expect(clearedGrid[2][2].previousType).toBeUndefined();
+  });
+
+  it('keeps water and mud costs while cells are visually overlaid', () => {
+    let grid = createGrid({ row: 0, col: 0 }, { row: 0, col: 4 });
+    grid = setCellType(grid, { row: 1, col: 1 }, 'water');
+    grid = setCellType(grid, { row: 1, col: 2 }, 'mud');
+    grid = applySearchType(grid, { row: 1, col: 1 }, 'visited');
+    grid = applySearchType(grid, { row: 1, col: 2 }, 'path');
+
+    expect(getCellCost(grid[1][1])).toBe(5);
+    expect(getCellCost(grid[1][2])).toBe(10);
+    expect(getTerrainCostTotal(grid)).toBe(15);
   });
 });

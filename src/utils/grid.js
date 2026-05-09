@@ -13,6 +13,14 @@ export const terrainCosts = {
   mud: 10
 };
 
+const searchOverlayTypes = new Set(['visited', 'path']);
+
+function getEffectiveCellType(cell) {
+  if (!cell) return undefined;
+  if (searchOverlayTypes.has(cell.type) && cell.previousType) return cell.previousType;
+  return cell.type;
+}
+
 export function makeKey(row, col) {
   return `${row}-${col}`;
 }
@@ -79,7 +87,17 @@ export function applySearchType(grid, node, type) {
 
 export function getCellCost(cell) {
   if (!cell || cell.type === 'wall') return Infinity;
-  return terrainCosts[cell.type] ?? terrainCosts[cell.previousType] ?? 1;
+  const type = getEffectiveCellType(cell);
+  return terrainCosts[type] ?? 1;
+}
+
+export function getTerrainCostTotal(grid) {
+  return grid.flat().reduce((sum, cell) => {
+    const type = getEffectiveCellType(cell);
+    if (type === 'water') return sum + terrainCosts.water;
+    if (type === 'mud') return sum + terrainCosts.mud;
+    return sum;
+  }, 0);
 }
 
 export function countCells(grid, type) {
