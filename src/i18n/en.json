@@ -2,7 +2,7 @@
   "app": {
     "eyebrow": "Interactive pathfinding visualizer",
     "title": "PathLab",
-    "heroText": "Draw walls and weighted terrain, move start and target, and compare how different algorithms search.",
+    "heroText": "",
     "lightMode": "Light mode",
     "darkMode": "Dark mode"
   },
@@ -33,6 +33,10 @@
   "brush": {
     "title": "Brush mode",
     "text": "Hold the mouse button and drag across the grid. Start and target are still placed with single clicks."
+  },
+  "explain": {
+    "toggle": "Open explanation",
+    "label": "Explain"
   },
   "presets": {
     "custom": "Custom grid",

@@ -1,8 +1,8 @@
 {
   "app": {
-    "eyebrow": "Interaktiver Wegfindungs-Visualizer",
+    "eyebrow": "Interaktiver Visualisierer für Wegfindungsalgorithmen",
     "title": "PathLab",
-    "heroText": "Zeichne Wände und schwierige Felder, verschiebe Start und Ziel und vergleiche, wie verschiedene Algorithmen suchen.",
+    "heroText": "",
     "lightMode": "Heller Modus",
     "darkMode": "Dunkler Modus"
   },
@@ -33,6 +33,10 @@
   "brush": {
     "title": "Pinselmodus",
     "text": "Halte die Maustaste gedrückt und ziehe über das Grid. Start und Ziel setzt du weiterhin per Einzelklick."
+  },
+  "explain": {
+    "toggle": "Erklärung öffnen",
+    "label": "Erkläre mir"
   },
   "presets": {
     "custom": "Eigenes Grid",

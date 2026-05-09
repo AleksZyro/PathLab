@@ -6,6 +6,7 @@ import ComparePanel from './components/ComparePanel.jsx';
 import GridBoard from './components/GridBoard.jsx';
 import LanguageSwitch from './components/LanguageSwitch.jsx';
 import Onboarding from './components/Onboarding.jsx';
+import PathLabLogo from './components/PathLabLogo.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
@@ -292,15 +293,23 @@ export default function App() {
   return (
     <main className={`app ${theme}`}>
       <section className="hero-panel">
-        <div>
+        <div className="hero-copy">
           <p className="eyebrow">{dictionary.app.eyebrow}</p>
-          <h1>{dictionary.app.title}</h1>
-          <p className="hero-text">{dictionary.app.heroText}</p>
+          <div className="hero-title-row">
+            <h1>{dictionary.app.title}</h1>
+            <PathLabLogo />
+          </div>
         </div>
         <div className="top-actions">
           <LanguageSwitch language={language} disabled={isRunning} onChange={switchLanguage} />
-          <button className="theme-toggle" disabled={isRunning} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            {theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
+          <button
+            className="theme-toggle icon-theme-toggle"
+            aria-label={theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
+            title={theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
+            disabled={isRunning}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
       </section>

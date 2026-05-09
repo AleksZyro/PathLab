@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { algorithmIds } from '../algorithms/pathfinding.js';
+
 function CostLine({ label, entry, multiplier }) {
   return (
     <li>
@@ -8,13 +11,43 @@ function CostLine({ label, entry, multiplier }) {
 }
 
 export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCount, hoveredCell, liveExplanation }) {
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [explanationAlgorithm, setExplanationAlgorithm] = useState(activeAlgorithm.id);
   const hoveredCost = hoveredCell?.type === 'water' ? 5 : hoveredCell?.type === 'mud' ? 10 : hoveredCell?.type === 'wall' ? '∞' : 1;
   const hoveredType = hoveredCell ? (dictionary.legend[hoveredCell.type] ?? hoveredCell.type) : dictionary.hover.empty;
+  const selectedExplanation = dictionary.algorithms[explanationAlgorithm];
 
   return (
     <aside className="panel info-panel">
-      <h2>{activeAlgorithm.name}</h2>
-      <p>{activeAlgorithm.description}</p>
+      <div className="algorithm-header">
+        <h2>{activeAlgorithm.name}</h2>
+        <button
+          className={`icon-button bulb-button ${showExplanation ? 'active' : ''}`}
+          type="button"
+          aria-label={dictionary.explain.toggle}
+          title={dictionary.explain.toggle}
+          onClick={() => {
+            setExplanationAlgorithm(activeAlgorithm.id);
+            setShowExplanation((current) => !current);
+          }}
+        >
+          💡
+        </button>
+      </div>
+
+      {showExplanation && (
+        <div className="info-box explanation-box">
+          <label>
+            {dictionary.explain.label}
+            <select value={explanationAlgorithm} onChange={(event) => setExplanationAlgorithm(event.target.value)}>
+              {algorithmIds.map((id) => (
+                <option key={id} value={id}>{dictionary.algorithms[id].name}</option>
+              ))}
+            </select>
+          </label>
+          <p>{selectedExplanation.description}</p>
+        </div>
+      )}
 
       <div className="stats-grid">
         <article><strong>{stats.visited}</strong><span>{dictionary.stats.visitedCells}</span></article>
