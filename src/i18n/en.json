@@ -28,15 +28,17 @@
   },
   "actions": {
     "kicker": "Actions",
-    "title": "Run and reset"
+    "title": "Run and reset",
+    "historyGroup": "Undo and redo"
   },
   "brush": {
     "title": "Brush mode",
     "text": "Hold the mouse button and drag across the grid. Start and target are still placed with single clicks."
   },
   "explain": {
-    "toggle": "Open explanation",
-    "label": "Explain"
+    "toggle": "Open clues",
+    "label": "Explain",
+    "clues": "Clues"
   },
   "presets": {
     "custom": "Custom grid",
@@ -91,6 +93,7 @@
   },
   "cost": {
     "title": "Path cost breakdown",
+    "shortLabel": "Cost",
     "normal": "Normal",
     "water": "Water",
     "mud": "Mud"

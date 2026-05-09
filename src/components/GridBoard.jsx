@@ -4,7 +4,7 @@ import { COLS } from '../utils/grid.js';
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
 
-export default function GridBoard({ dictionary, grid, isRunning, tool, onCellAction, onHoverCell, onLeaveGrid }) {
+export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost, onCellAction, onHoverCell, onLeaveGrid }) {
   const [isPainting, setIsPainting] = useState(false);
   const [lastPaintedCell, setLastPaintedCell] = useState(null);
   const isBrushTool = brushTools.includes(tool);
@@ -50,10 +50,13 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, onCellAct
 
   return (
     <section className="board-card" onPointerLeave={() => { stopPainting(); onLeaveGrid(); }} onPointerUp={stopPainting} onPointerCancel={stopPainting}>
-      <div className="legend">
-        {legendKeys.map((key) => (
-          <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
-        ))}
+      <div className="board-header">
+        <div className="legend">
+          {legendKeys.map((key) => (
+            <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
+          ))}
+        </div>
+        <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{pathCost}</strong></div>
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>

@@ -334,6 +334,7 @@ export default function App() {
             dictionary={dictionary}
             grid={grid}
             tool={tool}
+            pathCost={stats.pathCost}
             isRunning={isRunning}
             onCellAction={updateCell}
             onHoverCell={setHoveredCell}

@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { algorithmIds } from '../algorithms/pathfinding.js';
 
-function CostLine({ label, entry, multiplier }) {
-  return (
-    <li>
-      <span>{label}</span>
-      <strong>{entry.count} × {multiplier} = {entry.cost}</strong>
-    </li>
-  );
-}
-
 export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCount, hoveredCell, liveExplanation }) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [explanationAlgorithm, setExplanationAlgorithm] = useState(activeAlgorithm.id);
@@ -22,7 +13,7 @@ export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCou
       <div className="algorithm-header">
         <h2>{activeAlgorithm.name}</h2>
         <button
-          className={`icon-button bulb-button ${showExplanation ? 'active' : ''}`}
+          className={`clue-button ${showExplanation ? 'active' : ''}`}
           type="button"
           aria-label={dictionary.explain.toggle}
           title={dictionary.explain.toggle}
@@ -31,7 +22,8 @@ export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCou
             setShowExplanation((current) => !current);
           }}
         >
-          💡
+          <span>💡</span>
+          <strong>{dictionary.explain.clues}</strong>
         </button>
       </div>
 
@@ -63,22 +55,13 @@ export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCou
         <p>{liveExplanation}</p>
       </div>
 
-      <div className="info-box">
+      <div className="info-box stable-hover-box">
         <strong>{dictionary.hover.title}</strong>
         {hoveredCell ? (
           <p>{dictionary.hover.type}: {hoveredType}<br />{dictionary.hover.cost}: {hoveredCost}<br />{dictionary.hover.position}: {hoveredCell.row + 1}, {hoveredCell.col + 1}</p>
         ) : (
           <p>{dictionary.hover.empty}</p>
         )}
-      </div>
-
-      <div className="info-box">
-        <strong>{dictionary.cost.title}</strong>
-        <ul className="cost-list">
-          <CostLine label={dictionary.cost.normal} entry={stats.costBreakdown.normal} multiplier={1} />
-          <CostLine label={dictionary.cost.water} entry={stats.costBreakdown.water} multiplier={5} />
-          <CostLine label={dictionary.cost.mud} entry={stats.costBreakdown.mud} multiplier={10} />
-        </ul>
       </div>
     </aside>
   );

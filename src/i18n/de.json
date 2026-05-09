@@ -28,15 +28,17 @@
   },
   "actions": {
     "kicker": "Aktionen",
-    "title": "Ausführen und zurücksetzen"
+    "title": "Ausführen und zurücksetzen",
+    "historyGroup": "Undo und Redo"
   },
   "brush": {
     "title": "Pinselmodus",
     "text": "Halte die Maustaste gedrückt und ziehe über das Grid. Start und Ziel setzt du weiterhin per Einzelklick."
   },
   "explain": {
-    "toggle": "Erklärung öffnen",
-    "label": "Erkläre mir"
+    "toggle": "Hinweise öffnen",
+    "label": "Erkläre mir",
+    "clues": "Hinweise"
   },
   "presets": {
     "custom": "Eigenes Grid",
@@ -91,6 +93,7 @@
   },
   "cost": {
     "title": "Pfadkosten-Aufschlüsselung",
+    "shortLabel": "Kosten",
     "normal": "Normal",
     "water": "Wasser",
     "mud": "Schlamm"
