@@ -50,8 +50,9 @@ function createSnapshot(grid, startNode, targetNode) {
 
 function getLiveTerrainCost(grid) {
   return grid.flat().reduce((sum, cell) => {
-    if (cell.type === 'water') return sum + 5;
-    if (cell.type === 'mud') return sum + 10;
+    const type = cell.previousType ?? cell.type;
+    if (type === 'water') return sum + 5;
+    if (type === 'mud') return sum + 10;
     return sum;
   }, 0);
 }
@@ -83,7 +84,7 @@ export default function App() {
   );
 
   const wallCount = useMemo(() => countCells(grid, 'wall'), [grid]);
-  const boardCost = useMemo(() => stats.pathCost || getLiveTerrainCost(grid), [grid, stats.pathCost]);
+  const boardCost = useMemo(() => getLiveTerrainCost(grid), [grid]);
 
   const pushHistory = (snapshot) => {
     setUndoStack((current) => [...current.slice(-24), snapshot]);
