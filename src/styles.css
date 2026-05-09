@@ -31,6 +31,7 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
   --visited: #38bdf8;
   --path: #facc15;
   --good: #34d399;
+  --bad: #fb7185;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
   background: radial-gradient(circle at top left, rgba(124, 156, 255, 0.24), transparent 36%), linear-gradient(135deg, #080b17, #11182f 55%, #0e1528);
   color: var(--text);
@@ -52,6 +53,7 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
   --visited: #0ea5e9;
   --path: #eab308;
   --good: #047857;
+  --bad: #be123c;
   --shadow: 0 24px 70px rgba(37, 99, 235, 0.13);
   background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 36%), linear-gradient(135deg, #f8fbff, #edf4ff 55%, #f7f9fd);
   color: var(--text);
@@ -170,7 +172,7 @@ button.primary { background: linear-gradient(135deg, var(--accent), var(--accent
 .maintenance-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .history-actions { display: inline-flex; width: max-content; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .history-button { width: 48px; height: 42px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; line-height: 1; }
-.action-status { margin-top: 2px; }
+.action-status { margin-top: 16px; }
 
 .info-panel p { color: var(--muted); line-height: 1.65; }
 .algorithm-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
@@ -195,10 +197,20 @@ button.primary { background: linear-gradient(135deg, var(--accent), var(--accent
 .compare-table-wrap { overflow-x: auto; }
 .compare-table { width: 100%; border-collapse: collapse; min-width: 860px; }
 .compare-table th,
-.compare-table td { padding: 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.compare-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
 .compare-table th { color: var(--accent-2); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; }
 .compare-table td { color: var(--text); }
-.badge-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.highlight-scorecard { display: inline-flex; align-items: center; gap: 10px; min-width: 270px; }
+.metric-group { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; }
+.metric-divider { width: 1px; height: 30px; background: var(--line); }
+.metric-icon { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 10px; font-size: 1rem; border: 1px solid var(--line); background: var(--surface-strong); }
+.metric-icon.positive { border-color: rgba(52, 211, 153, 0.35); background: rgba(52, 211, 153, 0.12); }
+.metric-icon.negative { border-color: rgba(251, 113, 133, 0.38); background: rgba(251, 113, 133, 0.12); }
+.metric-icon::after { content: attr(aria-label); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); width: max-content; max-width: 220px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-strong); color: var(--text); box-shadow: var(--shadow); font-size: 0.78rem; line-height: 1.3; opacity: 0; pointer-events: none; transition: opacity 0.12s ease, transform 0.12s ease; z-index: 10; }
+.metric-icon:hover::after { opacity: 1; transform: translateX(-50%) translateY(-2px); }
+.metric-counter { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 28px; padding: 0 8px; border-radius: 999px; font-size: 0.78rem; font-weight: 900; }
+.positive-counter { color: var(--good); background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.3); }
+.negative-counter { color: var(--bad); background: rgba(251, 113, 133, 0.12); border: 1px solid rgba(251, 113, 133, 0.3); }
 .result-badge { display: inline-flex; align-items: center; border: 1px solid rgba(52, 211, 153, 0.35); border-radius: 999px; background: rgba(52, 211, 153, 0.12); color: var(--good); padding: 4px 8px; font-size: 0.78rem; font-weight: 800; }
 
 @media (max-width: 1120px) {

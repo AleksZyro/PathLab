@@ -1,23 +1,103 @@
+function finiteValues(rows, key) {
+  return rows.filter((row) => row.found).map((row) => row[key]).filter((value) => Number.isFinite(value));
+}
+
 function minValue(rows, key) {
-  const values = rows.filter((row) => row.found).map((row) => row[key]).filter((value) => Number.isFinite(value));
+  const values = finiteValues(rows, key);
   return values.length ? Math.min(...values) : null;
 }
 
-function hasDifferentValues(rows, key) {
-  const values = rows.filter((row) => row.found).map((row) => row[key]).filter((value) => Number.isFinite(value));
-  return new Set(values).size > 1;
+function maxValue(rows, key) {
+  const values = finiteValues(rows, key);
+  return values.length ? Math.max(...values) : null;
 }
 
-function Badges({ dictionary, row, best, showBestCost }) {
-  const badges = [];
-  if (showBestCost && row.found && row.pathCost === best.cost) badges.push(dictionary.compare.bestCost);
-  if (row.found && row.pathLength === best.length) badges.push(dictionary.compare.shortestPath);
-  if (row.found && row.visited === best.visited) badges.push(dictionary.compare.fewestVisited);
-  if (row.found && row.calculationMs === best.ms) badges.push(dictionary.compare.fastest);
+function hasDifferentValues(rows, key) {
+  return new Set(finiteValues(rows, key)).size > 1;
+}
+
+function getCompareText(dictionary, key, fallback) {
+  return dictionary.compare[key] ?? fallback;
+}
+
+function MetricIcon({ type, icon, label }) {
+  return (
+    <span className={`metric-icon ${type}`} title={label} aria-label={label}>
+      <span aria-hidden="true">{icon}</span>
+    </span>
+  );
+}
+
+function Highlights({ dictionary, row, best, worst, activeMetrics }) {
+  const positive = [];
+  const negative = [];
+
+  const metricConfig = [
+    {
+      key: 'cost',
+      value: row.pathCost,
+      best: best.cost,
+      worst: worst.cost,
+      active: activeMetrics.cost,
+      positiveIcon: '🪙',
+      negativeIcon: '💸',
+      positiveLabel: getCompareText(dictionary, 'bestCost', 'Günstigste Kosten'),
+      negativeLabel: getCompareText(dictionary, 'worstCost', 'Teuerste Kosten')
+    },
+    {
+      key: 'length',
+      value: row.pathLength,
+      best: best.length,
+      worst: worst.length,
+      active: activeMetrics.length,
+      positiveIcon: '📏',
+      negativeIcon: '↔️',
+      positiveLabel: getCompareText(dictionary, 'shortestPath', 'Kürzester Pfad'),
+      negativeLabel: getCompareText(dictionary, 'longestPath', 'Längster Pfad')
+    },
+    {
+      key: 'visited',
+      value: row.visited,
+      best: best.visited,
+      worst: worst.visited,
+      active: activeMetrics.visited,
+      positiveIcon: '🎯',
+      negativeIcon: '🌊',
+      positiveLabel: getCompareText(dictionary, 'fewestVisited', 'Wenigste besucht'),
+      negativeLabel: getCompareText(dictionary, 'mostVisited', 'Meiste besucht')
+    },
+    {
+      key: 'ms',
+      value: row.calculationMs,
+      best: best.ms,
+      worst: worst.ms,
+      active: activeMetrics.ms,
+      positiveIcon: '⚡',
+      negativeIcon: '🐢',
+      positiveLabel: getCompareText(dictionary, 'fastest', 'Schnellste Berechnung'),
+      negativeLabel: getCompareText(dictionary, 'slowest', 'Langsamste Berechnung')
+    }
+  ];
+
+  if (row.found) {
+    metricConfig.forEach((metric) => {
+      if (!metric.active) return;
+      if (metric.value === metric.best) positive.push(metric);
+      if (metric.value === metric.worst) negative.push(metric);
+    });
+  }
 
   return (
-    <div className="badge-row">
-      {badges.map((badge) => <span className="result-badge" key={badge}>{badge}</span>)}
+    <div className="highlight-scorecard">
+      <div className="metric-group positive-group" aria-label={getCompareText(dictionary, 'positive', 'Positive Eigenschaften')}>
+        {positive.map((metric) => <MetricIcon key={`positive-${metric.key}`} type="positive" icon={metric.positiveIcon} label={metric.positiveLabel} />)}
+        <span className="metric-counter positive-counter">+{positive.length}</span>
+      </div>
+      <div className="metric-divider" />
+      <div className="metric-group negative-group" aria-label={getCompareText(dictionary, 'negative', 'Negative Eigenschaften')}>
+        {negative.map((metric) => <MetricIcon key={`negative-${metric.key}`} type="negative" icon={metric.negativeIcon} label={metric.negativeLabel} />)}
+        <span className="metric-counter negative-counter">-{negative.length}</span>
+      </div>
     </div>
   );
 }
@@ -31,7 +111,20 @@ export default function ComparePanel({ dictionary, rows }) {
     visited: minValue(rows, 'visited'),
     ms: minValue(rows, 'calculationMs')
   };
-  const showBestCost = hasDifferentValues(rows, 'pathCost');
+
+  const worst = {
+    cost: maxValue(rows, 'pathCost'),
+    length: maxValue(rows, 'pathLength'),
+    visited: maxValue(rows, 'visited'),
+    ms: maxValue(rows, 'calculationMs')
+  };
+
+  const activeMetrics = {
+    cost: hasDifferentValues(rows, 'pathCost'),
+    length: hasDifferentValues(rows, 'pathLength'),
+    visited: hasDifferentValues(rows, 'visited'),
+    ms: hasDifferentValues(rows, 'calculationMs')
+  };
 
   return (
     <section className="compare-card">
@@ -61,7 +154,7 @@ export default function ComparePanel({ dictionary, rows }) {
                 <td>{row.pathLength}</td>
                 <td>{row.pathCost}</td>
                 <td>{row.calculationMs}</td>
-                <td><Badges dictionary={dictionary} row={row} best={best} showBestCost={showBestCost} /></td>
+                <td><Highlights dictionary={dictionary} row={row} best={best} worst={worst} activeMetrics={activeMetrics} /></td>
               </tr>
             ))}
           </tbody>
