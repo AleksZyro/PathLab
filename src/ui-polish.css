@@ -26,18 +26,20 @@
   filter: saturate(1);
 }
 
-.flag-emoji {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.flag-svg {
+  display: block;
   width: 34px;
   height: 24px;
-  font-size: 1.55rem;
-  line-height: 1;
   border-radius: 5px;
   overflow: hidden;
-  transform: translateY(-1px);
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+  box-shadow: 0 2px 8px rgba(0,0,0,0.32);
+}
+
+.flag-emoji,
+.flag,
+.flag-de,
+.flag-uk {
+  display: none !important;
 }
 
 .action-panel {

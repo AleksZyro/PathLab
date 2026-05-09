@@ -145,9 +145,9 @@ export default function ComparePanel({ dictionary, rows }) {
             <tr>
               <th>{dictionary.compare.algorithm}</th>
               <th>{dictionary.compare.found}</th>
-              <th>{dictionary.compare.visited}</th>
-              <th>{dictionary.compare.length}</th>
               <th>{dictionary.compare.cost}</th>
+              <th>{dictionary.compare.length}</th>
+              <th>{dictionary.compare.visited}</th>
               <th>{dictionary.compare.ms}</th>
               <th>{dictionary.compare.highlights}</th>
             </tr>
@@ -157,9 +157,9 @@ export default function ComparePanel({ dictionary, rows }) {
               <tr key={row.id}>
                 <td>{row.name}</td>
                 <td>{row.found ? dictionary.compare.yes : dictionary.compare.no}</td>
-                <td>{row.visited}</td>
-                <td>{row.pathLength}</td>
                 <td>{row.pathCost}</td>
+                <td>{row.pathLength}</td>
+                <td>{row.visited}</td>
                 <td>{row.calculationMs}</td>
                 <td><Highlights dictionary={dictionary} row={row} best={best} worst={worst} activeMetrics={activeMetrics} /></td>
               </tr>
