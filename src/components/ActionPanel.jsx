@@ -7,14 +7,16 @@ export default function ActionPanel({ dictionary, isRunning, canUndo, canRedo, s
       </div>
 
       <div className="action-panel-grid">
-        <div className="primary-actions">
-          <button className="primary" disabled={isRunning} onClick={onRun}>{isRunning ? dictionary.controls.running : dictionary.controls.run}</button>
-          <button disabled={isRunning} onClick={onCompare}>{dictionary.controls.compare}</button>
-        </div>
+        <div className="top-action-row">
+          <div className="primary-actions">
+            <button className="primary" disabled={isRunning} onClick={onRun}>{isRunning ? dictionary.controls.running : dictionary.controls.run}</button>
+            <button disabled={isRunning} onClick={onCompare}>{dictionary.controls.compare}</button>
+          </div>
 
-        <div className="history-actions" aria-label={dictionary.actions.historyGroup}>
-          <button className="history-button" disabled={isRunning || !canUndo} onClick={onUndo} title={dictionary.controls.undo} aria-label={dictionary.controls.undo}>↶</button>
-          <button className="history-button" disabled={isRunning || !canRedo} onClick={onRedo} title={dictionary.controls.redo} aria-label={dictionary.controls.redo}>↷</button>
+          <div className="history-actions" aria-label={dictionary.actions.historyGroup}>
+            <button className="history-button" disabled={isRunning || !canUndo} onClick={onUndo} title={dictionary.controls.undo} aria-label={dictionary.controls.undo}>↶</button>
+            <button className="history-button" disabled={isRunning || !canRedo} onClick={onRedo} title={dictionary.controls.redo} aria-label={dictionary.controls.redo}>↷</button>
+          </div>
         </div>
 
         <div className="maintenance-actions">

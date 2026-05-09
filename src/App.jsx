@@ -10,6 +10,7 @@ import PathLabLogo from './components/PathLabLogo.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
+import { playClickSound } from './utils/sound.js';
 import { createPreset } from './utils/presets.js';
 import {
   DEFAULT_START,
@@ -47,6 +48,14 @@ function createSnapshot(grid, startNode, targetNode) {
   return { grid, startNode, targetNode };
 }
 
+function getLiveTerrainCost(grid) {
+  return grid.flat().reduce((sum, cell) => {
+    if (cell.type === 'water') return sum + 5;
+    if (cell.type === 'mud') return sum + 10;
+    return sum;
+  }, 0);
+}
+
 export default function App() {
   const [language, setLanguage] = useState('de');
   const dictionary = dictionaries[language];
@@ -74,6 +83,7 @@ export default function App() {
   );
 
   const wallCount = useMemo(() => countCells(grid, 'wall'), [grid]);
+  const boardCost = useMemo(() => stats.pathCost || getLiveTerrainCost(grid), [grid, stats.pathCost]);
 
   const pushHistory = (snapshot) => {
     setUndoStack((current) => [...current.slice(-24), snapshot]);
@@ -89,6 +99,7 @@ export default function App() {
   };
 
   const switchLanguage = (nextLanguage) => {
+    playClickSound();
     setLanguage(nextLanguage);
     setStatusMessage(dictionaries[nextLanguage].status.initial);
     setLiveExplanation(dictionaries[nextLanguage].live.ready);
@@ -126,6 +137,7 @@ export default function App() {
 
   const updateCell = (row, col, options = { commitHistory: true }) => {
     if (isRunning) return;
+    playClickSound();
     if (options.commitHistory) pushHistory(createSnapshot(grid, startNode, targetNode));
 
     setGrid((currentGrid) => applyCellEdit(currentGrid, row, col).nextGrid);
@@ -136,6 +148,7 @@ export default function App() {
 
   const undo = () => {
     if (!undoStack.length || isRunning) return;
+    playClickSound();
     const previous = undoStack.at(-1);
     setUndoStack((current) => current.slice(0, -1));
     setRedoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
@@ -145,6 +158,7 @@ export default function App() {
 
   const redo = () => {
     if (!redoStack.length || isRunning) return;
+    playClickSound();
     const next = redoStack.at(-1);
     setRedoStack((current) => current.slice(0, -1));
     setUndoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
@@ -176,6 +190,7 @@ export default function App() {
 
   const loadPreset = (presetId) => {
     if (isRunning) return;
+    playClickSound();
     if (presetId === 'custom') {
       setPreset('custom');
       return;
@@ -193,6 +208,7 @@ export default function App() {
 
   const resetGrid = () => {
     if (isRunning) return;
+    playClickSound();
     pushHistory(createSnapshot(grid, startNode, targetNode));
     setStartNode(DEFAULT_START);
     setTargetNode(DEFAULT_TARGET);
@@ -205,6 +221,7 @@ export default function App() {
 
   const clearWalls = () => {
     if (isRunning) return;
+    playClickSound();
     pushHistory(createSnapshot(grid, startNode, targetNode));
     setGrid((currentGrid) =>
       cloneGridWithClearedSearch(currentGrid).map((gridRow) =>
@@ -218,6 +235,7 @@ export default function App() {
 
   const clearPath = () => {
     if (isRunning) return;
+    playClickSound();
     setGrid((currentGrid) => cloneGridWithClearedSearch(currentGrid));
     setStats(emptyStats);
     setComparisonRows([]);
@@ -226,6 +244,7 @@ export default function App() {
 
   const visualize = async () => {
     if (isRunning) return;
+    playClickSound();
     setIsRunning(true);
     setShowOnboarding(false);
     setComparisonRows([]);
@@ -273,6 +292,7 @@ export default function App() {
 
   const compareAlgorithms = () => {
     if (isRunning) return;
+    playClickSound();
     const preparedGrid = cloneGridWithClearedSearch(grid);
     const rows = algorithmIds.map((id) => {
       const result = measureAlgorithm(id, preparedGrid, startNode, targetNode);
@@ -307,14 +327,17 @@ export default function App() {
             aria-label={theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
             title={theme === 'dark' ? dictionary.app.lightMode : dictionary.app.darkMode}
             disabled={isRunning}
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() => {
+              playClickSound();
+              setTheme(theme === 'dark' ? 'light' : 'dark');
+            }}
           >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
       </section>
 
-      {showOnboarding && <Onboarding dictionary={dictionary} onDismiss={() => setShowOnboarding(false)} />}
+      {showOnboarding && <Onboarding dictionary={dictionary} onDismiss={() => { playClickSound(); setShowOnboarding(false); }} />}
 
       <section className="workspace">
         <Controls
@@ -324,8 +347,8 @@ export default function App() {
           speed={speed}
           preset={preset}
           isRunning={isRunning}
-          onAlgorithmChange={setAlgorithm}
-          onToolChange={setTool}
+          onAlgorithmChange={(nextAlgorithm) => { playClickSound(); setAlgorithm(nextAlgorithm); }}
+          onToolChange={(nextTool) => { playClickSound(); setTool(nextTool); }}
           onSpeedChange={setSpeed}
           onPresetChange={loadPreset}
         />
@@ -334,7 +357,7 @@ export default function App() {
             dictionary={dictionary}
             grid={grid}
             tool={tool}
-            pathCost={stats.pathCost}
+            pathCost={boardCost}
             isRunning={isRunning}
             onCellAction={updateCell}
             onHoverCell={setHoveredCell}

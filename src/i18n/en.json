@@ -24,7 +24,8 @@
     "redo": "Redo",
     "clearPath": "Clear path",
     "clearWalls": "Clear obstacles",
-    "resetGrid": "Reset grid"
+    "resetGrid": "Reset grid",
+    "nodeTools": "Set start and target"
   },
   "actions": {
     "kicker": "Actions",

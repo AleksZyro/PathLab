@@ -24,7 +24,8 @@
     "redo": "Redo",
     "clearPath": "Pfad löschen",
     "clearWalls": "Hindernisse löschen",
-    "resetGrid": "Grid zurücksetzen"
+    "resetGrid": "Grid zurücksetzen",
+    "nodeTools": "Start und Ziel setzen"
   },
   "actions": {
     "kicker": "Aktionen",

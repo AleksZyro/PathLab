@@ -82,18 +82,17 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
 
 .hero-copy { min-width: 0; }
 .hero-title-row { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); }
-.pathlab-logo { position: relative; flex: 0 0 auto; width: 96px; height: 76px; border: 1px solid var(--line); border-radius: 22px; background: radial-gradient(circle at 22% 28%, rgba(34, 197, 94, 0.22), transparent 20%), radial-gradient(circle at 78% 72%, rgba(239, 68, 68, 0.22), transparent 20%), var(--surface-strong); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 18px 45px rgba(0,0,0,0.18); }
-.logo-node,
-.logo-line { position: absolute; display: block; }
-.logo-node { width: 13px; height: 13px; border-radius: 50%; z-index: 2; }
-.logo-start { left: 17px; top: 17px; background: #22c55e; }
-.logo-mid-one { left: 38px; top: 29px; background: var(--path); }
-.logo-mid-two { left: 55px; top: 43px; background: var(--path); }
-.logo-target { right: 16px; bottom: 15px; background: #ef4444; }
-.logo-line { height: 4px; border-radius: 999px; background: var(--path); transform-origin: left center; opacity: 0.95; }
-.logo-line-one { left: 28px; top: 28px; width: 24px; transform: rotate(29deg); }
-.logo-line-two { left: 48px; top: 40px; width: 24px; transform: rotate(40deg); }
-.logo-line-three { left: 63px; top: 54px; width: 18px; transform: rotate(-18deg); }
+.pathlab-logo { flex: 0 0 auto; width: 110px; height: 86px; }
+.pathlab-logo svg { width: 100%; height: 100%; overflow: visible; }
+.logo-grid-lines path { fill: none; stroke: rgba(174, 185, 215, 0.32); stroke-width: 2.5; stroke-linecap: round; }
+.logo-grid-nodes circle { fill: rgba(174, 185, 215, 0.52); }
+.logo-route { fill: none; stroke: url(#pathlab-line); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 8px 12px rgba(29, 124, 255, 0.2)); }
+.logo-start-ring,
+.logo-target-ring { fill: none; stroke: url(#pathlab-line); stroke-width: 7; }
+.logo-start-dot,
+.logo-target-dot,
+.logo-route-dot { fill: url(#pathlab-line); }
+.logo-bars rect { fill: url(#pathlab-line); opacity: 0.92; }
 
 .top-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; align-items: center; }
 .language-switch { display: inline-flex; gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-strong); }
@@ -127,6 +126,12 @@ label { display: grid; gap: 8px; color: var(--muted); font-weight: 700; }
 select { width: 100%; }
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tool-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.tool-button span { font-weight: 900; }
+.node-tools { display: inline-flex; width: max-content; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.node-tool { width: 52px; height: 42px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.node-tool.start span { color: #22c55e; }
+.node-tool.target span { color: #ef4444; }
 button.active,
 button.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; border-color: transparent; }
 .status-message { margin: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-strong); color: var(--muted); padding: 14px; line-height: 1.5; }
@@ -160,6 +165,7 @@ button.primary { background: linear-gradient(135deg, var(--accent), var(--accent
 .action-panel-head { margin-bottom: 20px; }
 .action-panel-head h2 { margin-bottom: 0; }
 .action-panel-grid { display: grid; gap: 14px; }
+.top-action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .primary-actions,
 .maintenance-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .history-actions { display: inline-flex; width: max-content; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
@@ -207,7 +213,7 @@ button.primary { background: linear-gradient(135deg, var(--accent), var(--accent
   .app { padding: 12px; }
   .hero-panel, .panel, .board-card, .onboarding-card, .compare-card { border-radius: 18px; padding: 14px; }
   .hero-title-row { gap: 12px; }
-  .pathlab-logo { width: 74px; height: 58px; border-radius: 17px; }
+  .pathlab-logo { width: 86px; height: 68px; }
   .grid { gap: 2px; }
   .cell { border-radius: 4px; }
 }

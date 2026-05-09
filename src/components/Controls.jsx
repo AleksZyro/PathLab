@@ -1,6 +1,15 @@
 import { algorithmIds } from '../algorithms/pathfinding.js';
 import { presetIds } from '../utils/presets.js';
 
+const toolIcons = {
+  wall: '▦',
+  water: '≈',
+  mud: '●',
+  erase: '⌫',
+  start: '●',
+  target: '◎'
+};
+
 export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {
   return (
     <aside className="panel controls-panel">
@@ -25,10 +34,19 @@ export default function Controls({ dictionary, algorithm, tool, speed, preset, i
         </select>
       </label>
 
-      <div className="tool-grid">
-        {['wall', 'water', 'mud', 'erase', 'start', 'target'].map((toolId) => (
-          <button key={toolId} disabled={isRunning} className={tool === toolId ? 'active' : ''} onClick={() => onToolChange(toolId)}>
+      <div className="tool-grid drawing-tools">
+        {['wall', 'water', 'mud', 'erase'].map((toolId) => (
+          <button key={toolId} disabled={isRunning} className={tool === toolId ? `active tool-button ${toolId}` : `tool-button ${toolId}`} onClick={() => onToolChange(toolId)}>
+            <span aria-hidden="true">{toolIcons[toolId]}</span>
             {dictionary.tools[toolId]}
+          </button>
+        ))}
+      </div>
+
+      <div className="node-tools" aria-label={dictionary.controls.nodeTools}>
+        {['start', 'target'].map((toolId) => (
+          <button key={toolId} disabled={isRunning} className={tool === toolId ? `active node-tool ${toolId}` : `node-tool ${toolId}`} onClick={() => onToolChange(toolId)} title={dictionary.tools[toolId]} aria-label={dictionary.tools[toolId]}>
+            <span aria-hidden="true">{toolIcons[toolId]}</span>
           </button>
         ))}
       </div>
