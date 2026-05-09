@@ -3,9 +3,14 @@ function minValue(rows, key) {
   return values.length ? Math.min(...values) : null;
 }
 
-function Badges({ dictionary, row, best }) {
+function hasDifferentValues(rows, key) {
+  const values = rows.filter((row) => row.found).map((row) => row[key]).filter((value) => Number.isFinite(value));
+  return new Set(values).size > 1;
+}
+
+function Badges({ dictionary, row, best, showBestCost }) {
   const badges = [];
-  if (row.found && row.pathCost === best.cost) badges.push(dictionary.compare.bestCost);
+  if (showBestCost && row.found && row.pathCost === best.cost) badges.push(dictionary.compare.bestCost);
   if (row.found && row.pathLength === best.length) badges.push(dictionary.compare.shortestPath);
   if (row.found && row.visited === best.visited) badges.push(dictionary.compare.fewestVisited);
   if (row.found && row.calculationMs === best.ms) badges.push(dictionary.compare.fastest);
@@ -26,6 +31,7 @@ export default function ComparePanel({ dictionary, rows }) {
     visited: minValue(rows, 'visited'),
     ms: minValue(rows, 'calculationMs')
   };
+  const showBestCost = hasDifferentValues(rows, 'pathCost');
 
   return (
     <section className="compare-card">
@@ -55,7 +61,7 @@ export default function ComparePanel({ dictionary, rows }) {
                 <td>{row.pathLength}</td>
                 <td>{row.pathCost}</td>
                 <td>{row.calculationMs}</td>
-                <td><Badges dictionary={dictionary} row={row} best={best} /></td>
+                <td><Badges dictionary={dictionary} row={row} best={best} showBestCost={showBestCost} /></td>
               </tr>
             ))}
           </tbody>

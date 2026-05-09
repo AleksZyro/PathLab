@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { COLS } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
 
+function getTerrainCost(grid) {
+  return grid.flat().reduce((sum, cell) => {
+    const type = cell.previousType ?? cell.type;
+    if (type === 'water') return sum + 5;
+    if (type === 'mud') return sum + 10;
+    return sum;
+  }, 0);
+}
+
 export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost, onCellAction, onHoverCell, onLeaveGrid }) {
   const [isPainting, setIsPainting] = useState(false);
   const [lastPaintedCell, setLastPaintedCell] = useState(null);
   const isBrushTool = brushTools.includes(tool);
+  const displayCost = useMemo(() => pathCost || getTerrainCost(grid), [grid, pathCost]);
 
   const paintCell = (row, col, options) => {
     const key = `${row}-${col}`;
@@ -56,7 +66,7 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
             <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
           ))}
         </div>
-        <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{pathCost}</strong></div>
+        <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{displayCost}</strong></div>
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>

@@ -7,7 +7,7 @@ const toolIcons = {
   mud: '●',
   erase: '⌫',
   start: '●',
-  target: '◎'
+  target: '●'
 };
 
 export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {
