@@ -1,51 +1,53 @@
 # PathLab
 
-PathLab is an interactive pathfinding visualizer for learning and comparing search algorithms on a weighted grid.
+**Deutsch** | [English](./README_EN.md)
+
+PathLab ist ein interaktiver Visualizer zum Lernen und Vergleichen von Wegfindungsalgorithmen auf einem gewichteten Raster.
 
 ## Status
 
-Current status: **stable portfolio version**
+Aktueller Stand: **stabile Portfolio-Version**
 
-Optional future improvements are listed at the end of this document and are not required for the current version.
+Optionale spätere Verbesserungen sind am Ende aufgeführt und keine Voraussetzung für den aktuellen Projektstand.
 
-## What the App Does
+## Funktionsweise
 
-Users can place walls, move the start and target nodes, and draw weighted terrain. Normal cells cost 1, water costs 5, and mud costs 10.
+Nutzer können Wände platzieren, Start- und Zielknoten verschieben und gewichtete Felder einzeichnen. Normale Felder kosten 1, Wasser kostet 5 und Schlamm kostet 10.
 
-PathLab visualizes four algorithms:
+PathLab visualisiert vier Algorithmen:
 
-- **BFS** finds the shortest route by number of steps on an unweighted grid.
-- **DFS** demonstrates depth-first exploration but does not guarantee the shortest path.
-- **Dijkstra** finds the cheapest route when terrain costs differ.
-- **A\*** combines travelled cost with a Manhattan-distance estimate.
+- **BFS** findet auf einem ungewichteten Raster den kürzesten Weg nach Anzahl Schritte.
+- **DFS** zeigt die Tiefensuche, garantiert aber nicht den kürzesten Weg.
+- **Dijkstra** findet bei unterschiedlichen Feldkosten den günstigsten Weg.
+- **A\*** kombiniert die bisherigen Wegkosten mit einer Manhattan-Distanzschätzung.
 
-## Main Features
+## Hauptfunktionen
 
-- interactive grid with mouse, trackpad, touchscreen, and stylus input
-- movable start and target nodes
-- walls, water, and mud terrain
-- animated algorithm visualization
-- live explanations during a run
-- speed controls and preset scenarios
-- algorithm comparison table
-- result badges and path-cost breakdown
-- undo and redo
-- calculation and animation timing shown separately
-- German and English content
-- light and dark mode
-- beginner guides
-- automated tests for algorithms and grid-state restoration
+- interaktives Raster für Maus, Trackpad, Touchscreen und Stylus
+- verschiebbare Start- und Zielknoten
+- Wände, Wasser und Schlamm
+- animierte Algorithmusvisualisierung
+- Live-Erklärungen während eines Durchlaufs
+- Geschwindigkeitssteuerung und Beispielszenarien
+- Vergleichstabelle für Algorithmen
+- Ergebniskennzeichnungen und Kostenaufschlüsselung
+- Rückgängig und Wiederholen
+- getrennte Anzeige von Berechnungs- und Animationszeit
+- deutsche und englische Inhalte
+- Hell- und Dunkelmodus
+- Einsteigeranleitungen
+- automatisierte Tests für Algorithmen und Rasterzustände
 
-## Timing
+## Zeitmessung
 
-PathLab distinguishes between:
+PathLab unterscheidet zwischen:
 
-- **Calculation time:** the time needed to compute the result
-- **Animation time:** the intentionally slower visual playback
+- **Berechnungszeit:** Zeit für die eigentliche Algorithmusberechnung
+- **Animationszeit:** bewusst langsamere visuelle Wiedergabe
 
-This prevents the animation duration from being presented as algorithm runtime.
+Dadurch wird die Animationsdauer nicht als Laufzeit des Algorithmus dargestellt.
 
-## Tech Stack
+## Tech-Stack
 
 - React
 - JavaScript
@@ -53,7 +55,7 @@ This prevents the animation duration from being presented as algorithm runtime.
 - CSS
 - Vitest
 
-## Setup
+## Einrichtung
 
 ```bash
 npm install
@@ -66,12 +68,12 @@ npm run dev
 npm test
 ```
 
-## Documentation
+## Dokumentation
 
-- [English beginner guide](USER_GUIDE_EN.md)
 - [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
+- [English beginner guide](USER_GUIDE_EN.md)
 
-## Project Structure
+## Projektstruktur
 
 ```text
 src/
@@ -96,8 +98,8 @@ src/
   main.jsx
 ```
 
-## Optional Future Improvements
+## Optionale spätere Verbesserungen
 
-- portfolio case study
-- keyboard shortcuts
-- optional step-by-step playback
+- Portfolio-Fallstudie
+- Tastenkürzel für Werkzeuge
+- optionale Schritt-für-Schritt-Wiedergabe
