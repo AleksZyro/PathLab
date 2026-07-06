@@ -11,6 +11,7 @@ import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
 import { playClickSound } from './utils/sound.js';
+import { createRedoState, createUndoState, pushHistoryEntry } from './utils/history.js';
 import { createPreset } from './utils/presets.js';
 import {
   DEFAULT_START,
@@ -79,7 +80,7 @@ export default function App() {
   const boardCost = useMemo(() => getTerrainCostTotal(grid), [grid]);
 
   const pushHistory = (snapshot) => {
-    setUndoStack((current) => [...current.slice(-24), snapshot]);
+    setUndoStack((current) => pushHistoryEntry(current, snapshot));
     setRedoStack([]);
   };
 
@@ -142,20 +143,20 @@ export default function App() {
   const undo = () => {
     if (!undoStack.length || isRunning) return;
     playClickSound();
-    const previous = undoStack.at(-1);
-    setUndoStack((current) => current.slice(0, -1));
-    setRedoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
-    restoreSnapshot(previous);
+    const nextState = createUndoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
+    setUndoStack(nextState.undoStack);
+    setRedoStack(nextState.redoStack);
+    restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.undo);
   };
 
   const redo = () => {
     if (!redoStack.length || isRunning) return;
     playClickSound();
-    const next = redoStack.at(-1);
-    setRedoStack((current) => current.slice(0, -1));
-    setUndoStack((current) => [...current, createSnapshot(grid, startNode, targetNode)]);
-    restoreSnapshot(next);
+    const nextState = createRedoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
+    setUndoStack(nextState.undoStack);
+    setRedoStack(nextState.redoStack);
+    restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.redo);
   };
 

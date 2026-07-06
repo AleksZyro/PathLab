@@ -43,6 +43,21 @@ describe('pathfinding algorithms', () => {
     expect(result.path).not.toContainEqual({ row: 0, col: 2 });
   });
 
+  it('reports a weighted cost breakdown for water and mud fields', () => {
+    let grid = gridWithStartAndTarget();
+    grid = setCells(grid, [{ row: 0, col: 1 }], 'water');
+    grid = setCells(grid, [{ row: 0, col: 2 }], 'mud');
+    grid = setCells(grid, Array.from({ length: 5 }, (_, col) => ({ row: 1, col })), 'wall');
+
+    const result = runDijkstra(grid, start, target);
+
+    expect(result.found).toBe(true);
+    expect(result.pathCost).toBe(17);
+    expect(result.costBreakdown.normal).toEqual({ count: 2, cost: 2 });
+    expect(result.costBreakdown.water).toEqual({ count: 1, cost: 5 });
+    expect(result.costBreakdown.mud).toEqual({ count: 1, cost: 10 });
+  });
+
   it('A* finds the same cheapest cost as Dijkstra on weighted terrain', () => {
     let grid = gridWithStartAndTarget();
     grid = setCells(grid, [{ row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }], 'water');
@@ -54,6 +69,19 @@ describe('pathfinding algorithms', () => {
     expect(astar.pathCost).toBe(dijkstra.pathCost);
   });
 
+  it('A* visits no more cells than Dijkstra on the directed demo terrain', () => {
+    let grid = gridWithStartAndTarget();
+    grid = setCells(grid, [{ row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }], 'mud');
+    grid = setCells(grid, [{ row: 1, col: 2 }, { row: 2, col: 2 }], 'wall');
+
+    const dijkstra = runDijkstra(grid, start, target);
+    const astar = runAStar(grid, start, target);
+
+    expect(astar.found).toBe(true);
+    expect(astar.pathCost).toBe(dijkstra.pathCost);
+    expect(astar.visitedOrder.length).toBeLessThanOrEqual(dijkstra.visitedOrder.length);
+  });
+
   it('returns no path when a full wall separates start and target', () => {
     let grid = gridWithStartAndTarget();
     const wallColumn = Array.from({ length: ROWS }, (_, row) => ({ row, col: 2 }));
@@ -63,5 +91,11 @@ describe('pathfinding algorithms', () => {
 
     expect(result.found).toBe(false);
     expect(result.pathLength).toBe(0);
+    expect(result.pathCost).toBe(0);
+    expect(result.costBreakdown).toEqual({
+      normal: { count: 0, cost: 0 },
+      water: { count: 0, cost: 0 },
+      mud: { count: 0, cost: 0 }
+    });
   });
 });

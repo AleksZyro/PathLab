@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, setCellType } from './grid.js';
+import { applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, moveSpecialNode, setCellType } from './grid.js';
 
 describe('grid search state restoration', () => {
   it('restores water after clearing a visited/path overlay', () => {
@@ -35,5 +35,18 @@ describe('grid search state restoration', () => {
     expect(getCellCost(grid[1][1])).toBe(5);
     expect(getCellCost(grid[1][2])).toBe(10);
     expect(getTerrainCostTotal(grid)).toBe(15);
+  });
+
+  it('moves start and target nodes without leaving duplicate special nodes', () => {
+    let grid = createGrid({ row: 0, col: 0 }, { row: 0, col: 4 });
+    grid = moveSpecialNode(grid, { row: 0, col: 0 }, { row: 1, col: 1 }, 'start');
+    grid = moveSpecialNode(grid, { row: 0, col: 4 }, { row: 2, col: 2 }, 'target');
+
+    expect(grid[0][0].type).toBe('empty');
+    expect(grid[0][4].type).toBe('empty');
+    expect(grid[1][1].type).toBe('start');
+    expect(grid[2][2].type).toBe('target');
+    expect(grid.flat().filter((cell) => cell.type === 'start')).toHaveLength(1);
+    expect(grid.flat().filter((cell) => cell.type === 'target')).toHaveLength(1);
   });
 });
