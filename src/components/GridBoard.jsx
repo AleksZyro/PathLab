@@ -3,6 +3,20 @@ import { COLS, getTerrainCostTotal } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
+const mergedCellTypes = new Set(['wall', 'water', 'mud']);
+
+function getMergedCellClasses(grid, cell) {
+  if (!mergedCellTypes.has(cell.type)) return '';
+
+  const sameType = (row, col) => grid[row]?.[col]?.type === cell.type;
+  return [
+    'merged-cell',
+    sameType(cell.row - 1, cell.col) && 'merge-up',
+    sameType(cell.row + 1, cell.col) && 'merge-down',
+    sameType(cell.row, cell.col - 1) && 'merge-left',
+    sameType(cell.row, cell.col + 1) && 'merge-right'
+  ].filter(Boolean).join(' ');
+}
 
 export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost, onCellAction, onHoverCell, onLeaveGrid }) {
   const [isPainting, setIsPainting] = useState(false);
@@ -67,7 +81,7 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
             data-grid-cell="true"
             data-row={cell.row}
             data-col={cell.col}
-            className={`cell ${cell.type}`}
+            className={`cell ${cell.type} ${getMergedCellClasses(grid, cell)}`.trim()}
             aria-label={`${cell.type} cell at row ${cell.row + 1}, column ${cell.col + 1}`}
             disabled={isRunning}
             onPointerDown={(event) => handlePointerDown(event, cell)}
