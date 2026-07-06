@@ -1,7 +1,7 @@
 export const ROWS = 18;
-export const COLS = 32;
+export const COLS = 31;
 export const DEFAULT_START = { row: 8, col: 7 };
-export const DEFAULT_TARGET = { row: 8, col: 24 };
+export const DEFAULT_TARGET = { row: 8, col: 23 };
 
 export const terrainCosts = {
   empty: 1,

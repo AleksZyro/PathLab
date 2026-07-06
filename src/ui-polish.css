@@ -215,3 +215,132 @@ button.primary:hover {
     min-width: 260px;
   }
 }
+
+/* PathLab UI refresh */
+.app.dark {
+  --wall: #0f172a;
+  --danger: #dc2626;
+  --danger-soft: rgba(127, 29, 29, 0.34);
+  --danger-text: #fecaca;
+}
+
+.app.light {
+  --wall: #111827;
+  --danger: #dc2626;
+  --danger-soft: rgba(254, 226, 226, 0.96);
+  --danger-text: #991b1b;
+}
+
+.hero-panel,
+.panel,
+.board-card,
+.compare-card,
+.onboarding-card {
+  border-radius: 16px !important;
+}
+
+.hero-panel {
+  padding-block: 18px;
+}
+
+.panel,
+.board-card {
+  padding: 16px;
+}
+
+button,
+select,
+.theme-toggle {
+  border-radius: 10px;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+button:hover:not(:disabled),
+select:hover:not(:disabled) {
+  border-color: rgba(84, 198, 235, 0.58);
+}
+
+.grid {
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.cell {
+  border-color: rgba(97, 126, 181, 0.24);
+  border-radius: 0;
+}
+
+.cell:hover:not(:disabled) {
+  transform: none;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.24);
+}
+
+.cell.wall {
+  background: var(--wall);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.legend-dot.wall {
+  background: var(--wall);
+}
+
+.merged-cell {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.merged-cell.merge-up {
+  border-top-color: transparent;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.merged-cell.merge-down {
+  border-bottom-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.merged-cell.merge-left {
+  border-left-color: transparent;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.merged-cell.merge-right {
+  border-right-color: transparent;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.merged-cell:not(.merge-up):not(.merge-left) {
+  border-top-left-radius: 7px;
+}
+
+.merged-cell:not(.merge-up):not(.merge-right) {
+  border-top-right-radius: 7px;
+}
+
+.merged-cell:not(.merge-down):not(.merge-left) {
+  border-bottom-left-radius: 7px;
+}
+
+.merged-cell:not(.merge-down):not(.merge-right) {
+  border-bottom-right-radius: 7px;
+}
+
+.tool-button.erase {
+  border-color: rgba(248, 113, 113, 0.46);
+  background: var(--danger-soft);
+  color: var(--danger-text);
+  font-weight: 900;
+}
+
+.tool-button.erase:hover:not(:disabled),
+.tool-button.erase.active {
+  border-color: rgba(248, 113, 113, 0.8);
+  background: var(--danger) !important;
+  color: #ffffff;
+}
