@@ -1,5 +1,9 @@
 # Screenshots
 
-Dieser Ordner ist für Portfolio-Screenshots vorgesehen.
+Dieser Ordner enthält Portfolio-Screenshots für PathLab.
 
-Aktuell sind bewusst keine Screenshots enthalten, weil keine automatisch erzeugten oder erfundenen Bilder ins Repository gelegt werden sollen.
+## Enthaltene Screenshots
+
+- `pathlab-overview.png`: echter Anwendungsscreenshot der PathLab-Übersicht.
+
+Der Screenshot wird in der deutschen und englischen README eingebunden.

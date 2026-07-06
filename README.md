@@ -4,11 +4,16 @@
 
 PathLab ist ein interaktiver Visualizer zum Lernen und Vergleichen von Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt ist als IMS-Portfolio-Projekt aufgebaut und zeigt Algorithmen, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kleinen React-Anwendung.
 
+- Live-Demo: [https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
+- Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
+
+![PathLab overview](./docs/screenshots/pathlab-overview.png)
+
 ## Projektstatus
 
-Aktueller Stand: **Portfolio-Vorbereitung auf eigenem Arbeitsbranch**.
+Aktueller Stand: **stabile Portfolio-Version**.
 
-Die Anwendung ist lokal lauffähig und wird mit Vitest getestet. Eine öffentliche Live-Demo ist noch nicht eingerichtet. Screenshots sind vorbereitet, aber noch nicht im Repository abgelegt.
+Die Anwendung ist über GitHub Pages veröffentlicht. GitHub Actions wurde erfolgreich mit `npm ci`, `npm test` und `npm run build` ausgeführt.
 
 ## Hauptfunktionen
 
@@ -41,6 +46,8 @@ Dijkstra und A* verwenden aktuell eine einfache Array-Sortierung für offene Kno
 - Vite
 - CSS
 - Vitest
+- GitHub Actions
+- GitHub Pages
 
 ## Installation
 
@@ -72,6 +79,14 @@ npm run preview
 
 ```bash
 npm test
+```
+
+Die automatisierte GitHub-Actions-Prüfung führt aus:
+
+```bash
+npm ci
+npm test
+npm run build
 ```
 
 Die Tests prüfen unter anderem:
@@ -123,32 +138,23 @@ docs/
 - Such-Overlays merken sich den vorherigen Geländetyp, damit Wasser und Schlamm nach der Animation wiederhergestellt werden können.
 - Berechnungszeit und Animationszeit werden getrennt behandelt. Die Animation wird bewusst verlangsamt und ist deshalb keine Algorithmus-Laufzeit.
 - Undo und Redo verwenden kleine History-Helfer in `src/utils/history.js`, damit die Stack-Logik isoliert testbar ist.
+- Das Deployment erfolgt über GitHub Pages.
 
 ## Bekannte Einschränkungen
 
 - Dijkstra und A* nutzen Array-Sortierung statt Priority Queue.
 - Das Raster hat eine feste Grösse und ist als Lernumgebung gedacht.
-- Es gibt noch keine CI-Pipeline.
-- Es gibt noch keine eingerichtete Live-Demo.
-- Screenshots müssen noch manuell aufgenommen werden.
+- Screenshots müssen bei UI-Änderungen manuell aktualisiert werden.
 
 ## Screenshot-Bereich
 
-Der Ordner [docs/screenshots](./docs/screenshots/) ist vorbereitet. Aktuell sind dort keine Screenshots enthalten.
-
-Empfohlene Screenshots:
-
-- Startansicht im Dunkelmodus mit leerem Raster
-- Beispiel `A* vs Dijkstra Demo` nach dem Laden
-- Ergebnis nach einer Visualisierung mit Pfad und Statistik
-- Algorithmus-Vergleichstabelle
-- mobile Ansicht bei etwa 375 px Breite
+Der Screenshot liegt unter [docs/screenshots/pathlab-overview.png](./docs/screenshots/pathlab-overview.png).
 
 ## Demo-Bereich
 
-Noch keine Live-Demo eingerichtet.
+Die Live-Demo wird über GitHub Pages veröffentlicht:
 
-Empfehlung: Für dieses Vite-Projekt ist **Vercel** am einfachsten, weil keine spezielle Routing-Konfiguration nötig ist. Alternativ funktionieren Netlify oder GitHub Pages ebenfalls. Für GitHub Pages wäre voraussichtlich eine `base`-Konfiguration in `vite.config.js` nötig, zum Beispiel `/PathLab/`.
+[https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
 
 ## Dokumentation
 
@@ -157,4 +163,4 @@ Empfehlung: Für dieses Vite-Projekt ist **Vercel** am einfachsten, weil keine s
 
 ## Lizenz
 
-Für dieses Repository wurde noch keine ausdrückliche Lizenz festgelegt. Bis eine Lizenz gewählt und ergänzt wurde, gelten keine automatisch eingeräumten Nutzungsrechte ausserhalb der GitHub-Standardanzeige.
+Es wurde keine Open-Source-Lizenz vergeben. Der Code ist öffentlich einsehbar, aber es werden keine zusätzlichen Nutzungsrechte eingeräumt.

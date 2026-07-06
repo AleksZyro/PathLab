@@ -2,13 +2,18 @@
 
 [Deutsch](./README.md) | **English**
 
-PathLab is an interactive visualizer for learning and comparing pathfinding algorithms on a weighted grid. The project is prepared as an IMS portfolio project and demonstrates algorithms, UI state, animations, internationalization, and automated tests in a compact React application.
+PathLab is an interactive visualizer for learning and comparing pathfinding algorithms on a weighted grid. The project is presented as a stable IMS portfolio project and demonstrates algorithms, UI state, animations, internationalization, and automated tests in a compact React application.
+
+- Live demo: [https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
+- User guide: [English beginner guide](USER_GUIDE_EN.md)
+
+![PathLab overview](./docs/screenshots/pathlab-overview.png)
 
 ## Project Status
 
-Current status: **portfolio preparation on a separate working branch**.
+Current status: **stable portfolio version**.
 
-The app runs locally and is covered with Vitest tests. A public live demo is not configured yet. The screenshot folder is prepared, but no screenshots are committed yet.
+The application is published with GitHub Pages. GitHub Actions has successfully run `npm ci`, `npm test`, and `npm run build`.
 
 ## Main Features
 
@@ -41,6 +46,8 @@ Dijkstra and A* currently use simple array sorting for open nodes. This implemen
 - Vite
 - CSS
 - Vitest
+- GitHub Actions
+- GitHub Pages
 
 ## Installation
 
@@ -72,6 +79,14 @@ npm run preview
 
 ```bash
 npm test
+```
+
+The automated GitHub Actions check runs:
+
+```bash
+npm ci
+npm test
+npm run build
 ```
 
 The tests cover, among other things:
@@ -123,32 +138,23 @@ docs/
 - Search overlays remember the previous terrain type so water and mud can be restored after the animation.
 - Calculation time and animation time are handled separately. The animation is intentionally slowed down and is therefore not algorithm runtime.
 - Undo and redo use small history helpers in `src/utils/history.js`, which makes the stack logic testable in isolation.
+- Deployment is handled with GitHub Pages.
 
 ## Known Limitations
 
 - Dijkstra and A* use array sorting instead of a priority queue.
 - The grid has a fixed size and is designed as a learning environment.
-- There is no CI pipeline yet.
-- There is no configured live demo yet.
-- Screenshots still need to be captured manually.
+- Screenshots need to be updated manually when the UI changes.
 
 ## Screenshot Section
 
-The [docs/screenshots](./docs/screenshots/) folder is prepared. It currently contains no screenshots.
-
-Recommended screenshots:
-
-- initial dark-mode view with an empty grid
-- loaded `A* vs Dijkstra Demo` preset
-- visualization result with final path and statistics
-- algorithm comparison table
-- mobile view at about 375 px width
+The screenshot is stored at [docs/screenshots/pathlab-overview.png](./docs/screenshots/pathlab-overview.png).
 
 ## Demo Section
 
-No live demo is configured yet.
+The live demo is published with GitHub Pages:
 
-Recommendation: **Vercel** is the simplest option for this Vite project because it does not need special routing configuration. Netlify and GitHub Pages are also possible. For GitHub Pages, a `base` setting in `vite.config.js` would likely be needed, for example `/PathLab/`.
+[https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
 
 ## Documentation
 
@@ -157,4 +163,4 @@ Recommendation: **Vercel** is the simplest option for this Vite project because 
 
 ## License
 
-No explicit license has been chosen for this repository yet. Until a license is selected and added, no usage rights are granted beyond GitHub's default repository viewing behaviour.
+No open-source license has been granted. The code is publicly visible, but no additional usage rights are granted.
