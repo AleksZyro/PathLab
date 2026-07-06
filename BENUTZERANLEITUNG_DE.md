@@ -108,7 +108,7 @@ Die Animation wird absichtlich langsamer abgespielt, damit man die Suche sehen k
 
 ### BFS
 
-BFS steht für Breadth-First Search. Man kann es sich wie eine Wasserwelle vorstellen: Die Suche breitet sich vom Startpunkt gleichmäßig in alle Richtungen aus.
+BFS steht für Breadth-First Search. Man kann es sich wie eine Wasserwelle vorstellen: Die Suche breitet sich vom Startpunkt gleichmässig in alle Richtungen aus.
 
 BFS findet auf einem normalen Grid den kürzesten Weg nach Anzahl Schritten. Wasser und Schlamm werden aber nicht als teurer verstanden.
 

@@ -2,12 +2,12 @@ import { algorithmIds } from '../algorithms/pathfinding.js';
 import { presetIds } from '../utils/presets.js';
 
 const toolIcons = {
-  wall: '▦',
-  water: '≈',
-  mud: '●',
-  erase: '⌫',
-  start: '●',
-  target: '●'
+  wall: '#',
+  water: '~',
+  mud: '.',
+  erase: null,
+  start: 'S',
+  target: 'Z'
 };
 
 export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {
@@ -37,7 +37,7 @@ export default function Controls({ dictionary, algorithm, tool, speed, preset, i
       <div className="tool-grid drawing-tools">
         {['wall', 'water', 'mud', 'erase'].map((toolId) => (
           <button key={toolId} disabled={isRunning} className={tool === toolId ? `active tool-button ${toolId}` : `tool-button ${toolId}`} onClick={() => onToolChange(toolId)}>
-            <span aria-hidden="true">{toolIcons[toolId]}</span>
+            {toolIcons[toolId] && <span aria-hidden="true">{toolIcons[toolId]}</span>}
             {dictionary.tools[toolId]}
           </button>
         ))}
