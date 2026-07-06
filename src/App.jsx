@@ -10,7 +10,7 @@ import PathLabLogo from './components/PathLabLogo.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
-import { playClickSound } from './utils/sound.js';
+import { playClickSound, playGoalReachedSound, playSimulationStartSound } from './utils/sound.js';
 import { createRedoState, createUndoState, pushHistoryEntry } from './utils/history.js';
 import { createPreset } from './utils/presets.js';
 import {
@@ -238,7 +238,7 @@ export default function App() {
 
   const visualize = async () => {
     if (isRunning) return;
-    playClickSound();
+    playSimulationStartSound();
     setIsRunning(true);
     setShowOnboarding(false);
     setComparisonRows([]);
@@ -280,6 +280,7 @@ export default function App() {
         ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.pathLength })
         : translate(dictionary.status.notFound, { algorithm: activeAlgorithm.name })
     );
+    if (result.found) playGoalReachedSound();
     setLiveExplanation(result.found ? dictionary.live.done : dictionary.live.noPath);
     setIsRunning(false);
   };

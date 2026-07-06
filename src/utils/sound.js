@@ -3,7 +3,10 @@ let lastPlayedAt = 0;
 
 const soundProfile = {
   click: { start: 440, end: 300, volume: 0.034, duration: 0.055, type: 'triangle' },
-  action: { start: 520, end: 360, volume: 0.04, duration: 0.07, type: 'sine' }
+  action: { start: 520, end: 360, volume: 0.04, duration: 0.07, type: 'sine' },
+  start: { start: 360, end: 720, volume: 0.045, duration: 0.09, type: 'triangle' },
+  successLow: { start: 520, end: 660, volume: 0.04, duration: 0.09, type: 'sine' },
+  successHigh: { start: 660, end: 880, volume: 0.035, duration: 0.12, type: 'triangle' }
 };
 
 function getAudioContext() {
@@ -16,6 +19,7 @@ function getAudioContext() {
 function playTone(profile) {
   const context = getAudioContext();
   if (!context) return;
+  if (context.state === 'suspended') context.resume();
 
   const oscillator = context.createOscillator();
   const gain = context.createGain();
@@ -46,4 +50,13 @@ export function playClickSound(kind = 'click') {
   lastPlayedAt = now;
 
   playTone(soundProfile[kind] ?? soundProfile.click);
+}
+
+export function playSimulationStartSound() {
+  playTone(soundProfile.start);
+}
+
+export function playGoalReachedSound() {
+  playTone(soundProfile.successLow);
+  window.setTimeout(() => playTone(soundProfile.successHigh), 105);
 }
