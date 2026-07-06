@@ -41,17 +41,16 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
   };
 
   const handlePointerDown = (event, cell) => {
-    if (isRunning) return;
+    if (isRunning || !event.isPrimary || event.button !== 0) return;
     event.preventDefault();
 
-    const shouldBrush = isBrushTool && event.ctrlKey && event.button === 0;
-    setIsPainting(shouldBrush);
+    setIsPainting(isBrushTool);
     paintCell(cell.row, cell.col, { commitHistory: true });
   };
 
   const handlePointerMove = (event, cell) => {
     onHoverCell(cell);
-    if (!isPainting || !isBrushTool || event.buttons !== 1 || !event.ctrlKey || isRunning) return;
+    if (!isPainting || !isBrushTool || isRunning) return;
 
     const pointedCell = getCellFromPointer(event);
     if (!pointedCell) return;
