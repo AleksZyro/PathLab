@@ -410,8 +410,12 @@ select:hover:not(:disabled) {
 }
 
 .node-tools {
-  width: 112px;
-  max-width: 112px;
+  width: max-content;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .node-tool {
