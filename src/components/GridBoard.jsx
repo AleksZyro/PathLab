@@ -3,7 +3,7 @@ import { COLS, getTerrainCostTotal } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
-const mergedCellTypes = new Set(['wall', 'water', 'mud']);
+const mergedCellTypes = new Set(['wall', 'water', 'mud', 'visited', 'path']);
 
 function getMergedCellClasses(grid, cell) {
   if (!mergedCellTypes.has(cell.type)) return '';

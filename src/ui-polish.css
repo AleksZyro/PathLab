@@ -278,9 +278,13 @@ select:hover:not(:disabled) {
 }
 
 .cell {
+  appearance: none;
+  display: block;
+  width: 100%;
   border: 0;
   border-radius: 0;
   background-clip: border-box;
+  margin: 0;
 }
 
 .cell.start,
@@ -303,13 +307,23 @@ select:hover:not(:disabled) {
 
 .cell.wall {
   background: var(--wall);
-  box-shadow: none;
+  box-shadow: 0 0 0 1px var(--wall);
 }
 
-.cell.water,
-.cell.mud,
-.merged-cell {
-  box-shadow: none;
+.cell.water {
+  box-shadow: 0 0 0 1px var(--water);
+}
+
+.cell.mud {
+  box-shadow: 0 0 0 1px var(--mud);
+}
+
+.cell.visited {
+  box-shadow: 0 0 0 1px #2fb4e6;
+}
+
+.cell.path {
+  box-shadow: 0 0 0 1px #f2c94c;
 }
 
 .cell.start,
