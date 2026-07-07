@@ -1,5 +1,6 @@
 let audioContext;
 let lastPlayedAt = 0;
+const volumeBoost = 1.45;
 
 const soundProfile = {
   click: { start: 440, end: 300, volume: 0.085, duration: 0.055, type: 'triangle' },
@@ -30,6 +31,7 @@ function playTone(profile) {
   const gain = context.createGain();
   const filter = context.createBiquadFilter();
   const now = context.currentTime;
+  const volume = Math.min(profile.volume * volumeBoost, 0.22);
 
   oscillator.type = profile.type;
   oscillator.frequency.setValueAtTime(profile.start, now);
@@ -39,7 +41,7 @@ function playTone(profile) {
   filter.frequency.setValueAtTime(1400, now);
 
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(profile.volume, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(volume, now + 0.008);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + profile.duration);
 
   oscillator.connect(filter);
