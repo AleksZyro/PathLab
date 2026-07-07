@@ -10,7 +10,16 @@ import PathLabLogo from './components/PathLabLogo.jsx';
 import StatsPanel from './components/StatsPanel.jsx';
 import de from './i18n/de.json';
 import en from './i18n/en.json';
-import { playClickSound, playGoalReachedSound, playSimulationStartSound } from './utils/sound.js';
+import {
+  playClickSound,
+  playCompareSound,
+  playGoalReachedSound,
+  playNoPathSound,
+  playRedoSound,
+  playResetSound,
+  playSimulationStartSound,
+  playUndoSound
+} from './utils/sound.js';
 import { createRedoState, createUndoState, pushHistoryEntry } from './utils/history.js';
 import { createPreset } from './utils/presets.js';
 import {
@@ -142,7 +151,7 @@ export default function App() {
 
   const undo = () => {
     if (!undoStack.length || isRunning) return;
-    playClickSound();
+    playUndoSound();
     const nextState = createUndoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
     setUndoStack(nextState.undoStack);
     setRedoStack(nextState.redoStack);
@@ -152,7 +161,7 @@ export default function App() {
 
   const redo = () => {
     if (!redoStack.length || isRunning) return;
-    playClickSound();
+    playRedoSound();
     const nextState = createRedoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
     setUndoStack(nextState.undoStack);
     setRedoStack(nextState.redoStack);
@@ -184,7 +193,7 @@ export default function App() {
 
   const loadPreset = (presetId) => {
     if (isRunning) return;
-    playClickSound();
+    playClickSound('action');
     if (presetId === 'custom') {
       setPreset('custom');
       return;
@@ -202,7 +211,7 @@ export default function App() {
 
   const resetGrid = () => {
     if (isRunning) return;
-    playClickSound();
+    playResetSound();
     pushHistory(createSnapshot(grid, startNode, targetNode));
     setStartNode(DEFAULT_START);
     setTargetNode(DEFAULT_TARGET);
@@ -215,7 +224,7 @@ export default function App() {
 
   const clearWalls = () => {
     if (isRunning) return;
-    playClickSound();
+    playResetSound();
     pushHistory(createSnapshot(grid, startNode, targetNode));
     setGrid((currentGrid) =>
       cloneGridWithClearedSearch(currentGrid).map((gridRow) =>
@@ -229,7 +238,7 @@ export default function App() {
 
   const clearPath = () => {
     if (isRunning) return;
-    playClickSound();
+    playResetSound();
     setGrid((currentGrid) => cloneGridWithClearedSearch(currentGrid));
     setStats(emptyStats);
     setComparisonRows([]);
@@ -280,14 +289,18 @@ export default function App() {
         ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.pathLength })
         : translate(dictionary.status.notFound, { algorithm: activeAlgorithm.name })
     );
-    if (result.found) playGoalReachedSound();
+    if (result.found) {
+      playGoalReachedSound();
+    } else {
+      playNoPathSound();
+    }
     setLiveExplanation(result.found ? dictionary.live.done : dictionary.live.noPath);
     setIsRunning(false);
   };
 
   const compareAlgorithms = () => {
     if (isRunning) return;
-    playClickSound();
+    playCompareSound();
     const preparedGrid = cloneGridWithClearedSearch(grid);
     const rows = algorithmIds.map((id) => {
       const result = measureAlgorithm(id, preparedGrid, startNode, targetNode);

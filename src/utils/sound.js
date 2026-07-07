@@ -2,11 +2,16 @@ let audioContext;
 let lastPlayedAt = 0;
 
 const soundProfile = {
-  click: { start: 440, end: 300, volume: 0.034, duration: 0.055, type: 'triangle' },
-  action: { start: 520, end: 360, volume: 0.04, duration: 0.07, type: 'sine' },
-  start: { start: 360, end: 720, volume: 0.045, duration: 0.09, type: 'triangle' },
-  successLow: { start: 520, end: 660, volume: 0.04, duration: 0.09, type: 'sine' },
-  successHigh: { start: 660, end: 880, volume: 0.035, duration: 0.12, type: 'triangle' }
+  click: { start: 440, end: 300, volume: 0.048, duration: 0.055, type: 'triangle' },
+  action: { start: 520, end: 360, volume: 0.056, duration: 0.07, type: 'sine' },
+  compare: { start: 420, end: 620, volume: 0.058, duration: 0.08, type: 'triangle' },
+  reset: { start: 300, end: 180, volume: 0.052, duration: 0.08, type: 'sawtooth' },
+  undo: { start: 420, end: 260, volume: 0.05, duration: 0.065, type: 'triangle' },
+  redo: { start: 260, end: 420, volume: 0.05, duration: 0.065, type: 'triangle' },
+  start: { start: 360, end: 720, volume: 0.064, duration: 0.09, type: 'triangle' },
+  blocked: { start: 220, end: 170, volume: 0.055, duration: 0.11, type: 'square' },
+  successLow: { start: 520, end: 660, volume: 0.058, duration: 0.09, type: 'sine' },
+  successHigh: { start: 660, end: 880, volume: 0.052, duration: 0.12, type: 'triangle' }
 };
 
 function getAudioContext() {
@@ -59,4 +64,24 @@ export function playSimulationStartSound() {
 export function playGoalReachedSound() {
   playTone(soundProfile.successLow);
   window.setTimeout(() => playTone(soundProfile.successHigh), 105);
+}
+
+export function playNoPathSound() {
+  playTone(soundProfile.blocked);
+}
+
+export function playCompareSound() {
+  playTone(soundProfile.compare);
+}
+
+export function playResetSound() {
+  playTone(soundProfile.reset);
+}
+
+export function playUndoSound() {
+  playTone(soundProfile.undo);
+}
+
+export function playRedoSound() {
+  playTone(soundProfile.redo);
 }
