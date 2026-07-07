@@ -379,6 +379,14 @@ select:hover:not(:disabled) {
   color: #ffffff;
 }
 
+.app,
+.workspace,
+.board-card,
+.info-panel,
+.stable-hover-box {
+  overflow-anchor: none;
+}
+
 .workspace {
   align-items: stretch;
 }
@@ -399,4 +407,31 @@ select:hover:not(:disabled) {
 
 .top-actions .icon-theme-toggle {
   border-radius: 12px;
+}
+
+.node-tools {
+  width: 112px;
+  max-width: 112px;
+}
+
+.node-tool {
+  flex: 0 0 48px;
+  width: 48px;
+  min-width: 48px;
+}
+
+.node-swatch {
+  display: block;
+  width: 24px;
+  height: 18px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.node-swatch.start {
+  background: #22c55e;
+}
+
+.node-swatch.target {
+  background: #ef4444;
 }

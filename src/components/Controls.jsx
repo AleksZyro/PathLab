@@ -6,8 +6,8 @@ const toolIcons = {
   water: '~',
   mud: '.',
   erase: null,
-  start: 'S',
-  target: 'Z'
+  start: null,
+  target: null
 };
 
 export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {
@@ -46,7 +46,7 @@ export default function Controls({ dictionary, algorithm, tool, speed, preset, i
       <div className="node-tools" aria-label={dictionary.controls.nodeTools}>
         {['start', 'target'].map((toolId) => (
           <button key={toolId} disabled={isRunning} className={tool === toolId ? `active node-tool ${toolId}` : `node-tool ${toolId}`} onClick={() => onToolChange(toolId)} title={dictionary.tools[toolId]} aria-label={dictionary.tools[toolId]}>
-            <span aria-hidden="true">{toolIcons[toolId]}</span>
+            <span className={`node-swatch ${toolId}`} aria-hidden="true" />
           </button>
         ))}
       </div>
