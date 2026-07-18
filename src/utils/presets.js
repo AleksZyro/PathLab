@@ -1,4 +1,4 @@
-import { DEFAULT_START, DEFAULT_TARGET, createGrid, setCellType } from './grid.js';
+import { DEFAULT_START, DEFAULT_TARGET, ROWS, createGrid, setCellType } from './grid.js';
 
 function applyCells(grid, cells, type) {
   return cells.reduce((nextGrid, node) => setCellType(nextGrid, node, type), grid);
@@ -28,7 +28,7 @@ export function createPreset(id) {
   }
 
   if (id === 'noPath') {
-    grid = applyCells(grid, Array.from({ length: 18 }, (_, row) => ({ row, col: 15 })), 'wall');
+    grid = applyCells(grid, Array.from({ length: ROWS }, (_, row) => ({ row, col: 15 })), 'wall');
   }
 
   if (id === 'astarDemo') {
