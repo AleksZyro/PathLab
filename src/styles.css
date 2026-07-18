@@ -102,12 +102,7 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
 .hero-copy { min-width: 0; }
 .hero-title-row { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); }
 .pathlab-logo { flex: 0 0 auto; width: 74px; height: 74px; }
-.pathlab-logo svg { width: 100%; height: 100%; display: block; }
-.logo-tile { fill: var(--surface-strong); stroke: var(--line); stroke-width: 2; }
-.logo-grid-lines { fill: none; stroke: rgba(174, 185, 215, 0.38); stroke-width: 2; stroke-linecap: round; }
-.logo-route { fill: none; stroke: var(--accent); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
-.logo-start-dot { fill: var(--start); }
-.logo-target-dot { fill: var(--goal); }
+.pathlab-logo img { width: 100%; height: 100%; display: block; }
 
 .top-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; align-items: center; }
 .language-switch { display: inline-flex; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
