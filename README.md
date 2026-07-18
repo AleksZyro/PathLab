@@ -4,7 +4,7 @@
 
 PathLab ist ein interaktiver Visualizer zum Lernen und Vergleichen von Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt ist als IMS-Portfolio-Projekt aufgebaut und zeigt Algorithmen, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kleinen React-Anwendung.
 
-- Live-Demo: [https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
+- Live-Demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
 - Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
 
 ![PathLab overview](./docs/screenshots/pathlab-overview.png)
@@ -148,13 +148,15 @@ docs/
 
 ## Screenshot-Bereich
 
-Der Screenshot liegt unter [docs/screenshots/pathlab-overview.png](./docs/screenshots/pathlab-overview.png).
+Der Screenshot liegt unter [docs/screenshots/pathlab-overview.png](./docs/screenshots/pathlab-overview.png) und zeigt ein A*-Beispiel mit gewichteten Feldern, Hindernissen, gefundenem Pfad und sichtbaren Controls.
 
 ## Demo-Bereich
 
 Die Live-Demo wird über GitHub Pages veröffentlicht:
 
-[https://aleksandros2.github.io/PathLab/](https://aleksandros2.github.io/PathLab/)
+[https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
+
+Ein separates Demo-Video ist aktuell nicht im Repository enthalten. Die Live-Demo und der aktuelle Screenshot decken den wichtigsten Portfolio-Eindruck ab.
 
 ## Dokumentation
 
