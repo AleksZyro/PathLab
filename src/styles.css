@@ -251,10 +251,8 @@ input[type="range"] { accent-color: var(--accent); }
 .action-panel-head h2 { margin-bottom: 0; }
 .action-panel-grid { display: grid; gap: 18px; }
 .top-action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-.primary-actions,
 .maintenance-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .maintenance-actions { margin-bottom: 16px; }
-.history-actions { display: inline-flex; width: max-content; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 .action-status { margin-top: 0; }
 .status-message { color: var(--muted); padding: 14px; line-height: 1.5; }
 

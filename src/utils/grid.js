@@ -1,4 +1,4 @@
-export const ROWS = 18;
+export const ROWS = 17;
 export const COLS = 31;
 export const DEFAULT_START = { row: 8, col: 7 };
 export const DEFAULT_TARGET = { row: 8, col: 23 };
