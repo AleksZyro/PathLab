@@ -101,18 +101,13 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
 
 .hero-copy { min-width: 0; }
 .hero-title-row { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); }
-.pathlab-logo { flex: 0 0 auto; width: 110px; height: 86px; }
-.pathlab-logo svg { width: 100%; height: 100%; overflow: visible; }
-.logo-grid-lines path { fill: none; stroke: rgba(174, 185, 215, 0.32); stroke-width: 2.5; stroke-linecap: round; }
-.logo-grid-nodes circle { fill: rgba(174, 185, 215, 0.52); }
-.logo-route { fill: none; stroke: var(--accent); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
-.logo-start-ring,
-.logo-target-ring { fill: none; stroke: var(--accent); stroke-width: 7; }
-.logo-start-dot,
-.logo-target-dot,
-.logo-route-dot,
-.logo-bars rect { fill: var(--accent); }
-.logo-bars rect { opacity: 0.92; }
+.pathlab-logo { flex: 0 0 auto; width: 74px; height: 74px; }
+.pathlab-logo svg { width: 100%; height: 100%; display: block; }
+.logo-tile { fill: var(--surface-strong); stroke: var(--line); stroke-width: 2; }
+.logo-grid-lines { fill: none; stroke: rgba(174, 185, 215, 0.38); stroke-width: 2; stroke-linecap: round; }
+.logo-route { fill: none; stroke: var(--accent); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.logo-start-dot { fill: var(--start); }
+.logo-target-dot { fill: var(--goal); }
 
 .top-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; align-items: center; }
 .language-switch { display: inline-flex; gap: 8px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
@@ -309,5 +304,5 @@ input[type="range"] { accent-color: var(--accent); }
   .app { padding: 12px; }
   .hero-panel, .panel, .board-card, .onboarding-card, .compare-card { padding: 14px; }
   .hero-title-row { gap: 12px; }
-  .pathlab-logo { width: 86px; height: 68px; }
+  .pathlab-logo { width: 60px; height: 60px; }
 }
