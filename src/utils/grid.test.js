@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, moveSpecialNode, setCellType } from './grid.js';
+import { COLS, ROWS, applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, moveSpecialNode, setCellType } from './grid.js';
 
 describe('grid search state restoration', () => {
+  it('creates one start node, one target node and the expected grid size', () => {
+    const grid = createGrid({ row: 1, col: 2 }, { row: 3, col: 4 });
+
+    expect(grid).toHaveLength(ROWS);
+    expect(grid[0]).toHaveLength(COLS);
+    expect(grid[1][2].type).toBe('start');
+    expect(grid[3][4].type).toBe('target');
+    expect(grid.flat().filter((cell) => cell.type === 'start')).toHaveLength(1);
+    expect(grid.flat().filter((cell) => cell.type === 'target')).toHaveLength(1);
+  });
+
   it('restores water after clearing a visited/path overlay', () => {
     let grid = createGrid({ row: 0, col: 0 }, { row: 0, col: 4 });
     grid = setCellType(grid, { row: 1, col: 1 }, 'water');

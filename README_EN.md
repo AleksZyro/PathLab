@@ -165,4 +165,4 @@ A separate demo video is currently not included in the repository. The live demo
 
 ## License
 
-No open-source license has been granted. The code is publicly visible, but no additional usage rights are granted.
+This project is published under the MIT License. See [LICENSE](./LICENSE) for details.

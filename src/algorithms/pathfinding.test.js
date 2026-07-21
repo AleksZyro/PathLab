@@ -69,6 +69,19 @@ describe('pathfinding algorithms', () => {
     expect(astar.pathCost).toBe(dijkstra.pathCost);
   });
 
+  it('Dijkstra returns a reproducible path that excludes blocked cells', () => {
+    let grid = gridWithStartAndTarget();
+    grid = setCells(grid, [{ row: 0, col: 2 }, { row: 1, col: 2 }], 'wall');
+
+    const firstRun = runDijkstra(grid, start, target);
+    const secondRun = runDijkstra(grid, start, target);
+
+    expect(firstRun.found).toBe(true);
+    expect(firstRun.path).toEqual(secondRun.path);
+    expect(firstRun.path).not.toContainEqual({ row: 0, col: 2 });
+    expect(firstRun.path).not.toContainEqual({ row: 1, col: 2 });
+  });
+
   it('A* visits no more cells than Dijkstra on the directed demo terrain', () => {
     let grid = gridWithStartAndTarget();
     grid = setCells(grid, [{ row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }], 'mud');

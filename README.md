@@ -165,4 +165,4 @@ Ein separates Demo-Video ist aktuell nicht im Repository enthalten. Die Live-Dem
 
 ## Lizenz
 
-Es wurde keine Open-Source-Lizenz vergeben. Der Code ist öffentlich einsehbar, aber es werden keine zusätzlichen Nutzungsrechte eingeräumt.
+Dieses Projekt ist unter der MIT-Lizenz veröffentlicht. Details stehen in [LICENSE](./LICENSE).
