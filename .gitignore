@@ -1,13 +1,21 @@
 node_modules/
 dist/
+build/
+_site/
 .vite/
 coverage/
+.cache/
+tmp/
+temp/
 
 .env
 .env.*
 !.env.example
 
 *.log
+dev*.log
+dev*.err.log
+dev*.out.log
 .DS_Store
 Thumbs.db
 .idea/

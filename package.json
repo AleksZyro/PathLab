@@ -2,6 +2,20 @@
   "name": "pathlab",
   "version": "0.1.0",
   "private": true,
+  "description": "Interactive pathfinding visualizer for comparing BFS, DFS, Dijkstra and A* on a weighted grid.",
+  "author": "Aleksandar Nikolic",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AleksZyro/PathLab.git"
+  },
+  "keywords": [
+    "pathfinding",
+    "visualizer",
+    "react",
+    "vite",
+    "portfolio"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
