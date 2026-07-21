@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/AleksZyro/PathLab.git"
   },
+  "homepage": "https://alekszyro.github.io/PathLab/",
   "keywords": [
     "pathfinding",
     "visualizer",

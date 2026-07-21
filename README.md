@@ -127,6 +127,8 @@ src/
     sound.js
   App.jsx
   main.jsx
+tests/
+  pathfinding.behavior.test.js
 docs/
   screenshots/
 ```
