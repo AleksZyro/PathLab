@@ -37,6 +37,7 @@ import {
 
 const dictionaries = { de, en };
 const BASE_DELAY = 120;
+const PRIVACY_URL = `${import.meta.env.BASE_URL}privacy.html`;
 const emptyBreakdown = {
   normal: { count: 0, cost: 0 },
   water: { count: 0, cost: 0 },
@@ -397,6 +398,10 @@ export default function App() {
       </section>
 
       <ComparePanel dictionary={dictionary} rows={comparisonRows} />
+      <footer className="app-footer">
+        <span>PathLab berechnet alle Rasterdaten lokal im Browser.</span>
+        <a href={PRIVACY_URL}>Datenschutz</a>
+      </footer>
     </main>
   );
 }
