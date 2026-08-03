@@ -49,7 +49,6 @@ With **Load example**, you can open prepared scenarios such as:
 - Water barrier
 - Mud trap
 - No possible path
-- A* vs Dijkstra demo
 
 This lets users test the project immediately without creating a useful grid first.
 

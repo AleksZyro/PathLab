@@ -49,7 +49,6 @@ Start und Ziel werden bewusst nur per Klick gesetzt. Für Wand, Wasser, Schlamm 
 - Wasser-Barriere
 - Schlamm-Falle
 - Kein möglicher Weg
-- A* vs Dijkstra Demo
 
 Damit kann man sofort testen, ohne zuerst selbst ein gutes Grid bauen zu müssen.
 

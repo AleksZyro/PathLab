@@ -46,8 +46,7 @@
     "simple": "Einfacher Weg",
     "waterBarrier": "Wasser-Barriere",
     "mudTrap": "Schlamm-Falle",
-    "noPath": "Kein möglicher Weg",
-    "astarDemo": "A* vs Dijkstra Demo"
+    "noPath": "Kein möglicher Weg"
   },
   "tools": {
     "wall": "Wand",

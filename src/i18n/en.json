@@ -46,8 +46,7 @@
     "simple": "Simple route",
     "waterBarrier": "Water barrier",
     "mudTrap": "Mud trap",
-    "noPath": "No possible path",
-    "astarDemo": "A* vs Dijkstra demo"
+    "noPath": "No possible path"
   },
   "tools": {
     "wall": "Wall",

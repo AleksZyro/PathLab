@@ -23,7 +23,7 @@ function withoutCells(cells, blockedCells) {
   return cells.filter((cell) => !blockedKeys.has(`${cell.row}-${cell.col}`));
 }
 
-export const presetIds = ['simple', 'waterBarrier', 'mudTrap', 'noPath', 'astarDemo'];
+export const presetIds = ['simple', 'waterBarrier', 'mudTrap', 'noPath'];
 
 export function createPreset(id) {
   let start = DEFAULT_START;
@@ -68,20 +68,6 @@ export function createPreset(id) {
     ], 'wall');
     grid = applyCells(grid, [...horizontal(6, 4, 11), ...horizontal(10, 4, 11)], 'water');
     grid = applyCells(grid, block(7, 9, 16, 19), 'mud');
-  }
-
-  if (id === 'astarDemo') {
-    start = { row: 14, col: 4 };
-    target = { row: 3, col: 27 };
-    grid = createGrid(start, target);
-    const gates = [{ row: 4, col: 9 }, { row: 12, col: 16 }, { row: 7, col: 23 }];
-    grid = applyCells(grid, withoutCells([
-      ...vertical(9, 2, 14),
-      ...vertical(16, 3, 15),
-      ...vertical(23, 1, 12)
-    ], gates), 'wall');
-    grid = applyCells(grid, [...horizontal(10, 10, 15), ...horizontal(5, 17, 22), ...block(12, 14, 24, 27)], 'mud');
-    grid = applyCells(grid, [...horizontal(3, 10, 15), ...horizontal(8, 17, 22), ...horizontal(15, 5, 13)], 'water');
   }
 
   return { grid, start, target };
