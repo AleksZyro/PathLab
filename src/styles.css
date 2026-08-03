@@ -103,7 +103,7 @@ button:disabled, select:disabled, input:disabled { cursor: not-allowed; opacity:
 
 .hero-copy { min-width: 0; }
 .hero-title-row { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); }
-.pathlab-logo { flex: 0 0 auto; width: 88px; height: 88px; }
+.pathlab-logo { flex: 0 0 auto; width: 112px; height: 112px; }
 .pathlab-logo img { width: 100%; height: 100%; display: block; }
 
 .top-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; align-items: center; }
@@ -322,7 +322,7 @@ input[type="range"] { accent-color: var(--accent); }
 @media (max-width: 1120px) {
   .workspace { grid-template-columns: 1fr; }
   .hero-panel, .onboarding-card { align-items: stretch; flex-direction: column; }
-  .hero-title-row { align-items: flex-start; }
+  .hero-title-row { align-items: center; }
   .top-actions { justify-content: flex-start; }
   .theme-toggle { justify-self: start; }
   .action-panel { min-height: unset; }
@@ -334,5 +334,5 @@ input[type="range"] { accent-color: var(--accent); }
   .app { padding: 12px; }
   .hero-panel, .panel, .board-card, .onboarding-card, .compare-card { padding: 14px; }
   .hero-title-row { gap: 12px; }
-  .pathlab-logo { width: 68px; height: 68px; }
+  .pathlab-logo { width: 82px; height: 82px; }
 }
