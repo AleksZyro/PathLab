@@ -2,12 +2,25 @@
 
 **Deutsch** | [English](./README_EN.md)
 
-PathLab ist ein interaktiver Visualizer zum Lernen und Vergleichen von Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt ist als IMS-Portfolio-Projekt aufgebaut und zeigt Algorithmen, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kleinen React-Anwendung.
+PathLab ist ein interaktiver React pathfinding algorithm visualizer zum Lernen und Vergleichen von BFS, DFS, Dijkstra und A* auf einem gewichteten Raster. Das Projekt zeigt Graph-Suche, Terrain-Kosten, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kompakten Vite-Anwendung.
+
+PathLab eignet sich als algorithm learning tool für Wegfindung, shortest path, weighted grid search und den Vergleich klassischer Suchalgorithmen.
 
 - Live-Demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
 - Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
 
 ![PathLab overview](./docs/screenshots/pathlab-overview.png)
+
+## Suchprofil
+
+Dieses Repository ist relevant für Suchen nach:
+
+- pathfinding algorithm visualizer
+- BFS, DFS, Dijkstra und A* visualization
+- shortest path algorithm demo
+- weighted grid pathfinding
+- React algorithm visualization
+- Vite React portfolio project mit Tests und GitHub Pages Demo
 
 ## Projektstatus
 
@@ -159,6 +172,12 @@ Die Live-Demo wird über GitHub Pages veröffentlicht:
 [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
 
 Ein separates Demo-Video ist aktuell nicht im Repository enthalten. Die Live-Demo und der aktuelle Screenshot decken den wichtigsten Portfolio-Eindruck ab.
+
+## Repository-Metadaten Vorschlag
+
+- Description: `Interactive React pathfinding visualizer for BFS, DFS, Dijkstra and A* on a weighted grid.`
+- Website: `https://alekszyro.github.io/PathLab/`
+- Topics: `react`, `pathfinding`, `algorithm-visualizer`, `bfs`, `dfs`, `dijkstra`, `astar`, `weighted-grid`, `portfolio-project`
 
 ## Dokumentation
 
