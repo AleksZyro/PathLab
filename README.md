@@ -2,31 +2,18 @@
 
 **Deutsch** | [English](./README_EN.md)
 
-PathLab ist ein interaktiver React pathfinding algorithm visualizer zum Lernen und Vergleichen von BFS, DFS, Dijkstra und A* auf einem gewichteten Raster. Das Projekt zeigt Graph-Suche, Terrain-Kosten, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kompakten Vite-Anwendung.
-
-PathLab eignet sich als algorithm learning tool für Wegfindung, shortest path, weighted grid search und den Vergleich klassischer Suchalgorithmen.
+PathLab ist ein interaktiver React-Visualizer für Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt zeigt Graph-Suche, Terrain-Kosten, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kompakten Vite-Anwendung.
 
 - Live-Demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
 - Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
+- Status: **stabile Portfolio-Version**
+- Tech-Stack: React 19, JavaScript, Vite, CSS, Vitest, GitHub Actions, GitHub Pages
 
-![PathLab overview](./docs/screenshots/pathlab-overview.png)
+![PathLab Übersicht](./docs/screenshots/pathlab-overview.png)
 
-## Suchprofil
+## Demo
 
-Dieses Repository ist relevant für Suchen nach:
-
-- pathfinding algorithm visualizer
-- BFS, DFS, Dijkstra und A* visualization
-- shortest path algorithm demo
-- weighted grid pathfinding
-- React algorithm visualization
-- Vite React portfolio project mit Tests und GitHub Pages Demo
-
-## Projektstatus
-
-Aktueller Stand: **stabile Portfolio-Version**.
-
-Die Anwendung ist über GitHub Pages veröffentlicht. GitHub Actions wurde erfolgreich mit `npm ci`, `npm test` und `npm run build` ausgeführt.
+![PathLab Demo](./docs/screenshots/pathlab-demo.gif)
 
 ## Hauptfunktionen
 
@@ -43,7 +30,23 @@ Die Anwendung ist über GitHub Pages veröffentlicht. GitHub Actions wurde erfol
 - deutscher und englischer Inhalt
 - Hell- und Dunkelmodus
 
-## Algorithmen
+## Schnellstart
+
+```bash
+npm install
+npm run dev
+```
+
+## Tests und Build
+
+```bash
+npm test
+npm run build
+npm run preview
+```
+
+<details>
+<summary>Algorithmen</summary>
 
 - **BFS** sucht schichtweise und findet auf ungewichteten Rastern den kürzesten Weg nach Anzahl Schritten.
 - **DFS** zeigt Tiefensuche, garantiert aber keinen kürzesten oder günstigsten Weg.
@@ -52,47 +55,10 @@ Die Anwendung ist über GitHub Pages veröffentlicht. GitHub Actions wurde erfol
 
 Dijkstra und A* verwenden aktuell eine einfache Array-Sortierung für offene Knoten. Diese Umsetzung ist für das feste Lernraster ausreichend, aber nicht für sehr grosse Graphen optimiert.
 
-## Tech-Stack
+</details>
 
-- React 19
-- JavaScript
-- Vite
-- CSS
-- Vitest
-- GitHub Actions
-- GitHub Pages
-
-## Installation
-
-```bash
-npm install
-```
-
-## Entwicklung und Produktions-Build
-
-Entwicklungsserver starten:
-
-```bash
-npm run dev
-```
-
-Produktions-Build erstellen:
-
-```bash
-npm run build
-```
-
-Build lokal prüfen:
-
-```bash
-npm run preview
-```
-
-## Tests
-
-```bash
-npm test
-```
+<details>
+<summary>Qualitätssicherung</summary>
 
 Die automatisierte GitHub-Actions-Prüfung führt aus:
 
@@ -112,7 +78,10 @@ Die Tests prüfen unter anderem:
 - Start- und Zielknoten
 - Undo- und Redo-Stack-Logik
 
-## Projektstruktur
+</details>
+
+<details>
+<summary>Projektstruktur</summary>
 
 ```text
 src/
@@ -144,9 +113,14 @@ tests/
   pathfinding.behavior.test.js
 docs/
   screenshots/
+    pathlab-demo.gif
+    pathlab-overview.png
 ```
 
-## Technische Entscheidungen
+</details>
+
+<details>
+<summary>Technische Entscheidungen</summary>
 
 - Die Algorithmen sind von den React-Komponenten getrennt, damit sie unabhängig testbar bleiben.
 - Terrain-Kosten werden zentral in `src/utils/grid.js` gepflegt.
@@ -155,29 +129,25 @@ docs/
 - Undo und Redo verwenden kleine History-Helfer in `src/utils/history.js`, damit die Stack-Logik isoliert testbar ist.
 - Das Deployment erfolgt über GitHub Pages.
 
-## Bekannte Einschränkungen
+</details>
+
+<details>
+<summary>Bekannte Einschränkungen</summary>
 
 - Dijkstra und A* nutzen Array-Sortierung statt Priority Queue.
 - Das Raster hat eine feste Grösse und ist als Lernumgebung gedacht.
-- Screenshots müssen bei UI-Änderungen manuell aktualisiert werden.
+- Screenshots und GIFs müssen bei UI-Änderungen manuell aktualisiert werden.
 
-## Screenshot-Bereich
+</details>
 
-Der Screenshot liegt unter [docs/screenshots/pathlab-overview.png](./docs/screenshots/pathlab-overview.png) und zeigt ein A*-Beispiel mit gewichteten Feldern, Hindernissen, gefundenem Pfad und sichtbaren Controls.
-
-## Demo-Bereich
-
-Die Live-Demo wird über GitHub Pages veröffentlicht:
-
-[https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
-
-Ein separates Demo-Video ist aktuell nicht im Repository enthalten. Die Live-Demo und der aktuelle Screenshot decken den wichtigsten Portfolio-Eindruck ab.
-
-## Repository-Metadaten Vorschlag
+<details>
+<summary>Repository-Metadaten Vorschlag</summary>
 
 - Description: `Interactive React pathfinding visualizer for BFS, DFS, Dijkstra and A* on a weighted grid.`
 - Website: `https://alekszyro.github.io/PathLab/`
 - Topics: `react`, `pathfinding`, `algorithm-visualizer`, `bfs`, `dfs`, `dijkstra`, `astar`, `weighted-grid`, `portfolio-project`
+
+</details>
 
 ## Dokumentation
 
