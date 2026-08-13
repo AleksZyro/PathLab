@@ -13,7 +13,7 @@ PathLab ist ein interaktiver React-Visualizer für Wegfindungsalgorithmen auf ei
 
 ## Demo
 
-![PathLab Demo](./docs/screenshots/pathlab-demo.gif)
+![PathLab Demo](./docs/screenshots/pathlab-demo.webp)
 
 ## Hauptfunktionen
 
@@ -113,7 +113,7 @@ tests/
   pathfinding.behavior.test.js
 docs/
   screenshots/
-    pathlab-demo.gif
+    pathlab-demo.webp
     pathlab-overview.png
 ```
 
