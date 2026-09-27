@@ -4,6 +4,14 @@
 
 PathLab ist ein interaktiver React-Visualizer für Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt zeigt Graph-Suche, Terrain-Kosten, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kompakten Vite-Anwendung.
 
+## Persönlicher Projektbezug
+
+Dieses Repository ist Teil des öffentlichen Portfolios von **Aleksandar Nikolić** (**Aleksandar Nikolic**, **AleksZyro**), IMS-Schüler aus Buchs AG, Schweiz.
+
+- Portfolio: [aleksandar-nikolic.ch](https://aleksandar-nikolic.ch/)
+- GitHub: [github.com/AleksZyro](https://github.com/AleksZyro)
+- Kontakt und aktuelle Erreichbarkeit: [aleksandar-nikolic.ch/#contact](https://aleksandar-nikolic.ch/#contact)
+
 - Live-Demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
 - Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
 - Status: **stabile Portfolio-Version**
