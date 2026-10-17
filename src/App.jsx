@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { algorithmIds, measureAlgorithm } from './algorithms/pathfinding.js';
 import ActionPanel from './components/ActionPanel.jsx';
 import Controls from './components/Controls.jsx';
@@ -94,13 +94,13 @@ export default function App() {
     setRedoStack([]);
   };
 
-  const restoreSnapshot = (snapshot) => {
+  const restoreSnapshot = useCallback((snapshot) => {
     setGrid(snapshot.grid);
     setStartNode(snapshot.startNode);
     setTargetNode(snapshot.targetNode);
     setStats(emptyStats);
     setComparisonRows([]);
-  };
+  }, []);
 
   const switchLanguage = (nextLanguage) => {
     playClickSound();
@@ -150,7 +150,7 @@ export default function App() {
     setStats(emptyStats);
   };
 
-  const undo = () => {
+  const undo = useCallback(() => {
     if (!undoStack.length || isRunning) return;
     playUndoSound();
     const nextState = createUndoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
@@ -158,9 +158,9 @@ export default function App() {
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.undo);
-  };
+  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary, restoreSnapshot]);
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (!redoStack.length || isRunning) return;
     playRedoSound();
     const nextState = createRedoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
@@ -168,7 +168,7 @@ export default function App() {
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.redo);
-  };
+  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary, restoreSnapshot]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -190,7 +190,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary]);
+  }, [undo, redo, isRunning]);
 
   const loadPreset = (presetId) => {
     if (isRunning) return;
@@ -255,19 +255,15 @@ export default function App() {
     setLiveExplanation(dictionary.live[algorithm]);
     setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
 
-    let preparedGrid = null;
-    setGrid((currentGrid) => {
-      preparedGrid = cloneGridWithClearedSearch(currentGrid);
-      return preparedGrid;
-    });
-
-    await wait(20);
+    const preparedGrid = cloneGridWithClearedSearch(grid);
+    setGrid(preparedGrid);
     const result = measureAlgorithm(algorithm, preparedGrid, startNode, targetNode);
     const delay = Math.max(5, BASE_DELAY - speed);
     const animationStartedAt = performance.now();
 
-    for (const node of result.visitedOrder) {
-      setGrid((currentGrid) => applySearchType(currentGrid, node, 'visited'));
+    const events = result.explorationEvents ?? result.visitedOrder.map((node) => ({ node, type: 'visited' }));
+    for (const event of events) {
+      setGrid((currentGrid) => applySearchType(currentGrid, event.node, event.type));
       await wait(delay);
     }
 

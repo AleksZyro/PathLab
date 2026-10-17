@@ -1,9 +1,23 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { COLS, getTerrainCostTotal } from '../utils/grid.js';
 
-const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'visited', 'path', 'empty'];
+const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'frontier', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
-const mergedCellTypes = new Set(['wall', 'water', 'mud', 'visited', 'path']);
+const mergedCellTypes = new Set(['wall', 'water', 'mud', 'frontier', 'visited', 'path']);
+
+const GridCell = memo(function GridCell({ cell, mergedClasses, label, disabled }) {
+  return (
+    <button
+      data-grid-cell="true"
+      data-row={cell.row}
+      data-col={cell.col}
+      className={`cell ${cell.type} ${mergedClasses}`.trim()}
+      aria-label={label}
+      tabIndex={cell.type === 'start' ? 0 : -1}
+      disabled={disabled}
+    />
+  );
+});
 
 function getMergedCellClasses(grid, cell) {
   if (!mergedCellTypes.has(cell.type)) return '';
@@ -40,6 +54,12 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
     };
   };
 
+  const getCellFromEventTarget = (event) => {
+    const element = event.target.closest?.('[data-grid-cell="true"]');
+    if (!element) return null;
+    return grid[Number(element.dataset.row)]?.[Number(element.dataset.col)] ?? null;
+  };
+
   const handlePointerDown = (event, cell) => {
     if (isRunning || !event.isPrimary || event.button !== 0) return;
     event.preventDefault();
@@ -62,9 +82,37 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
     setLastPaintedCell(null);
   };
 
+  const handleCellKeyDown = (event, cell) => {
+    const movement = {
+      ArrowUp: [-1, 0],
+      ArrowRight: [0, 1],
+      ArrowDown: [1, 0],
+      ArrowLeft: [0, -1]
+    }[event.key];
+
+    if (movement) {
+      event.preventDefault();
+      const row = Math.max(0, Math.min(grid.length - 1, cell.row + movement[0]));
+      const col = Math.max(0, Math.min(grid[0].length - 1, cell.col + movement[1]));
+      event.currentTarget.querySelector(`[data-row="${row}"][data-col="${col}"]`)?.focus();
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      paintCell(cell.row, cell.col, { commitHistory: true });
+    }
+  };
+
+  const getCellLabel = (cell) => dictionary.grid.cellLabel
+    .replace('{{type}}', dictionary.legend[cell.type] ?? cell.type)
+    .replace('{{row}}', String(cell.row + 1))
+    .replace('{{column}}', String(cell.col + 1));
+
   return (
-    <section className="board-card" onPointerLeave={() => { stopPainting(); onLeaveGrid(); }} onPointerUp={stopPainting} onPointerCancel={stopPainting}>
+    <section className="board-card" aria-labelledby="grid-title" onPointerLeave={() => { stopPainting(); onLeaveGrid(); }} onPointerUp={stopPainting} onPointerCancel={stopPainting}>
       <div className="board-header">
+        <h2 id="grid-title" className="sr-only">{dictionary.grid.title}</h2>
         <div className="legend">
           {legendKeys.map((key) => (
             <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
@@ -73,20 +121,40 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
         <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{displayCost}</strong></div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>
-        {grid.flat().map((cell) => (
-          <button
-            key={`${cell.row}-${cell.col}`}
-            data-grid-cell="true"
-            data-row={cell.row}
-            data-col={cell.col}
-            className={`cell ${cell.type} ${getMergedCellClasses(grid, cell)}`.trim()}
-            aria-label={`${cell.type} cell at row ${cell.row + 1}, column ${cell.col + 1}`}
-            disabled={isRunning}
-            onPointerDown={(event) => handlePointerDown(event, cell)}
-            onPointerMove={(event) => handlePointerMove(event, cell)}
-          />
-        ))}
+      <p id="grid-instructions" className="sr-only">{dictionary.grid.instructions}</p>
+      <div className="grid-viewport">
+        <div
+          className="grid"
+          aria-describedby="grid-instructions"
+          style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
+          onFocus={(event) => {
+            const cell = getCellFromEventTarget(event);
+            if (cell) onHoverCell(cell);
+          }}
+          onKeyDown={(event) => {
+            const cell = getCellFromEventTarget(event);
+            if (cell) handleCellKeyDown(event, cell);
+          }}
+          onPointerDown={(event) => {
+            const cell = getCellFromEventTarget(event);
+            if (!cell) return;
+            handlePointerDown(event, cell);
+          }}
+          onPointerMove={(event) => {
+            const cell = getCellFromEventTarget(event);
+            if (cell) handlePointerMove(event, cell);
+          }}
+        >
+          {grid.map((gridRow) => gridRow.map((cell) => (
+            <GridCell
+              key={`${cell.row}-${cell.col}`}
+              cell={cell}
+              mergedClasses={getMergedCellClasses(grid, cell)}
+              label={getCellLabel(cell)}
+              disabled={isRunning}
+            />
+          )))}
+        </div>
       </div>
     </section>
   );

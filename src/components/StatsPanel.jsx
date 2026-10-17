@@ -4,7 +4,8 @@ import { algorithmIds } from '../algorithms/pathfinding.js';
 export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCount, hoveredCell, liveExplanation }) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [explanationAlgorithm, setExplanationAlgorithm] = useState(activeAlgorithm.id);
-  const hoveredCost = hoveredCell?.type === 'water' ? 5 : hoveredCell?.type === 'mud' ? 10 : hoveredCell?.type === 'wall' ? '∞' : 1;
+  const terrain = hoveredCell?.previousType ?? hoveredCell?.type;
+  const hoveredCost = terrain === 'water' ? 5 : terrain === 'mud' ? 10 : terrain === 'wall' ? '∞' : 1;
   const hoveredType = hoveredCell ? (dictionary.legend[hoveredCell.type] ?? hoveredCell.type) : dictionary.hover.empty;
   const selectedExplanation = dictionary.algorithms[explanationAlgorithm];
 

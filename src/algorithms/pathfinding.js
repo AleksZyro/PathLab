@@ -1,4 +1,5 @@
 import { COLS, ROWS, getCellCost, makeKey, sameNode } from '../utils/grid.js';
+import { MinPriorityQueue } from './PriorityQueue.js';
 
 const directions = [
   { row: -1, col: 0 },
@@ -26,11 +27,11 @@ function reconstructPath(parentMap, endNode, start, target) {
 
   while (parentMap.has(currentKey)) {
     const [row, col] = currentKey.split('-').map(Number);
-    path.unshift({ row, col });
+    path.push({ row, col });
     currentKey = parentMap.get(currentKey);
   }
 
-  return path.filter((node) => !isSpecialNode(node, start, target));
+  return path.reverse().filter((node) => !isSpecialNode(node, start, target));
 }
 
 function getTerrainName(cell) {
@@ -128,96 +129,68 @@ export function runDfs(grid, start, target) {
   return createResult(visitedOrder, [], target, grid, false);
 }
 
-function getAllOpenNodes(grid) {
-  return grid.flat().filter((cell) => cell.type !== 'wall').map((cell) => ({ row: cell.row, col: cell.col }));
-}
-
 function manhattanDistance(a, b) {
   return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 }
 
-export function runDijkstra(grid, start, target) {
-  const distances = new Map();
-  const parentMap = new Map();
-  const visitedSet = new Set();
+// Queue entries are immutable snapshots. Improved scores enqueue another entry;
+// stale snapshots are discarded when popped instead of mutating heap priorities.
+function runWeightedSearch(id, grid, start, target) {
+  const scores = new Map([[makeKey(start.row, start.col), 0]]);
+  const parents = new Map();
+  const closed = new Set();
   const visitedOrder = [];
-  const openNodes = getAllOpenNodes(grid);
+  const explorationEvents = [];
+  let sequence = 0;
+  const queue = new MinPriorityQueue((a, b) => a.priority - b.priority || a.sequence - b.sequence);
+  const heuristic = (node) => id === 'astar' ? manhattanDistance(node, target) : 0;
+  queue.push({ node: start, cost: 0, priority: heuristic(start), sequence });
 
-  for (const node of openNodes) distances.set(makeKey(node.row, node.col), Infinity);
-  distances.set(makeKey(start.row, start.col), 0);
-
-  while (openNodes.length > 0) {
-    openNodes.sort((a, b) => distances.get(makeKey(a.row, a.col)) - distances.get(makeKey(b.row, b.col)));
-    const current = openNodes.shift();
-    const currentKey = makeKey(current.row, current.col);
-    const currentDistance = distances.get(currentKey);
-
-    if (currentDistance === Infinity) break;
-    if (visitedSet.has(currentKey)) continue;
-    visitedSet.add(currentKey);
-
-    if (!isSpecialNode(current, start, target)) visitedOrder.push(current);
-    if (sameNode(current, target)) {
-      const path = reconstructPath(parentMap, current, start, target);
-      return createResult(visitedOrder, path, target, grid, true);
+  const result = (found) => {
+    const path = found ? reconstructPath(parents, target, start, target) : [];
+    const output = createResult(visitedOrder, path, target, grid, found);
+    if (sameNode(start, target)) {
+      output.pathLength = 0;
+      output.pathCost = 0;
+      output.costBreakdown = calculateCostBreakdown([], target, grid, false);
     }
+    return { ...output, explorationEvents };
+  };
+
+  while (queue.size > 0) {
+    const entry = queue.pop();
+    const current = entry.node;
+    const currentKey = makeKey(current.row, current.col);
+    if (closed.has(currentKey) || entry.cost !== scores.get(currentKey)) continue;
+    closed.add(currentKey);
+    if (!isSpecialNode(current, start, target)) {
+      visitedOrder.push(current);
+      explorationEvents.push({ type: 'visited', node: current });
+    }
+    if (sameNode(current, target)) return result(true);
 
     for (const neighbor of getNeighbors(current, grid)) {
-      const neighborKey = makeKey(neighbor.row, neighbor.col);
-      const nextDistance = currentDistance + getCellCost(grid[neighbor.row][neighbor.col]);
-      if (nextDistance < distances.get(neighborKey)) {
-        distances.set(neighborKey, nextDistance);
-        parentMap.set(neighborKey, currentKey);
+      const key = makeKey(neighbor.row, neighbor.col);
+      if (closed.has(key)) continue;
+      const cost = entry.cost + getCellCost(grid[neighbor.row][neighbor.col]);
+      if (cost >= (scores.get(key) ?? Infinity)) continue;
+      scores.set(key, cost);
+      parents.set(key, currentKey);
+      queue.push({ node: neighbor, cost, priority: cost + heuristic(neighbor), sequence: ++sequence });
+      if (!isSpecialNode(neighbor, start, target)) {
+        explorationEvents.push({ type: 'frontier', node: neighbor });
       }
     }
   }
+  return result(false);
+}
 
-  return createResult(visitedOrder, [], target, grid, false);
+export function runDijkstra(grid, start, target) {
+  return runWeightedSearch('dijkstra', grid, start, target);
 }
 
 export function runAStar(grid, start, target) {
-  const openNodes = [start];
-  const openSet = new Set([makeKey(start.row, start.col)]);
-  const closedSet = new Set();
-  const parentMap = new Map();
-  const gScore = new Map([[makeKey(start.row, start.col), 0]]);
-  const fScore = new Map([[makeKey(start.row, start.col), manhattanDistance(start, target)]]);
-  const visitedOrder = [];
-
-  while (openNodes.length > 0) {
-    openNodes.sort((a, b) => (fScore.get(makeKey(a.row, a.col)) ?? Infinity) - (fScore.get(makeKey(b.row, b.col)) ?? Infinity));
-    const current = openNodes.shift();
-    const currentKey = makeKey(current.row, current.col);
-    openSet.delete(currentKey);
-
-    if (closedSet.has(currentKey)) continue;
-    closedSet.add(currentKey);
-
-    if (!isSpecialNode(current, start, target)) visitedOrder.push(current);
-    if (sameNode(current, target)) {
-      const path = reconstructPath(parentMap, current, start, target);
-      return createResult(visitedOrder, path, target, grid, true);
-    }
-
-    for (const neighbor of getNeighbors(current, grid)) {
-      const neighborKey = makeKey(neighbor.row, neighbor.col);
-      if (closedSet.has(neighborKey)) continue;
-
-      const tentativeG = (gScore.get(currentKey) ?? Infinity) + getCellCost(grid[neighbor.row][neighbor.col]);
-      if (tentativeG < (gScore.get(neighborKey) ?? Infinity)) {
-        parentMap.set(neighborKey, currentKey);
-        gScore.set(neighborKey, tentativeG);
-        fScore.set(neighborKey, tentativeG + manhattanDistance(neighbor, target));
-
-        if (!openSet.has(neighborKey)) {
-          openSet.add(neighborKey);
-          openNodes.push(neighbor);
-        }
-      }
-    }
-  }
-
-  return createResult(visitedOrder, [], target, grid, false);
+  return runWeightedSearch('astar', grid, start, target);
 }
 
 export function runAlgorithm(id, grid, start, target) {
@@ -230,6 +203,6 @@ export function runAlgorithm(id, grid, start, target) {
 export function measureAlgorithm(id, grid, start, target) {
   const startedAt = performance.now();
   const result = runAlgorithm(id, grid, start, target);
-  const calculationMs = Math.max(1, Math.round(performance.now() - startedAt));
+  const calculationMs = Number((performance.now() - startedAt).toFixed(2));
   return { ...result, calculationMs };
 }

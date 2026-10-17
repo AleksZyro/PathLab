@@ -21,7 +21,7 @@ export default function ActionPanel({ dictionary, isRunning, canUndo, canRedo, s
         </div>
       </div>
 
-      <p className="status-message action-status">{statusMessage}</p>
+      <p className="status-message action-status" role="status" aria-live="polite">{statusMessage}</p>
     </section>
   );
 }

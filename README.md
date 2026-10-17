@@ -48,6 +48,7 @@ npm run dev
 ## Tests und Build
 
 ```bash
+npm run lint
 npm test
 npm run build
 npm run preview
@@ -61,7 +62,9 @@ npm run preview
 - **Dijkstra** berücksichtigt Feldkosten und findet den günstigsten Pfad.
 - **A\*** berücksichtigt ebenfalls Feldkosten und nutzt zusätzlich eine Manhattan-Distanzschätzung zum Ziel.
 
-Dijkstra und A* verwenden aktuell eine einfache Array-Sortierung für offene Knoten. Diese Umsetzung ist für das feste Lernraster ausreichend, aber nicht für sehr grosse Graphen optimiert.
+Dijkstra und A* verwenden einen unabhängigen binären Min-Heap ohne zusätzliche Laufzeit-Dependency. Einfügen und Entnehmen des kleinsten Eintrags benötigen jeweils `O(log n)` statt einer wiederholten Sortierung der gesamten Open List. Verbesserte Kosten erzeugen neue Einträge; veraltete Einträge werden beim Entnehmen übersprungen. Bei dieser Implementierung mit konsistenter Manhattan-Heuristik ergibt sich auf dem dünn besetzten Grid `O((V + E) log V)` Zeit und `O(V + E)` Speicher inklusive Ereignisprotokoll. Daraus folgt kein gemessener Geschwindigkeitsgewinn für das kleine feste Raster.
+
+Dijkstra und A* liefern zusätzlich chronologische Frontier-/Visited-Ereignisse. Lila zeigt bekannte Kandidaten im Open Set, Blau bereits expandierte Felder und Gelb den finalen Pfad. Terrain bleibt beim Löschen der Such-Overlays erhalten. Berechnungszeiten werden ohne künstliche Mindestdauer in Millisekunden angezeigt; Einzelmessungen sind keine belastbaren Benchmarks.
 
 </details>
 
@@ -72,6 +75,7 @@ Die automatisierte GitHub-Actions-Prüfung führt aus:
 
 ```bash
 npm ci
+npm run lint
 npm test
 npm run build
 ```
@@ -142,7 +146,7 @@ docs/
 <details>
 <summary>Bekannte Einschränkungen</summary>
 
-- Dijkstra und A* nutzen Array-Sortierung statt Priority Queue.
+- Das feste Raster umfasst 17 × 31 Felder; variable Grössen, Worker-Ausführung und grosse Graphen sind nicht implementiert.
 - Das Raster hat eine feste Grösse und ist als Lernumgebung gedacht.
 - Screenshots und GIFs müssen bei UI-Änderungen manuell aktualisiert werden.
 

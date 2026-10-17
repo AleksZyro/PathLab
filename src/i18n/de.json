@@ -9,7 +9,11 @@
   "onboarding": {
     "title": "Bereit zum Testen?",
     "text": "Halte die Maus gedrückt und ziehe über das Grid, um wie mit einem Pinsel Wände, Wasser oder Schlamm zu zeichnen.",
-    "steps": ["Wände, Wasser oder Schlamm mit Drag-Zeichnen einfügen", "Start und Ziel bei Bedarf neu setzen", "Algorithmus starten oder alle Algorithmen vergleichen"],
+    "steps": [
+      "Wände, Wasser oder Schlamm mit Drag-Zeichnen einfügen",
+      "Start und Ziel bei Bedarf neu setzen",
+      "Algorithmus starten oder alle Algorithmen vergleichen"
+    ],
     "dismiss": "Verstanden"
   },
   "controls": {
@@ -64,7 +68,8 @@
     "mud": "Schlamm (Kosten 10)",
     "visited": "Besucht",
     "path": "Pfad",
-    "empty": "Leer"
+    "empty": "Leer",
+    "frontier": "Frontier / Open Set"
   },
   "stats": {
     "visitedCells": "Besuchte Felder",
@@ -113,7 +118,9 @@
     "fewestVisited": "Wenigste besucht",
     "fastest": "Schnellste Berechnung",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "optimality": "Optimalität",
+    "timingNote": "Berechnung ohne Animation; Einzelmessungen sind keine belastbaren Benchmarks."
   },
   "status": {
     "initial": "Zeichne Wände, wähle einen Algorithmus und starte die Visualisierung.",
@@ -133,9 +140,30 @@
     "text": "Setze Wasser oder Schlamm in den direkten Weg. Dann sieht man besser, warum Dijkstra und A* Kosten beachten."
   },
   "algorithms": {
-    "bfs": { "name": "BFS", "description": "BFS sucht Schicht für Schicht und findet auf einem normalen Grid den kürzesten Weg nach Anzahl Schritten. Gewichtete Felder ignoriert BFS aber, deshalb kann der billigste Weg verpasst werden." },
-    "dfs": { "name": "DFS", "description": "DFS geht zuerst so weit wie möglich in eine Richtung. Das zeigt Tiefensuche gut, ist aber weder für den kürzesten noch für den günstigsten Weg garantiert." },
-    "dijkstra": { "name": "Dijkstra", "description": "Dijkstra sucht immer vom bisher günstigsten bekannten Feld weiter. Dadurch kann er Wasser und Schlamm vermeiden, wenn ein längerer Weg insgesamt günstiger ist." },
-    "astar": { "name": "A*", "description": "A* nutzt wie Dijkstra echte Kosten, aber zusätzlich eine Schätzung Richtung Ziel. Dadurch ist A* oft zielgerichteter und besucht weniger Felder." }
+    "bfs": {
+      "name": "BFS",
+      "description": "BFS sucht Schicht für Schicht und findet auf einem normalen Grid den kürzesten Weg nach Anzahl Schritten. Gewichtete Felder ignoriert BFS aber, deshalb kann der billigste Weg verpasst werden.",
+      "optimality": "Kürzeste Schrittzahl; günstigste Kosten nur bei einheitlichen Gewichten"
+    },
+    "dfs": {
+      "name": "DFS",
+      "description": "DFS geht zuerst so weit wie möglich in eine Richtung. Das zeigt Tiefensuche gut, ist aber weder für den kürzesten noch für den günstigsten Weg garantiert.",
+      "optimality": "Keine Garantie"
+    },
+    "dijkstra": {
+      "name": "Dijkstra",
+      "description": "Dijkstra sucht immer vom bisher günstigsten bekannten Feld weiter. Dadurch kann er Wasser und Schlamm vermeiden, wenn ein längerer Weg insgesamt günstiger ist.",
+      "optimality": "Günstigste Kosten (nichtnegative Gewichte)"
+    },
+    "astar": {
+      "name": "A*",
+      "description": "A* nutzt wie Dijkstra echte Kosten, aber zusätzlich eine Schätzung Richtung Ziel. Dadurch ist A* oft zielgerichteter und besucht weniger Felder.",
+      "optimality": "Günstigste Kosten (konsistente Manhattan-Heuristik)"
+    }
+  },
+  "grid": {
+    "title": "Suchraster",
+    "instructions": "Pfeiltasten: navigieren. Enter oder Leertaste: Werkzeug anwenden.",
+    "cellLabel": "{{type}}, Zeile {{row}}, Spalte {{column}}"
   }
 }

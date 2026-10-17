@@ -48,6 +48,7 @@ npm run dev
 ## Tests and Build
 
 ```bash
+npm run lint
 npm test
 npm run build
 npm run preview
@@ -61,7 +62,9 @@ npm run preview
 - **Dijkstra** considers cell costs and finds the cheapest path.
 - **A\*** also considers cell costs and adds a Manhattan distance estimate toward the target.
 
-Dijkstra and A* currently use simple array sorting for open nodes. This implementation is sufficient for the fixed educational grid, but it is not optimized for very large graphs.
+Dijkstra and A* use an independent binary min-heap without an additional runtime dependency. Insertion and removal of the minimum take `O(log n)` each instead of repeatedly sorting the entire open list. Improved costs enqueue new immutable entries; outdated entries are skipped when popped. With the consistent Manhattan heuristic, the sparse grid implementation takes `O((V + E) log V)` time and `O(V + E)` space including the event trace. This does not claim a measured speedup on the small fixed grid.
+
+Both weighted searches emit chronological frontier/visited events. Purple marks open candidates, blue marks expanded cells, and yellow marks the final path. Clearing overlays restores terrain. Calculation time has no artificial minimum; individual timings are not reliable benchmarks.
 
 </details>
 
@@ -72,6 +75,7 @@ The automated GitHub Actions check runs:
 
 ```bash
 npm ci
+npm run lint
 npm test
 npm run build
 ```
@@ -142,7 +146,7 @@ docs/
 <details>
 <summary>Known limitations</summary>
 
-- Dijkstra and A* use array sorting instead of a priority queue.
+- The fixed grid contains 17 × 31 cells; variable sizes, worker execution, and large graphs are not implemented.
 - The grid has a fixed size and is designed as a learning environment.
 - Screenshots and GIFs need to be updated manually when the UI changes.
 
