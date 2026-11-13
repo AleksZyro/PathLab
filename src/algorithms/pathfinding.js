@@ -1,4 +1,4 @@
-import { COLS, ROWS, getCellCost, makeKey, sameNode } from '../utils/grid.js';
+import { getCellCost, makeKey, sameNode } from '../utils/grid.js';
 import { MinPriorityQueue } from './PriorityQueue.js';
 
 const directions = [
@@ -15,10 +15,14 @@ function isSpecialNode(node, start, target) {
 }
 
 function getNeighbors(node, grid) {
-  return directions
-    .map((direction) => ({ row: node.row + direction.row, col: node.col + direction.col }))
-    .filter((next) => next.row >= 0 && next.row < ROWS && next.col >= 0 && next.col < COLS)
-    .filter((next) => grid[next.row][next.col].type !== 'wall');
+  const neighbors = [];
+  for (const direction of directions) {
+    const row = node.row + direction.row;
+    const col = node.col + direction.col;
+    const cell = grid[row]?.[col];
+    if (cell && cell.type !== 'wall') neighbors.push({ row, col });
+  }
+  return neighbors;
 }
 
 function reconstructPath(parentMap, endNode, start, target) {
@@ -75,57 +79,41 @@ function createResult(visitedOrder, path, start, target, grid, found) {
   };
 }
 
-export function runBfs(grid, start, target) {
-  const queue = [start];
-  const visitedSet = new Set([makeKey(start.row, start.col)]);
-  const parentMap = new Map();
+function runUnweightedSearch(grid, start, target, depthFirst) {
+  const pending = [start];
+  const startKey = makeKey(start.row, start.col);
+  const parents = new Map();
   const visitedOrder = [];
+  let head = 0;
 
-  for (let head = 0; head < queue.length; head += 1) {
-    const current = queue[head];
+  while (head < pending.length) {
+    const current = depthFirst ? pending.pop() : pending[head++];
+    const currentKey = makeKey(current.row, current.col);
     if (sameNode(current, target)) {
-      const path = reconstructPath(parentMap, current, start, target);
+      const path = reconstructPath(parents, current, start, target);
       return createResult(visitedOrder, path, start, target, grid, true);
     }
 
-    for (const neighbor of getNeighbors(current, grid)) {
+    const neighbors = getNeighbors(current, grid);
+    if (depthFirst) neighbors.reverse();
+    for (const neighbor of neighbors) {
       const key = makeKey(neighbor.row, neighbor.col);
-      if (visitedSet.has(key)) continue;
-      visitedSet.add(key);
-      parentMap.set(key, makeKey(current.row, current.col));
+      if (key === startKey || parents.has(key)) continue;
+      parents.set(key, currentKey);
       if (!sameNode(neighbor, target)) visitedOrder.push(neighbor);
-      queue.push(neighbor);
+      pending.push(neighbor);
     }
   }
 
   return createResult(visitedOrder, [], start, target, grid, false);
 }
 
+export function runBfs(grid, start, target) {
+  return runUnweightedSearch(grid, start, target, false);
+}
+
 export function runDfs(grid, start, target) {
-  const stack = [start];
-  const visitedSet = new Set([makeKey(start.row, start.col)]);
-  const parentMap = new Map();
-  const visitedOrder = [];
-
-  while (stack.length > 0) {
-    const current = stack.pop();
-    if (sameNode(current, target)) {
-      const path = reconstructPath(parentMap, current, start, target);
-      return createResult(visitedOrder, path, start, target, grid, true);
-    }
-
-    const neighbors = getNeighbors(current, grid).reverse();
-    for (const neighbor of neighbors) {
-      const key = makeKey(neighbor.row, neighbor.col);
-      if (visitedSet.has(key)) continue;
-      visitedSet.add(key);
-      parentMap.set(key, makeKey(current.row, current.col));
-      if (!sameNode(neighbor, target)) visitedOrder.push(neighbor);
-      stack.push(neighbor);
-    }
-  }
-
-  return createResult(visitedOrder, [], start, target, grid, false);
+  return runUnweightedSearch(grid, start, target, true);
 }
 
 function manhattanDistance(a, b) {

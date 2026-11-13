@@ -29,6 +29,13 @@ describe('pathfinding algorithms', () => {
     expect(result.pathCost).toBe(4);
   });
 
+  it.each([runBfs, runDfs, runDijkstra, runAStar])('uses the supplied grid bounds (%#)', (run) => {
+    const grid = [[{ type: 'start' }, { type: 'water' }, { type: 'target' }]];
+    expect(run(grid, start, { row: 0, col: 2 })).toMatchObject({
+      found: true, path: [{ row: 0, col: 1 }], pathLength: 2, pathCost: 6
+    });
+  });
+
   it('DFS finds a valid path without walking through walls', () => {
     let grid = gridWithStartAndTarget();
     grid = setCells(grid, [{ row: 0, col: 1 }, { row: 1, col: 1 }], 'wall');
