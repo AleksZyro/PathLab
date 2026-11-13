@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
 import { algorithmIds, measureAlgorithm } from './algorithms/pathfinding.js';
 import ActionPanel from './components/ActionPanel.jsx';
 import Controls from './components/Controls.jsx';
@@ -52,6 +52,15 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function getRunMetrics(result) {
+  return {
+    visited: result.visitedOrder.length,
+    pathLength: result.pathLength,
+    pathCost: result.pathCost,
+    calculationMs: result.calculationMs
+  };
+}
+
 function createBoard(grid = createGrid(), startNode = DEFAULT_START, targetNode = DEFAULT_TARGET, preset = 'custom') {
   return { grid, startNode, targetNode, preset };
 }
@@ -71,7 +80,7 @@ export default function App() {
   const [stats, setStats] = useState(emptyStats);
   const [comparisonRows, setComparisonRows] = useState([]);
   const [hoveredNode, setHoveredNode] = useState(null);
-  const [liveExplanation, setLiveExplanation] = useState(dictionaries.de.live.ready);
+  const [explanationKey, setExplanationKey] = useState('ready');
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
 
@@ -84,6 +93,7 @@ export default function App() {
   const clearResults = useCallback(() => {
     setStats(emptyStats);
     setComparisonRows([]);
+    setExplanationKey('ready');
   }, []);
 
   const pushHistory = () => {
@@ -100,7 +110,7 @@ export default function App() {
     playClickSound();
     setLanguage(nextLanguage);
     setStatusMessage(dictionaries[nextLanguage].status.initial);
-    setLiveExplanation(dictionaries[nextLanguage].live.ready);
+    setExplanationKey('ready');
   };
 
   const updateCell = (row, col, { commitHistory = true } = {}) => {
@@ -128,7 +138,7 @@ export default function App() {
     clearResults();
   };
 
-  const undo = useCallback(() => {
+  const undo = () => {
     if (!undoStack.length || isRunning) return;
     playUndoSound();
     const nextState = createUndoState(undoStack, redoStack, board);
@@ -136,9 +146,9 @@ export default function App() {
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.undo);
-  }, [undoStack, redoStack, board, isRunning, dictionary, restoreSnapshot]);
+  };
 
-  const redo = useCallback(() => {
+  const redo = () => {
     if (!redoStack.length || isRunning) return;
     playRedoSound();
     const nextState = createRedoState(undoStack, redoStack, board);
@@ -146,29 +156,30 @@ export default function App() {
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.redo);
-  }, [undoStack, redoStack, board, isRunning, dictionary, restoreSnapshot]);
+  };
+
+  const handleKeyDown = useEffectEvent((event) => {
+    const target = event.target;
+    const isTyping = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.tagName) || target?.isContentEditable;
+    if (isTyping || isRunning) return;
+
+    const key = event.key.toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && key === 'z' && !event.shiftKey) {
+      event.preventDefault();
+      undo();
+    }
+
+    if ((event.ctrlKey || event.metaKey) && (key === 'y' || (key === 'z' && event.shiftKey))) {
+      event.preventDefault();
+      redo();
+    }
+  });
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      const target = event.target;
-      const isTyping = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.tagName) || target?.isContentEditable;
-      if (isTyping || isRunning) return;
-
-      const key = event.key.toLowerCase();
-      if ((event.ctrlKey || event.metaKey) && key === 'z' && !event.shiftKey) {
-        event.preventDefault();
-        undo();
-      }
-
-      if ((event.ctrlKey || event.metaKey) && (key === 'y' || (key === 'z' && event.shiftKey))) {
-        event.preventDefault();
-        redo();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
+    const listener = (event) => handleKeyDown(event);
+    window.addEventListener('keydown', listener);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, isRunning]);
+  }, []);
 
   const loadPreset = (presetId) => {
     if (isRunning) return;
@@ -211,8 +222,8 @@ export default function App() {
     playSimulationStartSound();
     setIsRunning(true);
     setShowOnboarding(false);
-    setComparisonRows([]);
-    setLiveExplanation(dictionary.live[algorithm]);
+    clearResults();
+    setExplanationKey(algorithm);
     setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
 
     const preparedGrid = cloneGridWithClearedSearch(grid);
@@ -233,13 +244,7 @@ export default function App() {
     }
 
     const animationMs = Math.round(performance.now() - animationStartedAt);
-    setStats({
-      visited: result.visitedOrder.length,
-      pathLength: result.pathLength,
-      pathCost: result.pathCost,
-      calculationMs: result.calculationMs,
-      animationMs
-    });
+    setStats({ ...getRunMetrics(result), animationMs });
     setStatusMessage(
       result.found
         ? translate(dictionary.status.found, { algorithm: activeAlgorithm.name, count: result.pathLength })
@@ -250,7 +255,7 @@ export default function App() {
     } else {
       playNoPathSound();
     }
-    setLiveExplanation(result.found ? dictionary.live.done : dictionary.live.noPath);
+    setExplanationKey(result.found ? 'done' : 'noPath');
     setIsRunning(false);
   };
 
@@ -260,14 +265,7 @@ export default function App() {
     const preparedGrid = cloneGridWithClearedSearch(grid);
     const rows = algorithmIds.map((id) => {
       const result = measureAlgorithm(id, preparedGrid, startNode, targetNode);
-      return {
-        id,
-        found: result.found,
-        visited: result.visitedOrder.length,
-        pathLength: result.pathLength,
-        pathCost: result.pathCost,
-        calculationMs: result.calculationMs
-      };
+      return { id, found: result.found, ...getRunMetrics(result) };
     });
     setComparisonRows(rows);
     setStatusMessage(dictionary.status.compared);
@@ -347,7 +345,7 @@ export default function App() {
           stats={stats}
           wallCount={wallCount}
           hoveredCell={hoveredCell}
-          liveExplanation={liveExplanation}
+          liveExplanation={dictionary.live[explanationKey]}
         />
       </section>
 
