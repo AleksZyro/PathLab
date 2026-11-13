@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { algorithmIds } from '../algorithms/pathfinding.js';
+import { getCellCost } from '../utils/grid.js';
 
 export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCount, hoveredCell, liveExplanation }) {
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [explanationAlgorithm, setExplanationAlgorithm] = useState(activeAlgorithm.id);
-  const terrain = hoveredCell?.previousType ?? hoveredCell?.type;
-  const hoveredCost = terrain === 'water' ? 5 : terrain === 'mud' ? 10 : terrain === 'wall' ? '∞' : 1;
+  const [explanationAlgorithm, setExplanationAlgorithm] = useState(null);
+  const showExplanation = explanationAlgorithm !== null;
+  const terrainCost = getCellCost(hoveredCell);
+  const hoveredCost = Number.isFinite(terrainCost) ? terrainCost : '∞';
   const hoveredType = hoveredCell ? (dictionary.legend[hoveredCell.type] ?? hoveredCell.type) : dictionary.hover.empty;
   const selectedExplanation = dictionary.algorithms[explanationAlgorithm];
 
@@ -18,10 +19,8 @@ export default function StatsPanel({ dictionary, activeAlgorithm, stats, wallCou
           type="button"
           aria-label={dictionary.explain.toggle}
           title={dictionary.explain.toggle}
-          onClick={() => {
-            setExplanationAlgorithm(activeAlgorithm.id);
-            setShowExplanation((current) => !current);
-          }}
+          aria-expanded={showExplanation}
+          onClick={() => setExplanationAlgorithm(showExplanation ? null : activeAlgorithm.id)}
         >
           <span>💡</span>
           <strong>{dictionary.explain.clues}</strong>

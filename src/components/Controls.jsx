@@ -4,10 +4,7 @@ import { presetIds } from '../utils/presets.js';
 const toolIcons = {
   wall: '#',
   water: '~',
-  mud: '.',
-  erase: null,
-  start: null,
-  target: null
+  mud: '.'
 };
 
 export default function Controls({ dictionary, algorithm, tool, speed, preset, isRunning, onAlgorithmChange, onToolChange, onSpeedChange, onPresetChange }) {

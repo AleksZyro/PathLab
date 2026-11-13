@@ -1,9 +1,16 @@
 import { memo, useRef } from 'react';
-import { COLS } from '../utils/grid.js';
+import { COLS, makeKey } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'frontier', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
 const mergedCellTypes = new Set(['wall', 'water', 'mud', 'frontier', 'visited', 'path']);
+
+const arrowOffsets = {
+  ArrowUp: [-1, 0],
+  ArrowRight: [0, 1],
+  ArrowDown: [1, 0],
+  ArrowLeft: [0, -1]
+};
 
 const GridCell = memo(function GridCell({ cell, mergedClasses, label, disabled }) {
   return (
@@ -38,28 +45,21 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, terrainCo
   const isBrushTool = brushTools.includes(tool);
 
   const paintCell = (row, col, options) => {
-    const key = `${row}-${col}`;
+    const key = makeKey(row, col);
     if (lastPaintedCell.current === key && !options.commitHistory) return;
     lastPaintedCell.current = key;
     onCellAction(row, col, options);
   };
 
-  const getCellFromPointer = (event) => {
-    const element = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-grid-cell="true"]');
-    if (!element) return null;
-    return {
-      row: Number(element.dataset.row),
-      col: Number(element.dataset.col)
-    };
+  const getCell = (element, boardElement) => {
+    const button = element?.closest?.('[data-grid-cell="true"]');
+    if (!button || !boardElement.contains(button)) return null;
+    return grid[Number(button.dataset.row)]?.[Number(button.dataset.col)] ?? null;
   };
 
-  const getCellFromEventTarget = (event) => {
-    const element = event.target.closest?.('[data-grid-cell="true"]');
-    if (!element) return null;
-    return grid[Number(element.dataset.row)]?.[Number(element.dataset.col)] ?? null;
-  };
-
-  const handlePointerDown = (event, cell) => {
+  const handlePointerDown = (event) => {
+    const cell = getCell(event.target, event.currentTarget);
+    if (!cell) return;
     if (isRunning || !event.isPrimary || event.button !== 0) return;
     event.preventDefault();
 
@@ -67,11 +67,13 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, terrainCo
     paintCell(cell.row, cell.col, { commitHistory: true });
   };
 
-  const handlePointerMove = (event, cell) => {
+  const handlePointerMove = (event) => {
+    const cell = getCell(event.target, event.currentTarget);
+    if (!cell) return;
     onHoverCell(cell);
     if (!isPainting.current || !isBrushTool || isRunning) return;
 
-    const pointedCell = getCellFromPointer(event);
+    const pointedCell = getCell(document.elementFromPoint(event.clientX, event.clientY), event.currentTarget);
     if (!pointedCell) return;
     paintCell(pointedCell.row, pointedCell.col, { commitHistory: false });
   };
@@ -81,13 +83,10 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, terrainCo
     lastPaintedCell.current = null;
   };
 
-  const handleCellKeyDown = (event, cell) => {
-    const movement = {
-      ArrowUp: [-1, 0],
-      ArrowRight: [0, 1],
-      ArrowDown: [1, 0],
-      ArrowLeft: [0, -1]
-    }[event.key];
+  const handleCellKeyDown = (event) => {
+    const cell = getCell(event.target, event.currentTarget);
+    if (!cell || isRunning) return;
+    const movement = arrowOffsets[event.key];
 
     if (movement) {
       event.preventDefault();
@@ -127,26 +126,16 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, terrainCo
           aria-describedby="grid-instructions"
           style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
           onFocus={(event) => {
-            const cell = getCellFromEventTarget(event);
+            const cell = getCell(event.target, event.currentTarget);
             if (cell) onHoverCell(cell);
           }}
-          onKeyDown={(event) => {
-            const cell = getCellFromEventTarget(event);
-            if (cell) handleCellKeyDown(event, cell);
-          }}
-          onPointerDown={(event) => {
-            const cell = getCellFromEventTarget(event);
-            if (!cell) return;
-            handlePointerDown(event, cell);
-          }}
-          onPointerMove={(event) => {
-            const cell = getCellFromEventTarget(event);
-            if (cell) handlePointerMove(event, cell);
-          }}
+          onKeyDown={handleCellKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
         >
           {grid.map((gridRow) => gridRow.map((cell) => (
             <GridCell
-              key={`${cell.row}-${cell.col}`}
+              key={makeKey(cell.row, cell.col)}
               cell={cell}
               mergedClasses={getMergedCellClasses(grid, cell)}
               label={getCellLabel(cell)}
