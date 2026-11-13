@@ -79,11 +79,11 @@ Mit **Alle vergleichen** werden BFS, DFS, Dijkstra und A* auf demselben Grid ber
 - wie lang der Pfad ist
 - wie teuer der Pfad ist
 - wie lange die Berechnung gedauert hat
-- welcher Algorithmus in einer Kategorie am besten war
+- welche Optimalitätsgarantie der Algorithmus hat
 
 ## Pfadkosten-Aufschlüsselung
 
-PathLab zeigt, wie sich die Kosten eines Pfades zusammensetzen:
+PathLab zeigt die Gesamtkosten. So setzen sie sich beispielsweise zusammen:
 
 ```text
 Normal: 12 × 1 = 12

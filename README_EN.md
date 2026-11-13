@@ -31,7 +31,7 @@ This repository is part of the public portfolio of **Aleksandar Nikolić** (**Al
 - animated search visualization
 - BFS, DFS, Dijkstra, and A*
 - comparison of all algorithms on the same grid
-- path cost breakdown
+- total cost of the final path
 - separate calculation time and animation time
 - undo and redo for grid edits
 - prepared example scenarios
@@ -41,7 +41,7 @@ This repository is part of the public portfolio of **Aleksandar Nikolić** (**Al
 ## Quick Start
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -75,8 +75,7 @@ The automated GitHub Actions check runs:
 
 ```bash
 npm ci
-npm run lint
-npm test
+npm run check
 npm run build
 ```
 

@@ -79,11 +79,11 @@ With **Compare all**, PathLab calculates BFS, DFS, Dijkstra and A* on the same g
 - how long the path is
 - how expensive the path is
 - how long the calculation took
-- which algorithm performed best in a category
+- what optimality guarantee the algorithm provides
 
 ## Path Cost Breakdown
 
-PathLab shows how the path cost is built:
+PathLab displays the total cost. Here is how an example total is calculated:
 
 ```text
 Normal: 12 × 1 = 12

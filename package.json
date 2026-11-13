@@ -28,6 +28,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --max-warnings=0",
+    "check": "npm run lint && npm test",
     "preview": "vite preview",
     "test": "vitest run"
   },

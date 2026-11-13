@@ -31,7 +31,7 @@ Dieses Repository ist Teil des öffentlichen Portfolios von **Aleksandar Nikoli�
 - animierte Visualisierung der Suche
 - BFS, DFS, Dijkstra und A*
 - Vergleich aller Algorithmen auf demselben Raster
-- Kostenaufschlüsselung des gefundenen Pfads
+- Gesamtkosten des gefundenen Pfads
 - getrennte Anzeige von Berechnungszeit und Animationszeit
 - Undo und Redo für Rasteränderungen
 - Beispiel-Szenarien
@@ -41,7 +41,7 @@ Dieses Repository ist Teil des öffentlichen Portfolios von **Aleksandar Nikoli�
 ## Schnellstart
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -75,8 +75,7 @@ Die automatisierte GitHub-Actions-Prüfung führt aus:
 
 ```bash
 npm ci
-npm run lint
-npm test
+npm run check
 npm run build
 ```
 
