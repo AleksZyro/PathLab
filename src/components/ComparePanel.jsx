@@ -1,8 +1,6 @@
 export default function ComparePanel({ dictionary, rows }) {
   if (!rows.length) return null;
 
-
-
   return (
     <section className="compare-card">
       <div>
@@ -26,7 +24,7 @@ export default function ComparePanel({ dictionary, rows }) {
           <tbody>
             {rows.map((row) => (
               <tr key={row.id}>
-                <td>{row.name}</td>
+                <td>{dictionary.algorithms[row.id].name}</td>
                 <td>{row.found ? dictionary.compare.yes : dictionary.compare.no}</td>
                 <td>{row.pathCost}</td>
                 <td>{row.pathLength}</td>

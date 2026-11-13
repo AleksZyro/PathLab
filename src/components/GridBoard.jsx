@@ -1,5 +1,5 @@
-import { memo, useState } from 'react';
-import { COLS, getTerrainCostTotal } from '../utils/grid.js';
+import { memo, useRef } from 'react';
+import { COLS } from '../utils/grid.js';
 
 const legendKeys = ['start', 'target', 'wall', 'water', 'mud', 'frontier', 'visited', 'path', 'empty'];
 const brushTools = ['wall', 'water', 'mud', 'erase'];
@@ -32,16 +32,15 @@ function getMergedCellClasses(grid, cell) {
   ].filter(Boolean).join(' ');
 }
 
-export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost, onCellAction, onHoverCell, onLeaveGrid }) {
-  const [isPainting, setIsPainting] = useState(false);
-  const [lastPaintedCell, setLastPaintedCell] = useState(null);
+export default function GridBoard({ dictionary, grid, isRunning, tool, terrainCost, onCellAction, onHoverCell, onLeaveGrid }) {
+  const isPainting = useRef(false);
+  const lastPaintedCell = useRef(null);
   const isBrushTool = brushTools.includes(tool);
-  const displayCost = pathCost ?? getTerrainCostTotal(grid);
 
   const paintCell = (row, col, options) => {
     const key = `${row}-${col}`;
-    if (lastPaintedCell === key && !options.commitHistory) return;
-    setLastPaintedCell(key);
+    if (lastPaintedCell.current === key && !options.commitHistory) return;
+    lastPaintedCell.current = key;
     onCellAction(row, col, options);
   };
 
@@ -64,13 +63,13 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
     if (isRunning || !event.isPrimary || event.button !== 0) return;
     event.preventDefault();
 
-    setIsPainting(isBrushTool);
+    isPainting.current = isBrushTool;
     paintCell(cell.row, cell.col, { commitHistory: true });
   };
 
   const handlePointerMove = (event, cell) => {
     onHoverCell(cell);
-    if (!isPainting || !isBrushTool || isRunning) return;
+    if (!isPainting.current || !isBrushTool || isRunning) return;
 
     const pointedCell = getCellFromPointer(event);
     if (!pointedCell) return;
@@ -78,8 +77,8 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
   };
 
   const stopPainting = () => {
-    setIsPainting(false);
-    setLastPaintedCell(null);
+    isPainting.current = false;
+    lastPaintedCell.current = null;
   };
 
   const handleCellKeyDown = (event, cell) => {
@@ -118,7 +117,7 @@ export default function GridBoard({ dictionary, grid, isRunning, tool, pathCost,
             <span key={key}><i className={`legend-dot ${key}`} /> {dictionary.legend[key]}</span>
           ))}
         </div>
-        <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{displayCost}</strong></div>
+        <div className="board-cost-pill">{dictionary.cost.shortLabel}: <strong>{terrainCost}</strong></div>
       </div>
 
       <p id="grid-instructions" className="sr-only">{dictionary.grid.instructions}</p>

@@ -14,6 +14,12 @@ function setCells(grid, cells, type) {
 }
 
 describe('pathfinding algorithms', () => {
+  it.each([runBfs, runDfs])('returns zero steps and cost when start is the target (%#)', (run) => {
+    const result = run(gridWithStartAndTarget(), start, start);
+
+    expect(result).toMatchObject({ found: true, path: [], pathLength: 0, pathCost: 0 });
+  });
+
   it('BFS finds the shortest path by number of steps', () => {
     const grid = gridWithStartAndTarget();
     const result = runBfs(grid, start, target);

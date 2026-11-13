@@ -40,22 +40,20 @@ function getTerrainName(cell) {
   return 'normal';
 }
 
-function calculateCostBreakdown(path, target, grid, found) {
+function calculateCostBreakdown(steps, grid) {
   const breakdown = {
     normal: { count: 0, cost: 0 },
     water: { count: 0, cost: 0 },
     mud: { count: 0, cost: 0 }
   };
 
-  if (!found) return breakdown;
-
-  [...path, target].forEach((node) => {
+  for (const node of steps) {
     const cell = grid[node.row][node.col];
     const terrain = getTerrainName(cell);
     const cost = getCellCost(cell);
     breakdown[terrain].count += 1;
     breakdown[terrain].cost += cost;
-  });
+  }
 
   return breakdown;
 }
@@ -64,14 +62,15 @@ function calculatePathCost(costBreakdown) {
   return Object.values(costBreakdown).reduce((sum, entry) => sum + entry.cost, 0);
 }
 
-function createResult(visitedOrder, path, target, grid, found) {
-  const costBreakdown = calculateCostBreakdown(path, target, grid, found);
+function createResult(visitedOrder, path, start, target, grid, found) {
+  const steps = found && !sameNode(start, target) ? [...path, target] : [];
+  const costBreakdown = calculateCostBreakdown(steps, grid);
   return {
     visitedOrder,
     path,
     found,
-    pathLength: found ? path.length + 1 : 0,
-    pathCost: found ? calculatePathCost(costBreakdown) : 0,
+    pathLength: steps.length,
+    pathCost: calculatePathCost(costBreakdown),
     costBreakdown
   };
 }
@@ -82,11 +81,11 @@ export function runBfs(grid, start, target) {
   const parentMap = new Map();
   const visitedOrder = [];
 
-  while (queue.length > 0) {
-    const current = queue.shift();
+  for (let head = 0; head < queue.length; head += 1) {
+    const current = queue[head];
     if (sameNode(current, target)) {
       const path = reconstructPath(parentMap, current, start, target);
-      return createResult(visitedOrder, path, target, grid, true);
+      return createResult(visitedOrder, path, start, target, grid, true);
     }
 
     for (const neighbor of getNeighbors(current, grid)) {
@@ -99,7 +98,7 @@ export function runBfs(grid, start, target) {
     }
   }
 
-  return createResult(visitedOrder, [], target, grid, false);
+  return createResult(visitedOrder, [], start, target, grid, false);
 }
 
 export function runDfs(grid, start, target) {
@@ -112,7 +111,7 @@ export function runDfs(grid, start, target) {
     const current = stack.pop();
     if (sameNode(current, target)) {
       const path = reconstructPath(parentMap, current, start, target);
-      return createResult(visitedOrder, path, target, grid, true);
+      return createResult(visitedOrder, path, start, target, grid, true);
     }
 
     const neighbors = getNeighbors(current, grid).reverse();
@@ -126,7 +125,7 @@ export function runDfs(grid, start, target) {
     }
   }
 
-  return createResult(visitedOrder, [], target, grid, false);
+  return createResult(visitedOrder, [], start, target, grid, false);
 }
 
 function manhattanDistance(a, b) {
@@ -148,13 +147,7 @@ function runWeightedSearch(id, grid, start, target) {
 
   const result = (found) => {
     const path = found ? reconstructPath(parents, target, start, target) : [];
-    const output = createResult(visitedOrder, path, target, grid, found);
-    if (sameNode(start, target)) {
-      output.pathLength = 0;
-      output.pathCost = 0;
-      output.costBreakdown = calculateCostBreakdown([], target, grid, false);
-    }
-    return { ...output, explorationEvents };
+    return { ...createResult(visitedOrder, path, start, target, grid, found), explorationEvents };
   };
 
   while (queue.size > 0) {

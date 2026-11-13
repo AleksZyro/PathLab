@@ -2,7 +2,6 @@
   "app": {
     "eyebrow": "Interaktiver Visualisierer für Wegfindungsalgorithmen",
     "title": "PathLab",
-    "heroText": "",
     "lightMode": "Heller Modus",
     "darkMode": "Dunkler Modus"
   },
@@ -33,8 +32,7 @@
   },
   "actions": {
     "kicker": "Aktionen",
-    "title": "Ausführen und zurücksetzen",
-    "historyGroup": "Undo und Redo"
+    "title": "Ausführen und zurücksetzen"
   },
   "brush": {
     "title": "Pinselmodus",
@@ -97,11 +95,7 @@
     "empty": "Bewege die Maus über ein Feld."
   },
   "cost": {
-    "title": "Pfadkosten-Aufschlüsselung",
-    "shortLabel": "Kosten",
-    "normal": "Normal",
-    "water": "Wasser",
-    "mud": "Schlamm"
+    "shortLabel": "Kosten"
   },
   "compare": {
     "kicker": "Analyse",
@@ -112,11 +106,6 @@
     "length": "Länge",
     "cost": "Kosten",
     "ms": "ms",
-    "highlights": "Highlights",
-    "bestCost": "Günstigste Kosten",
-    "shortestPath": "Kürzester Pfad",
-    "fewestVisited": "Wenigste besucht",
-    "fastest": "Schnellste Berechnung",
     "yes": "Ja",
     "no": "Nein",
     "optimality": "Optimalität",

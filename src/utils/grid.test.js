@@ -2,6 +2,26 @@ import { describe, expect, it } from 'vitest';
 import { COLS, ROWS, applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, moveSpecialNode, setCellType } from './grid.js';
 
 describe('grid search state restoration', () => {
+  it('preserves clean rows and unchanged cells when clearing frontier overlays', () => {
+    const node = { row: 1, col: 1 };
+    const grid = setCellType(createGrid(), node, 'water');
+    expect(cloneGridWithClearedSearch(grid)).toBe(grid);
+
+    const overlaid = applySearchType(grid, node, 'frontier');
+    const restored = cloneGridWithClearedSearch(overlaid);
+    expect(restored).toEqual(grid);
+    expect(restored[0]).toBe(grid[0]);
+    expect(restored[1][0]).toBe(grid[1][0]);
+    expect(overlaid[1][1].type).toBe('frontier');
+  });
+
+  it('keeps the endpoint when selecting its current cell', () => {
+    const start = { row: 0, col: 0 };
+    const grid = createGrid(start, { row: 0, col: 4 });
+
+    expect(moveSpecialNode(grid, start, start, 'start')).toBe(grid);
+  });
+
   it('creates one start node, one target node and the expected grid size', () => {
     const grid = createGrid({ row: 1, col: 2 }, { row: 3, col: 4 });
 

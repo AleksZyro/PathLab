@@ -3,12 +3,10 @@ export const COLS = 31;
 export const DEFAULT_START = { row: 8, col: 7 };
 export const DEFAULT_TARGET = { row: 8, col: 23 };
 
-export const terrainCosts = {
+const terrainCosts = {
   empty: 1,
   start: 1,
   target: 1,
-  visited: 1,
-  path: 1,
   water: 5,
   mud: 10
 };
@@ -43,15 +41,18 @@ export function createGrid(start = DEFAULT_START, target = DEFAULT_TARGET) {
 }
 
 export function cloneGridWithClearedSearch(grid) {
-  return grid.map((gridRow) =>
-    gridRow.map((cell) => {
-      if (searchOverlayTypes.has(cell.type)) {
-        const { previousType, ...restoredCell } = cell;
-        return { ...restoredCell, type: previousType ?? 'empty' };
-      }
-      return cell;
-    })
-  );
+  let nextGrid = grid;
+  for (const [index, row] of grid.entries()) {
+    if (!row.some((cell) => searchOverlayTypes.has(cell.type))) continue;
+    if (nextGrid === grid) nextGrid = [...grid];
+
+    nextGrid[index] = row.map((cell) => {
+      if (!searchOverlayTypes.has(cell.type)) return cell;
+      const { previousType, ...restoredCell } = cell;
+      return { ...restoredCell, type: previousType ?? 'empty' };
+    });
+  }
+  return nextGrid;
 }
 
 export function setCellType(grid, node, type) {
@@ -63,14 +64,9 @@ export function setCellType(grid, node, type) {
 }
 
 export function moveSpecialNode(grid, previousNode, nextNode, type) {
-  return cloneGridWithClearedSearch(grid).map((gridRow) =>
-    gridRow.map((cell) => {
-      const { previousType, ...cleanCell } = cell;
-      if (sameNode(cell, previousNode)) return { ...cleanCell, type: 'empty' };
-      if (sameNode(cell, nextNode)) return { ...cleanCell, type };
-      return cleanCell;
-    })
-  );
+  const cleanGrid = cloneGridWithClearedSearch(grid);
+  if (sameNode(previousNode, nextNode)) return cleanGrid;
+  return setCellType(setCellType(cleanGrid, previousNode, 'empty'), nextNode, type);
 }
 
 export function applySearchType(grid, node, type) {

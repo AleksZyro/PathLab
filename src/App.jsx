@@ -32,18 +32,14 @@ import {
   getTerrainCostTotal,
   isBlockedForSpecialTool,
   moveSpecialNode,
-  sameNode
+  sameNode,
+  setCellType
 } from './utils/grid.js';
 
 const dictionaries = { de, en };
 const BASE_DELAY = 120;
 const PRIVACY_URL = `${import.meta.env.BASE_URL}privacy.html`;
-const emptyBreakdown = {
-  normal: { count: 0, cost: 0 },
-  water: { count: 0, cost: 0 },
-  mud: { count: 0, cost: 0 }
-};
-const emptyStats = { visited: 0, pathLength: 0, pathCost: 0, calculationMs: 0, animationMs: 0, costBreakdown: emptyBreakdown };
+const emptyStats = { visited: 0, pathLength: 0, pathCost: 0, calculationMs: 0, animationMs: 0 };
 
 function translate(template, values = {}) {
   return Object.entries(values).reduce(
@@ -56,51 +52,49 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function createSnapshot(grid, startNode, targetNode) {
-  return { grid, startNode, targetNode };
+function createBoard(grid = createGrid(), startNode = DEFAULT_START, targetNode = DEFAULT_TARGET, preset = 'custom') {
+  return { grid, startNode, targetNode, preset };
 }
 
 export default function App() {
   const [language, setLanguage] = useState('de');
   const dictionary = dictionaries[language];
   const [theme, setTheme] = useState('dark');
-  const [startNode, setStartNode] = useState(DEFAULT_START);
-  const [targetNode, setTargetNode] = useState(DEFAULT_TARGET);
-  const [grid, setGrid] = useState(() => createGrid(DEFAULT_START, DEFAULT_TARGET));
+  const [board, setBoard] = useState(createBoard);
+  const { grid, startNode, targetNode, preset } = board;
   const [tool, setTool] = useState('wall');
   const [algorithm, setAlgorithm] = useState('bfs');
-  const [preset, setPreset] = useState('custom');
   const [speed, setSpeed] = useState(45);
   const [isRunning, setIsRunning] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [statusMessage, setStatusMessage] = useState(dictionaries.de.status.initial);
   const [stats, setStats] = useState(emptyStats);
   const [comparisonRows, setComparisonRows] = useState([]);
-  const [hoveredCell, setHoveredCell] = useState(null);
+  const [hoveredNode, setHoveredNode] = useState(null);
   const [liveExplanation, setLiveExplanation] = useState(dictionaries.de.live.ready);
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
 
-  const activeAlgorithm = useMemo(
-    () => ({ id: algorithm, ...dictionary.algorithms[algorithm] }),
-    [algorithm, dictionary]
-  );
+  const activeAlgorithm = { id: algorithm, ...dictionary.algorithms[algorithm] };
+  const hoveredCell = hoveredNode ? grid[hoveredNode.row][hoveredNode.col] : null;
 
   const wallCount = useMemo(() => countCells(grid, 'wall'), [grid]);
   const boardCost = useMemo(() => getTerrainCostTotal(grid), [grid]);
 
-  const pushHistory = (snapshot) => {
-    setUndoStack((current) => pushHistoryEntry(current, snapshot));
+  const clearResults = useCallback(() => {
+    setStats(emptyStats);
+    setComparisonRows([]);
+  }, []);
+
+  const pushHistory = () => {
+    setUndoStack((current) => pushHistoryEntry(current, board));
     setRedoStack([]);
   };
 
   const restoreSnapshot = useCallback((snapshot) => {
-    setGrid(snapshot.grid);
-    setStartNode(snapshot.startNode);
-    setTargetNode(snapshot.targetNode);
-    setStats(emptyStats);
-    setComparisonRows([]);
-  }, []);
+    setBoard(snapshot);
+    clearResults();
+  }, [clearResults]);
 
   const switchLanguage = (nextLanguage) => {
     playClickSound();
@@ -109,66 +103,50 @@ export default function App() {
     setLiveExplanation(dictionaries[nextLanguage].live.ready);
   };
 
-  const applyCellEdit = (currentGrid, row, col) => {
-    const selectedNode = { row, col };
-    const clearedGrid = cloneGridWithClearedSearch(currentGrid);
-    const selectedCell = clearedGrid[row][col];
-
-    if (tool === 'start') {
-      if (sameNode(selectedNode, targetNode) || selectedCell.type === 'wall') return { nextGrid: clearedGrid };
-      setStartNode(selectedNode);
-      return { nextGrid: moveSpecialNode(clearedGrid, startNode, selectedNode, 'start') };
-    }
-
-    if (tool === 'target') {
-      if (sameNode(selectedNode, startNode) || selectedCell.type === 'wall') return { nextGrid: clearedGrid };
-      setTargetNode(selectedNode);
-      return { nextGrid: moveSpecialNode(clearedGrid, targetNode, selectedNode, 'target') };
-    }
-
-    if (isBlockedForSpecialTool(selectedCell)) return { nextGrid: clearedGrid };
-
-    return {
-      nextGrid: clearedGrid.map((gridRow) =>
-        gridRow.map((cell) => {
-          if (cell.row !== row || cell.col !== col) return cell;
-          if (tool === 'erase') return { ...cell, type: 'empty' };
-          return { ...cell, type: tool };
-        })
-      )
-    };
-  };
-
-  const updateCell = (row, col, options = { commitHistory: true }) => {
+  const updateCell = (row, col, { commitHistory = true } = {}) => {
     if (isRunning) return;
     playClickSound();
-    if (options.commitHistory) pushHistory(createSnapshot(grid, startNode, targetNode));
+    if (commitHistory) pushHistory();
 
-    setGrid((currentGrid) => applyCellEdit(currentGrid, row, col).nextGrid);
-    setPreset('custom');
-    setComparisonRows([]);
-    setStats(emptyStats);
+    const node = { row, col };
+    setBoard((current) => {
+      const cell = current.grid[row][col];
+      if (tool === 'start' || tool === 'target') {
+        const endpoint = tool === 'start' ? 'startNode' : 'targetNode';
+        const other = tool === 'start' ? current.targetNode : current.startNode;
+        if (!sameNode(node, other) && cell.type !== 'wall') {
+          return { ...current, grid: moveSpecialNode(current.grid, current[endpoint], node, tool), [endpoint]: node, preset: 'custom' };
+        }
+      }
+
+      const cleanGrid = cloneGridWithClearedSearch(current.grid);
+      if (tool !== 'start' && tool !== 'target' && !isBlockedForSpecialTool(cell)) {
+        return { ...current, grid: setCellType(cleanGrid, node, tool === 'erase' ? 'empty' : tool), preset: 'custom' };
+      }
+      return { ...current, grid: cleanGrid, preset: 'custom' };
+    });
+    clearResults();
   };
 
   const undo = useCallback(() => {
     if (!undoStack.length || isRunning) return;
     playUndoSound();
-    const nextState = createUndoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
+    const nextState = createUndoState(undoStack, redoStack, board);
     setUndoStack(nextState.undoStack);
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.undo);
-  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary, restoreSnapshot]);
+  }, [undoStack, redoStack, board, isRunning, dictionary, restoreSnapshot]);
 
   const redo = useCallback(() => {
     if (!redoStack.length || isRunning) return;
     playRedoSound();
-    const nextState = createRedoState(undoStack, redoStack, createSnapshot(grid, startNode, targetNode));
+    const nextState = createRedoState(undoStack, redoStack, board);
     setUndoStack(nextState.undoStack);
     setRedoStack(nextState.redoStack);
     restoreSnapshot(nextState.snapshot);
     setStatusMessage(dictionary.status.redo);
-  }, [undoStack, redoStack, grid, startNode, targetNode, isRunning, dictionary, restoreSnapshot]);
+  }, [undoStack, redoStack, board, isRunning, dictionary, restoreSnapshot]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -196,53 +174,35 @@ export default function App() {
     if (isRunning) return;
     playClickSound('action');
     if (presetId === 'custom') {
-      setPreset('custom');
+      setBoard({ ...board, preset: 'custom' });
       return;
     }
-    pushHistory(createSnapshot(grid, startNode, targetNode));
+    pushHistory();
     const nextPreset = createPreset(presetId);
-    setGrid(nextPreset.grid);
-    setStartNode(nextPreset.start);
-    setTargetNode(nextPreset.target);
-    setPreset(presetId);
-    setStats(emptyStats);
-    setComparisonRows([]);
+    restoreSnapshot(createBoard(nextPreset.grid, nextPreset.start, nextPreset.target, presetId));
     setStatusMessage(translate(dictionary.status.presetLoaded, { preset: dictionary.presets[presetId] }));
   };
 
   const resetGrid = () => {
     if (isRunning) return;
     playResetSound();
-    pushHistory(createSnapshot(grid, startNode, targetNode));
-    setStartNode(DEFAULT_START);
-    setTargetNode(DEFAULT_TARGET);
-    setGrid(createGrid(DEFAULT_START, DEFAULT_TARGET));
-    setPreset('custom');
-    setStats(emptyStats);
-    setComparisonRows([]);
+    pushHistory();
+    restoreSnapshot(createBoard());
     setStatusMessage(dictionary.status.reset);
   };
 
   const clearWalls = () => {
     if (isRunning) return;
     playResetSound();
-    pushHistory(createSnapshot(grid, startNode, targetNode));
-    setGrid((currentGrid) =>
-      cloneGridWithClearedSearch(currentGrid).map((gridRow) =>
-        gridRow.map((cell) => (['wall', 'water', 'mud'].includes(cell.type) ? { ...cell, type: 'empty' } : cell))
-      )
-    );
-    setPreset('custom');
-    setComparisonRows([]);
+    pushHistory();
+    restoreSnapshot(createBoard(createGrid(startNode, targetNode), startNode, targetNode));
     setStatusMessage(dictionary.status.wallsCleared);
   };
 
   const clearPath = () => {
     if (isRunning) return;
     playResetSound();
-    setGrid((currentGrid) => cloneGridWithClearedSearch(currentGrid));
-    setStats(emptyStats);
-    setComparisonRows([]);
+    restoreSnapshot({ ...board, grid: cloneGridWithClearedSearch(grid) });
     setStatusMessage(dictionary.status.pathCleared);
   };
 
@@ -256,19 +216,19 @@ export default function App() {
     setStatusMessage(translate(dictionary.status.searching, { algorithm: activeAlgorithm.name }));
 
     const preparedGrid = cloneGridWithClearedSearch(grid);
-    setGrid(preparedGrid);
+    setBoard({ ...board, grid: preparedGrid });
     const result = measureAlgorithm(algorithm, preparedGrid, startNode, targetNode);
     const delay = Math.max(5, BASE_DELAY - speed);
     const animationStartedAt = performance.now();
 
     const events = result.explorationEvents ?? result.visitedOrder.map((node) => ({ node, type: 'visited' }));
     for (const event of events) {
-      setGrid((currentGrid) => applySearchType(currentGrid, event.node, event.type));
+      setBoard((current) => ({ ...current, grid: applySearchType(current.grid, event.node, event.type) }));
       await wait(delay);
     }
 
     for (const node of result.path) {
-      setGrid((currentGrid) => applySearchType(currentGrid, node, 'path'));
+      setBoard((current) => ({ ...current, grid: applySearchType(current.grid, node, 'path') }));
       await wait(Math.max(8, delay * 1.6));
     }
 
@@ -278,8 +238,7 @@ export default function App() {
       pathLength: result.pathLength,
       pathCost: result.pathCost,
       calculationMs: result.calculationMs,
-      animationMs,
-      costBreakdown: result.costBreakdown
+      animationMs
     });
     setStatusMessage(
       result.found
@@ -303,7 +262,6 @@ export default function App() {
       const result = measureAlgorithm(id, preparedGrid, startNode, targetNode);
       return {
         id,
-        name: dictionary.algorithms[id].name,
         found: result.found,
         visited: result.visitedOrder.length,
         pathLength: result.pathLength,
@@ -362,11 +320,11 @@ export default function App() {
             dictionary={dictionary}
             grid={grid}
             tool={tool}
-            pathCost={boardCost}
+            terrainCost={boardCost}
             isRunning={isRunning}
             onCellAction={updateCell}
-            onHoverCell={setHoveredCell}
-            onLeaveGrid={() => setHoveredCell(null)}
+            onHoverCell={setHoveredNode}
+            onLeaveGrid={() => setHoveredNode(null)}
           />
           <ActionPanel
             dictionary={dictionary}

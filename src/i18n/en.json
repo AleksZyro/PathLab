@@ -2,7 +2,6 @@
   "app": {
     "eyebrow": "Interactive pathfinding visualizer",
     "title": "PathLab",
-    "heroText": "",
     "lightMode": "Light mode",
     "darkMode": "Dark mode"
   },
@@ -33,8 +32,7 @@
   },
   "actions": {
     "kicker": "Actions",
-    "title": "Run and reset",
-    "historyGroup": "Undo and redo"
+    "title": "Run and reset"
   },
   "brush": {
     "title": "Brush mode",
@@ -97,11 +95,7 @@
     "empty": "Move the mouse over a cell."
   },
   "cost": {
-    "title": "Path cost breakdown",
-    "shortLabel": "Cost",
-    "normal": "Normal",
-    "water": "Water",
-    "mud": "Mud"
+    "shortLabel": "Cost"
   },
   "compare": {
     "kicker": "Analysis",
@@ -112,11 +106,6 @@
     "length": "Length",
     "cost": "Cost",
     "ms": "ms",
-    "highlights": "Highlights",
-    "bestCost": "Best cost",
-    "shortestPath": "Shortest path",
-    "fewestVisited": "Fewest visited",
-    "fastest": "Fastest calculation",
     "yes": "Yes",
     "no": "No",
     "optimality": "Optimality",
