@@ -3,6 +3,16 @@ import { runAStar } from '../algorithms/pathfinding.js';
 import { createPreset, presetIds } from './presets.js';
 
 describe('preset maps', () => {
+  it('does not share mutable terrain or rows between preset instances', () => {
+    const first = createPreset('waterBarrier');
+    const second = createPreset('waterBarrier');
+    expect(first.grid).toEqual(second.grid);
+
+    first.grid[1][12].type = 'empty';
+    expect(second.grid[1][12].type).toBe('water');
+    expect(createPreset('waterBarrier').grid).toEqual(second.grid);
+  });
+
   it('creates every preset with one start and one target node', () => {
     for (const presetId of presetIds) {
       const { grid, start, target } = createPreset(presetId);

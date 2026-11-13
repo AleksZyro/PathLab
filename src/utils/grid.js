@@ -56,9 +56,12 @@ export function cloneGridWithClearedSearch(grid) {
 }
 
 export function setCellType(grid, node, type) {
+  const cell = grid[node.row][node.col];
+  if (cell.type === type && cell.previousType === undefined) return grid;
+
   const nextGrid = [...grid];
   nextGrid[node.row] = [...grid[node.row]];
-  const { previousType, ...cleanCell } = nextGrid[node.row][node.col];
+  const { previousType, ...cleanCell } = cell;
   nextGrid[node.row][node.col] = { ...cleanCell, type };
   return nextGrid;
 }
@@ -71,7 +74,7 @@ export function moveSpecialNode(grid, previousNode, nextNode, type) {
 
 export function applySearchType(grid, node, type) {
   const cell = grid[node.row]?.[node.col];
-  if (!cell || cell.type === 'start' || cell.type === 'target' || cell.type === 'wall') return grid;
+  if (!cell || cell.type === type || isBlockedForSpecialTool(cell) || cell.type === 'wall') return grid;
   const nextGrid = [...grid];
   nextGrid[node.row] = [...grid[node.row]];
   nextGrid[node.row][node.col] = { ...cell, previousType: cell.previousType ?? cell.type, type };

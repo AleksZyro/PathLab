@@ -2,6 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { COLS, ROWS, applySearchType, cloneGridWithClearedSearch, createGrid, getCellCost, getTerrainCostTotal, moveSpecialNode, setCellType } from './grid.js';
 
 describe('grid search state restoration', () => {
+  it('reuses the grid for repeated edits and repeated search events', () => {
+    const node = { row: 1, col: 1 };
+    const grid = setCellType(createGrid(), node, 'mud');
+    expect(setCellType(grid, node, 'mud')).toBe(grid);
+
+    const frontier = applySearchType(grid, node, 'frontier');
+    expect(applySearchType(frontier, node, 'frontier')).toBe(frontier);
+    expect(cloneGridWithClearedSearch(frontier)).toEqual(grid);
+  });
+
   it('preserves clean rows and unchanged cells when clearing frontier overlays', () => {
     const node = { row: 1, col: 1 };
     const grid = setCellType(createGrid(), node, 'water');
