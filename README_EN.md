@@ -1,170 +1,28 @@
 # PathLab
 
-[Deutsch](./README.md) | **English**
+[Deutsch](README.md) | **English**
 
-PathLab is an interactive React visualizer for learning and comparing pathfinding algorithms on a weighted grid. The project demonstrates algorithms, UI state, animations, internationalization, and automated tests in a compact Vite application.
+Draw walls, water and mud on a 17 × 31 grid. Watch a search unfold or compare all four algorithms on the same terrain.
 
-## Project identity
+[Open the live demo](https://alekszyro.github.io/PathLab/) · [User guide](USER_GUIDE_EN.md)
 
-This repository is part of the public portfolio of **Aleksandar Nikolić** (**Aleksandar Nikolic**, **AleksZyro**), an IMS student from Buchs AG, Switzerland.
+![PathLab grid and terrain controls](docs/screenshots/pathlab-overview.png)
 
-- Portfolio: [aleksandar-nikolic.ch](https://aleksandar-nikolic.ch/)
-- GitHub: [github.com/AleksZyro](https://github.com/AleksZyro)
-- Contact and current availability: [aleksandar-nikolic.ch/#contact](https://aleksandar-nikolic.ch/#contact)
+## Algorithms and costs
 
-- Live demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
-- User guide: [English beginner guide](USER_GUIDE_EN.md)
-- Status: **stable portfolio version**
-- Tech stack: React 19, JavaScript, Vite, CSS, Vitest, GitHub Actions, GitHub Pages
+BFS finds a route with the fewest steps. DFS explores one branch at a time and can take a longer route. Either can cross expensive terrain. Dijkstra and A* minimise the total cost of entering cells. Normal cells cost 1, water costs 5 and mud costs 10. The starting cell is free. A* uses Manhattan distance to estimate the remaining cost.
 
-![PathLab overview](./docs/screenshots/pathlab-overview.png)
+Try a preset or move the endpoints yourself. Board edits support undo and redo. The results show computation time separately from animation duration. [Watch a search](docs/screenshots/pathlab-demo.webp)
 
-## Demo
+## Run locally
 
-![PathLab demo](./docs/screenshots/pathlab-demo.webp)
+Use a current Node.js 22 LTS release:
 
-## Main Features
-
-- interactive grid with start and target nodes
-- tools for walls, water, mud, and erase
-- weighted cells with fixed costs: normal 1, water 5, mud 10
-- animated search visualization
-- BFS, DFS, Dijkstra, and A*
-- comparison of all algorithms on the same grid
-- total cost of the final path
-- separate calculation time and animation time
-- undo and redo for grid edits
-- prepared example scenarios
-- German and English content
-- light and dark mode
-
-## Quick Start
-
-```bash
+```sh
 npm ci
 npm run dev
 ```
 
-## Tests and Build
+The search algorithms run independently of React. `npm run check` runs ESLint and Vitest. Build the static app with `npm run build` and serve it locally with `npm run preview`.
 
-```bash
-npm run lint
-npm test
-npm run build
-npm run preview
-```
-
-<details>
-<summary>Algorithms</summary>
-
-- **BFS** searches layer by layer and finds the shortest path by number of steps on unweighted grids.
-- **DFS** demonstrates depth-first search, but does not guarantee the shortest or cheapest path.
-- **Dijkstra** considers cell costs and finds the cheapest path.
-- **A\*** also considers cell costs and adds a Manhattan distance estimate toward the target.
-
-Dijkstra and A* use an independent binary min-heap without an additional runtime dependency. Insertion and removal of the minimum take `O(log n)` each instead of repeatedly sorting the entire open list. Improved costs enqueue new immutable entries; outdated entries are skipped when popped. With the consistent Manhattan heuristic, the sparse grid implementation takes `O((V + E) log V)` time and `O(V + E)` space including the event trace. This does not claim a measured speedup on the small fixed grid.
-
-Both weighted searches emit chronological frontier/visited events. Purple marks open candidates, blue marks expanded cells, and yellow marks the final path. Clearing overlays restores terrain. Calculation time has no artificial minimum; individual timings are not reliable benchmarks.
-
-</details>
-
-<details>
-<summary>Quality checks</summary>
-
-The automated GitHub Actions check runs:
-
-```bash
-npm ci
-npm run check
-npm run build
-```
-
-The tests cover, among other things:
-
-- unreachable targets
-- weighted water and mud cells
-- cost breakdowns
-- A* compared with Dijkstra
-- restoration of terrain types after search overlays
-- start and target nodes
-- undo and redo stack logic
-
-</details>
-
-<details>
-<summary>Project structure</summary>
-
-```text
-src/
-  algorithms/
-    pathfinding.js
-    pathfinding.test.js
-  components/
-    ActionPanel.jsx
-    ComparePanel.jsx
-    Controls.jsx
-    GridBoard.jsx
-    LanguageSwitch.jsx
-    Onboarding.jsx
-    PathLabLogo.jsx
-    StatsPanel.jsx
-  i18n/
-    de.json
-    en.json
-  utils/
-    grid.js
-    grid.test.js
-    history.js
-    history.test.js
-    presets.js
-    sound.js
-  App.jsx
-  main.jsx
-tests/
-  pathfinding.behavior.test.js
-docs/
-  screenshots/
-    pathlab-demo.webp
-    pathlab-overview.png
-```
-
-</details>
-
-<details>
-<summary>Technical decisions</summary>
-
-- The algorithms are separated from the React components so they can be tested independently.
-- Terrain costs are maintained centrally in `src/utils/grid.js`.
-- Search overlays remember the previous terrain type so water and mud can be restored after the animation.
-- Calculation time and animation time are handled separately. The animation is intentionally slowed down and is therefore not algorithm runtime.
-- Undo and redo use small history helpers in `src/utils/history.js`, which makes the stack logic testable in isolation.
-- Deployment is handled with GitHub Pages.
-
-</details>
-
-<details>
-<summary>Known limitations</summary>
-
-- The fixed grid contains 17 × 31 cells; variable sizes, worker execution, and large graphs are not implemented.
-- The grid has a fixed size and is designed as a learning environment.
-- Screenshots and GIFs need to be updated manually when the UI changes.
-
-</details>
-
-<details>
-<summary>Repository metadata suggestion</summary>
-
-- Description: `Interactive React pathfinding visualizer for BFS, DFS, Dijkstra and A* on a weighted grid.`
-- Website: `https://alekszyro.github.io/PathLab/`
-- Topics: `react`, `pathfinding`, `algorithm-visualizer`, `bfs`, `dfs`, `dijkstra`, `astar`, `weighted-grid`, `portfolio-project`
-
-</details>
-
-## Documentation
-
-- [German user guide](BENUTZERANLEITUNG_DE.md)
-- [English beginner guide](USER_GUIDE_EN.md)
-
-## License
-
-This project is published under the MIT License. See [LICENSE](./LICENSE) for details.
+[MIT licence](LICENSE) · [Portfolio](https://aleksandar-nikolic.ch/)

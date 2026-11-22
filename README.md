@@ -1,170 +1,28 @@
 # PathLab
 
-**Deutsch** | [English](./README_EN.md)
+**Deutsch** | [English](README_EN.md)
 
-PathLab ist ein interaktiver React-Visualizer für Wegfindungsalgorithmen auf einem gewichteten Raster. Das Projekt zeigt Graph-Suche, Terrain-Kosten, UI-State, Animationen, Mehrsprachigkeit und automatisierte Tests in einer kompakten Vite-Anwendung.
+Zeichne Wände, Wasser und Schlamm auf ein Raster mit 17 × 31 Feldern. Beobachte, welche Felder ein Suchalgorithmus besucht, oder vergleiche alle vier auf demselben Raster.
 
-## Persönlicher Projektbezug
+[Live-Demo öffnen](https://alekszyro.github.io/PathLab/) · [Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
 
-Dieses Repository ist Teil des öffentlichen Portfolios von **Aleksandar Nikolić** (**Aleksandar Nikolic**, **AleksZyro**), IMS-Schüler aus Buchs AG, Schweiz.
+![PathLab mit Raster und Suchwerkzeugen](docs/screenshots/pathlab-overview.png)
 
-- Portfolio: [aleksandar-nikolic.ch](https://aleksandar-nikolic.ch/)
-- GitHub: [github.com/AleksZyro](https://github.com/AleksZyro)
-- Kontakt und aktuelle Erreichbarkeit: [aleksandar-nikolic.ch/#contact](https://aleksandar-nikolic.ch/#contact)
+## Algorithmen und Kosten
 
-- Live-Demo: [https://alekszyro.github.io/PathLab/](https://alekszyro.github.io/PathLab/)
-- Benutzeranleitung: [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
-- Status: **stabile Portfolio-Version**
-- Tech-Stack: React 19, JavaScript, Vite, CSS, Vitest, GitHub Actions, GitHub Pages
+BFS findet einen Weg mit den wenigsten Schritten. DFS folgt einem Suchzweig in die Tiefe und garantiert keine minimale Weglänge. Für beide kann ein kurzer Weg durch teures Gelände führen. Dijkstra und A* minimieren die Summe der Eintrittskosten. Ein normales Feld kostet 1, Wasser 5 und Schlamm 10. Der Start kostet nichts. A* nutzt die Manhattan-Distanz zum Ziel.
 
-![PathLab Übersicht](./docs/screenshots/pathlab-overview.png)
+Starte mit einem Beispielraster oder setze Start und Ziel selbst. Rasteränderungen lassen sich rückgängig machen und wiederholen. Die Anzeige trennt Rechenzeit und Animationsdauer. [Suchanimation ansehen](docs/screenshots/pathlab-demo.webp)
 
-## Demo
+## Lokal starten
 
-![PathLab Demo](./docs/screenshots/pathlab-demo.webp)
+Mit einer aktuellen Node.js-22-LTS-Version:
 
-## Hauptfunktionen
-
-- interaktives Raster mit Start- und Zielknoten
-- Werkzeuge für Wände, Wasser, Schlamm und Löschen
-- gewichtete Felder mit festen Kosten: normal 1, Wasser 5, Schlamm 10
-- animierte Visualisierung der Suche
-- BFS, DFS, Dijkstra und A*
-- Vergleich aller Algorithmen auf demselben Raster
-- Gesamtkosten des gefundenen Pfads
-- getrennte Anzeige von Berechnungszeit und Animationszeit
-- Undo und Redo für Rasteränderungen
-- Beispiel-Szenarien
-- deutscher und englischer Inhalt
-- Hell- und Dunkelmodus
-
-## Schnellstart
-
-```bash
+```sh
 npm ci
 npm run dev
 ```
 
-## Tests und Build
+Die Suchalgorithmen laufen unabhängig von React. `npm run check` führt ESLint und Vitest aus. `npm run build` erstellt die statische Anwendung, `npm run preview` startet die lokale Vorschau.
 
-```bash
-npm run lint
-npm test
-npm run build
-npm run preview
-```
-
-<details>
-<summary>Algorithmen</summary>
-
-- **BFS** sucht schichtweise und findet auf ungewichteten Rastern den kürzesten Weg nach Anzahl Schritten.
-- **DFS** zeigt Tiefensuche, garantiert aber keinen kürzesten oder günstigsten Weg.
-- **Dijkstra** berücksichtigt Feldkosten und findet den günstigsten Pfad.
-- **A\*** berücksichtigt ebenfalls Feldkosten und nutzt zusätzlich eine Manhattan-Distanzschätzung zum Ziel.
-
-Dijkstra und A* verwenden einen unabhängigen binären Min-Heap ohne zusätzliche Laufzeit-Dependency. Einfügen und Entnehmen des kleinsten Eintrags benötigen jeweils `O(log n)` statt einer wiederholten Sortierung der gesamten Open List. Verbesserte Kosten erzeugen neue Einträge; veraltete Einträge werden beim Entnehmen übersprungen. Bei dieser Implementierung mit konsistenter Manhattan-Heuristik ergibt sich auf dem dünn besetzten Grid `O((V + E) log V)` Zeit und `O(V + E)` Speicher inklusive Ereignisprotokoll. Daraus folgt kein gemessener Geschwindigkeitsgewinn für das kleine feste Raster.
-
-Dijkstra und A* liefern zusätzlich chronologische Frontier-/Visited-Ereignisse. Lila zeigt bekannte Kandidaten im Open Set, Blau bereits expandierte Felder und Gelb den finalen Pfad. Terrain bleibt beim Löschen der Such-Overlays erhalten. Berechnungszeiten werden ohne künstliche Mindestdauer in Millisekunden angezeigt; Einzelmessungen sind keine belastbaren Benchmarks.
-
-</details>
-
-<details>
-<summary>Qualitätssicherung</summary>
-
-Die automatisierte GitHub-Actions-Prüfung führt aus:
-
-```bash
-npm ci
-npm run check
-npm run build
-```
-
-Die Tests prüfen unter anderem:
-
-- unerreichbare Ziele
-- gewichtete Wasser- und Schlammfelder
-- Kostenaufschlüsselung
-- A* im Vergleich zu Dijkstra
-- Wiederherstellung von Geländetypen nach Such-Overlays
-- Start- und Zielknoten
-- Undo- und Redo-Stack-Logik
-
-</details>
-
-<details>
-<summary>Projektstruktur</summary>
-
-```text
-src/
-  algorithms/
-    pathfinding.js
-    pathfinding.test.js
-  components/
-    ActionPanel.jsx
-    ComparePanel.jsx
-    Controls.jsx
-    GridBoard.jsx
-    LanguageSwitch.jsx
-    Onboarding.jsx
-    PathLabLogo.jsx
-    StatsPanel.jsx
-  i18n/
-    de.json
-    en.json
-  utils/
-    grid.js
-    grid.test.js
-    history.js
-    history.test.js
-    presets.js
-    sound.js
-  App.jsx
-  main.jsx
-tests/
-  pathfinding.behavior.test.js
-docs/
-  screenshots/
-    pathlab-demo.webp
-    pathlab-overview.png
-```
-
-</details>
-
-<details>
-<summary>Technische Entscheidungen</summary>
-
-- Die Algorithmen sind von den React-Komponenten getrennt, damit sie unabhängig testbar bleiben.
-- Terrain-Kosten werden zentral in `src/utils/grid.js` gepflegt.
-- Such-Overlays merken sich den vorherigen Geländetyp, damit Wasser und Schlamm nach der Animation wiederhergestellt werden können.
-- Berechnungszeit und Animationszeit werden getrennt behandelt. Die Animation wird bewusst verlangsamt und ist deshalb keine Algorithmus-Laufzeit.
-- Undo und Redo verwenden kleine History-Helfer in `src/utils/history.js`, damit die Stack-Logik isoliert testbar ist.
-- Das Deployment erfolgt über GitHub Pages.
-
-</details>
-
-<details>
-<summary>Bekannte Einschränkungen</summary>
-
-- Das feste Raster umfasst 17 × 31 Felder; variable Grössen, Worker-Ausführung und grosse Graphen sind nicht implementiert.
-- Das Raster hat eine feste Grösse und ist als Lernumgebung gedacht.
-- Screenshots und GIFs müssen bei UI-Änderungen manuell aktualisiert werden.
-
-</details>
-
-<details>
-<summary>Repository-Metadaten Vorschlag</summary>
-
-- Description: `Interactive React pathfinding visualizer for BFS, DFS, Dijkstra and A* on a weighted grid.`
-- Website: `https://alekszyro.github.io/PathLab/`
-- Topics: `react`, `pathfinding`, `algorithm-visualizer`, `bfs`, `dfs`, `dijkstra`, `astar`, `weighted-grid`, `portfolio-project`
-
-</details>
-
-## Dokumentation
-
-- [Deutsche Benutzeranleitung](BENUTZERANLEITUNG_DE.md)
-- [English beginner guide](USER_GUIDE_EN.md)
-
-## Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz veröffentlicht. Details stehen in [LICENSE](./LICENSE).
+[MIT-Lizenz](LICENSE) · [Portfolio](https://aleksandar-nikolic.ch/)
