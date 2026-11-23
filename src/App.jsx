@@ -178,7 +178,7 @@ export default function App() {
   useEffect(() => {
     const listener = (event) => handleKeyDown(event);
     window.addEventListener('keydown', listener);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', listener);
   }, []);
 
   const loadPreset = (presetId) => {
